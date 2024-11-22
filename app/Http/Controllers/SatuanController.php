@@ -7,59 +7,45 @@ use Illuminate\Http\Request;
 
 class SatuanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-    }
+        $satuans = Satuan::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('satuans.index', compact('satuans'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Satuan $satuan)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Satuan $satuan)
-    {
-        //
+        $request->validate([
+            'nama_satuan' => 'required|string|max:255',
+        ]);
+    
+        $satuan = new Satuan();
+        $satuan->nama_satuan = $request->nama_satuan;
+        $satuan->save();
+    
+        return redirect()->route('data-satuan.index')->with('success', 'Data Satuan berhasil disimpan.');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Satuan $satuan)
+    public function update(Request $request, $id)
     {
-        //
+        $satuan = Satuan::findOrFail($id);
+        $satuan->nama_satuan = $request->nama_satuan;
+        $satuan->save();
+
+        return redirect()->back()->with('success', 'Data Satuan berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Satuan $satuan)
+    public function destroy($id)
     {
-        //
+        Satuan::find($id)->delete();
+
+        return redirect()->route('data-satuan.index')
+            ->with('success', 'Data Satuan Berhasil dihapus');
     }
 }

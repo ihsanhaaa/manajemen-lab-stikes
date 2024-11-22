@@ -20,6 +20,7 @@ class ObatMasukImport implements ToModel, WithStartRow
 
     public function model(array $row)
     {
+        // dd( $row[7]);
         // Ambil nilai dari session
         $jumlahMasuk = session('jumlah_masuk');
         $tanggalMasuk = session('tanggal_masuk');
@@ -42,6 +43,11 @@ class ObatMasukImport implements ToModel, WithStartRow
                 'exp_obat' => $row[5] ?? null,
                 'satuan_id' => $satuan->id ?? null,
             ]);
+
+            // Perbarui stok obat dan hitung sisa obat
+            $obat->update([
+                'sisa_obat' => $obat->stok_obat + ($row[7] ?? 0),
+            ]);
         } else {
             // Jika belum ada, buat data obat baru
             $obat = Obat::create([
@@ -53,13 +59,11 @@ class ObatMasukImport implements ToModel, WithStartRow
                 'exp_obat' => $row[5] ?? null,
                 'satuan_id' => $satuan->id ?? null,
                 'stok_obat' => $row[7] ?? 0,
+                'sisa_obat' => $row[7] ?? 0,
             ]);
         }
 
-        // Perbarui stok obat dan hitung sisa obat
-        $obat->update([
-            'sisa_obat' => $obat->stok_obat + ($row[7] ?? 0),
-        ]);
+        
 
         // Buat entri StokMasuk
         $stokMasuk = StokMasuk::create([

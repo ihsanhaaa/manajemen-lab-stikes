@@ -6,6 +6,7 @@ use App\Models\Obat;
 use App\Models\ObatPengajuanBahan;
 use App\Models\PengajuanBahan;
 use App\Models\Satuan;
+use App\Models\Semester;
 use App\Models\StokKeluar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,11 +18,13 @@ class PengajuanBahanController extends Controller
      */
     public function index()
     {
+        $semesterAktif = Semester::where('is_active', true)->first();
+
         $obats = Obat::with('stokKeluars')->get();
         $pengajuanbahans = PengajuanBahan::all();
         $satuans = Satuan::all();
 
-        return view('pengajuan-bahans.index', compact('obats', 'satuans', 'pengajuanbahans'));
+        return view('pengajuan-bahans.index', compact('obats', 'satuans', 'pengajuanbahans', 'semesterAktif'));
     }
 
     /**
@@ -37,9 +40,16 @@ class PengajuanBahanController extends Controller
      */
     public function store(Request $request)
     {
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        if (!$semesterAktif) {
+            return redirect()->back()->with('alert', 'Tidak ada semester yang aktif.');
+        }
+
         // dd($request);
         // Validasi data utama
         $validatedData = $request->validate([
+            'semester_id' => $semesterAktif->id,
             'anggota_kelompok' => 'required|string',
             'nim_kelompok' => 'required|string',
             'kelas' => 'required|string',

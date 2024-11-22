@@ -11,4 +11,9 @@ class Foto extends Model
 
     protected $table = 'fotos';
     protected $guarded = ['id'];
+
+    public function fotoObatMasuks()
+    {
+        return $this->hasMany(Foto::class, 'alat_masuk_id');
+    }
 }

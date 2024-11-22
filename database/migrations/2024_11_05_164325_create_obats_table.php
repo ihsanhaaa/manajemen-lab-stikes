@@ -16,18 +16,15 @@ return new class extends Migration
             $table->foreignId('kemasan_id')->nullable();
             $table->foreignId('bentuk_sediaan_id')->nullable();
             $table->foreignId('satuan_id')->nullable();
-
             $table->string('kode_obat')->nullable();
             $table->string('nama_obat')->nullable();
             $table->string('jenis_obat')->nullable();
             $table->string('kekuatan_obat')->nullable();
-            $table->string('foto_obat')->nullable();
+            $table->string('foto_path')->nullable();
             $table->string('exp_obat')->nullable();
             $table->integer('stok_obat')->default(0);
-
             $table->integer('sisa_obat')->default(0);
             $table->timestamps();
-
         });
     }
 

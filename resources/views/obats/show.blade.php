@@ -66,7 +66,7 @@
                         <!-- end page title -->
 
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-warning btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <button type="button" class="btn btn-warning btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             <i class="fas fa-edit"></i> Ubah Data Obat
                         </button>
 
@@ -84,7 +84,7 @@
                                             @csrf
                                             @method('PUT')
                                             <div class="mb-3">
-                                                <label for="kode_obat" class="form-label">Kode Obat</label>
+                                                <label for="kode_obat" class="form-label">Kode Obat <span style="color: red">*</span> </label>
                                                 <input type="text"
                                                     class="form-control @error('kode_obat') is-invalid @enderror" id="kode_obat"
                                                     name="kode_obat" value="{{ $obat->kode_obat }}" required>
@@ -97,7 +97,7 @@
 
                                             </div>
                                             <div class="mb-3">
-                                                <label for="nama_obat" class="form-label">Nama Obat</label>
+                                                <label for="nama_obat" class="form-label">Nama Obat <span style="color: red">*</span> </label>
                                                 <input type="text"
                                                     class="form-control @error('nama_obat') is-invalid @enderror" id="nama_obat"
                                                     name="nama_obat" value="{{ $obat->nama_obat }}" required>
@@ -110,7 +110,7 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="jenis_obat" class="form-label">Jenis Obat</label>
+                                                <label for="jenis_obat" class="form-label">Jenis Obat <span style="color: red">*</span> </label>
                                                 <select class="form-control @error('jenis_obat') is-invalid @enderror" id="jenis_obat" name="jenis_obat">
                                                     <option value="Cair" {{ $obat->jenis_obat == 'Cair' ? 'selected' : '' }}>Cair</option>
                                                     <option value="Padat" {{ $obat->jenis_obat == 'Padat' ? 'selected' : '' }}>Padat</option>
@@ -230,7 +230,7 @@
                                             </div>
 
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Update Data</button>
                                             </div>
 
@@ -241,18 +241,44 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('data-obat.destroy', $obat->id) }}" class="btn btn-danger btn-sm mb-3"><i class="fas fa-trash-alt"></i> Hapus Data</a>
+                        <a href="{{ route('data-obat.destroy', $obat->id) }}" class="btn btn-danger btn-sm mb-3 mx-1"><i class="fas fa-trash-alt"></i> Hapus Data</a>
 
                         <div class="row">
+
                             <div class="col-4">
-                                @if ($obat->foto_obat)
-                                    <img src="{{ asset($obat->foto_obat) }}" alt="">
-                                @else
-                                    <div class="alert alert-warning" role="alert">
-                                        Belum ada foto
+                                <div class="card">
+                                    <div class="card-body">
+    
+                                        <form action="{{ route('data-obat.uploadFoto', $obat->id) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <label for="photo" class="form-label">Update Foto</label>
+                                                <input class="form-control" type="file" name="photo" id="photo" accept="image/*" multiple required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mb-3 btn-sm">Update Foto</button>
+                                        </form>
+                                        
+                                        <div class="zoom-gallery">
+    
+                                            @if ($obat->foto_path)
+                                                <img src="{{ asset($obat->foto_path) }}" class="img-fluid" alt="">
+
+                                                <form action="{{ route('data-obat.deleteFoto', $obat->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus foto ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm my-3"><i class="fas fa-trash-alt"></i>  Hapus Foto</button>
+                                                </form>                                                
+                                            @else
+                                                <div class="alert alert-warning" role="alert">
+                                                    Belum ada foto
+                                                </div>
+                                            @endif
+                                        </div>
+
                                     </div>
-                                @endif
+                                </div>
                             </div>
+
                             <div class="col-8">
                                 <div class="card">
                                     <div class="card-body">
@@ -273,6 +299,8 @@
                                                 <tr>
                                                     <th>Tanggal Masuk</th>
                                                     <th>Jumlah Masuk</th>
+                                                    <th>Harga Satuan</th>
+                                                    <th>Total Harga</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -280,6 +308,8 @@
                                                     <tr>
                                                         <td>{{ $stokMasuk->tanggal_masuk }}</td>
                                                         <td>{{ $stokMasuk->jumlah_masuk }}</td>
+                                                        <td>Rp. {{ number_format((float) $stokMasuk->harga_satuan) }}</td>
+                                                        <td>Rp. {{ number_format((float) $stokMasuk->total_harga) }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

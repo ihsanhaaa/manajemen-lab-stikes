@@ -37,6 +37,13 @@
                             </div>
                         @endif
 
+                        @if ($message = Session::get('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>Error!</strong> {{ $message }}.
+                            </div>
+                        @endif
+
                         @if (count($errors) > 0)
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -65,7 +72,7 @@
                                             <div class="mb-3">
 
                                                 <div class="mb-3">
-                                                    <label for="file" class="form-label">Pilih File Excel</label>
+                                                    <label for="file" class="form-label">Pilih File Excel <span style="color: red">*</span> </label>
                                                     <input type="file" class="form-control @error('file') is-invalid @enderror" id="file" name="file" required>
     
                                                     @error('file')
@@ -76,20 +83,7 @@
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <label for="tanggal_masuk" class="form-label">Tanggal Masuk</label>
-                                                    <input type="date"
-                                                        class="form-control @error('tanggal_masuk') is-invalid @enderror" id="tanggal_masuk"
-                                                        name="tanggal_masuk">
-    
-                                                    @error('tanggal_masuk')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="foto_path" class="form-label">Foto Bukti Transaski (bisa lebih dari 1 foto)</label>
+                                                    <label for="foto_path" class="form-label">Foto Bukti Transaski (bisa lebih dari 1 foto) <span style="color: red">*</span> </label>
                                                     <input type="file"
                                                         class="form-control @error('foto_path') is-invalid @enderror" id="foto_path"
                                                         name="foto_path">
@@ -104,7 +98,7 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary">Import</button>
                                         </div>
                                     </form>
@@ -116,7 +110,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                    <h4 class="mb-sm-0">Data Obat Masuk</h4>
+                                    <h4 class="mb-sm-0">Data Obat Masuk ({{ $stokMasuks->count() }})</h4>
 
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
@@ -143,6 +137,8 @@
                                                     <th>Nama obat</th>
                                                     <th>Jumlah</th>
                                                     <th>Bukti Transaksi</th>
+                                                    <th>Harga Satuan</th>
+                                                    <th>Total Harga</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
@@ -157,10 +153,19 @@
                                                         <td>{{ $obat->obat->nama_obat }}</td>
                                                         <td>{{ $obat->jumlah_masuk }}</td>
                                                         <td>
-                                                            <a href="" target="_blank">Lihat Bukti Transaksi</a>
+                                                            @if ($obat->fotos->count() > 0)
+                                                                @foreach ($obat->fotos as $foto)
+                                                                    <a href="{{ asset($foto->foto_path) }}" target="_blank">Lihat Bukti Transaksi</a>
+                                                                    <br>
+                                                                @endforeach
+                                                            @else
+                                                                <span>Tidak ada bukti transaksi</span>
+                                                            @endif
                                                         </td>
+                                                        <td>Rp. {{ number_format((float) $obat->harga_satuan) }}</td>
+                                                        <td>Rp. {{ number_format((float) $obat->total_harga) }}</td>
                                                         <td>
-                                                            <a href="{{ route('data-obat.show', $obat->id) }}">Lihat Detail</a>
+                                                            <a href="{{ route('data-obat.show', $obat->id) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> Lihat Detail</a>
                                                         </td>
                                                     </tr>
                                                 @endforeach

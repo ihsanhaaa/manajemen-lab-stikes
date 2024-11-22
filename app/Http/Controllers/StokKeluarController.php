@@ -42,27 +42,25 @@ class StokKeluarController extends Controller
         $validated = $request->validate([
             'obat_id' => 'required',
             'jumlah_pemakaian' => 'required|integer|min:1',
+            
             'tanggal_keluar' => 'required|date',
+            'keterangan' => 'required|string|max:255',
         ]);
 
-        // Ambil data obat untuk dicek stoknya
         $obat = Obat::find($request->obat_id);
 
-        // Cek apakah stok mencukupi (baik stok_obat atau sisa_obat)
-        if (($obat->stok_obat + $obat->sisa_obat) < $request->jumlah_pemakaian) {
-            return back()->withErrors(['stok_obat' => 'Stok tidak mencukupi']);
+        if ($request->jumlah_pemakaian > $obat->stok_obat) {
+            return redirect()->back()->with('error', 'Stok tidak mencukupi');
         }
 
         // Buat catatan stok keluar
         StokKeluar::create([
             'obat_id' => $request->obat_id,
             'jumlah_pemakaian' => $request->jumlah_pemakaian,
-            'satuan' => $request->satuan,
             'tanggal_keluar' => $request->tanggal_keluar,
-            'keterangan' => $request->keterangan, // jika ada kolom keterangan
+            'keterangan' => $request->keterangan,
         ]);
 
-        // Pengurangan stok berdasarkan kondisi sisa_obat
         if ($obat->sisa_obat > 0) {
             // Jika sisa_obat ada, kurangi sisa_obat terlebih dahulu
             if ($obat->sisa_obat >= $request->jumlah_pemakaian) {
@@ -78,10 +76,8 @@ class StokKeluarController extends Controller
             $obat->sisa_obat -= $request->jumlah_pemakaian;
         }
 
-        // Simpan perubahan
         $obat->save();
 
-        // Redirect dengan pesan sukses
         return redirect()->route('data-obat-keluar.index')->with('success', 'Stok obat berhasil dikurangi.');
     }
 

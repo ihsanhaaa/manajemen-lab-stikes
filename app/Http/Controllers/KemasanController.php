@@ -12,54 +12,43 @@ class KemasanController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $kemasans = Kemasan::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('kemasans.index', compact('kemasans'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Kemasan $kemasan)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Kemasan $kemasan)
-    {
-        //
+        $request->validate([
+            'nama_kemasan' => 'required|string|max:255',
+        ]);
+    
+        $kemasan = new Kemasan();
+        $kemasan->nama_kemasan = $request->nama_kemasan;
+        $kemasan->save();
+    
+        return redirect()->route('data-kemasan.index')->with('success', 'Data Kemasan berhasil disimpan.');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Kemasan $kemasan)
+    public function update(Request $request, $id)
     {
-        //
+        $kemasan = Kemasan::findOrFail($id);
+        $kemasan->nama_kemasan = $request->nama_kemasan;
+        $kemasan->save();
+
+        return redirect()->back()->with('success', 'Data kemasan berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kemasan $kemasan)
+    public function destroy($id)
     {
-        //
+        Kemasan::find($id)->delete();
+
+        return redirect()->route('data-kemasan.index')
+            ->with('success', 'Data Kemasan Berhasil dihapus');
     }
 }

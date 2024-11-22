@@ -9,7 +9,9 @@ use App\Models\Foto;
 use App\Models\Kemasan;
 use App\Models\Obat;
 use App\Models\Satuan;
+use App\Models\Semester;
 use App\Models\StokMasuk;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -70,6 +72,122 @@ class StokMasukController extends Controller
     }
 
     public function importExcelBaru(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls',
+            'foto_path' => 'required|file|mimes:jpg,jpeg,png|max:2048', // Foto wajib
+        ]);
+
+        // Upload file Excel
+        $file = $request->file('file');
+        $filePath = $file->store('import', 'public');
+
+        // Upload Foto Bukti Transaksi
+        $fotoFile = $request->file('foto_path');
+        $path = 'foto-bukti-transaksi/';
+        $newName = 'foto-' . date('Ymd') . '-' . uniqid() . '.' . $fotoFile->getClientOriginalExtension();
+
+        // Pindahkan file ke folder public_path
+        $fotoFile->move(public_path($path), $newName);
+
+        // Simpan path foto
+        $fotoPath = $path . $newName;
+
+        // Load Excel and skip the first 6 rows (header + empty rows)
+        $importedData = Excel::toArray([], $file)[0]; // Ambil sheet pertama
+        $importedData = array_slice($importedData, 1); // Skip baris 1-6, mulai dari baris ke-7
+
+        // Ambil semester aktif
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
+        }
+
+        foreach ($importedData as $row) {
+            // dd($row);
+            // Bersihkan nama barang dan cari alat$kemasan = Kemasan::firstOrCreate(['nama_kemasan' => $row[3]]);
+            $satuan = Satuan::firstOrCreate(['nama_satuan' => $row[6]]);
+            $bentuk_sediaan = BentukSediaan::firstOrCreate(['nama_bentuk_sediaan' => $row[4]]);
+
+            // Cari obat berdasarkan kode_obat
+            $obat = Obat::where('kode_obat', $row[0])->first();
+
+            $expDate = null;
+
+            if ($row[5]) {
+                if (is_numeric($row[5])) {
+                    $expDate = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]))->format('Y-m-d');
+                } else {
+                    $expDate = Carbon::createFromFormat('d/m/Y', $row[5])->format('Y-m-d');
+                }
+            }
+
+            if ($obat) {
+                // Update data obat jika sudah ada
+                $obat->update([
+                    'nama_obat' => $row[1] ?? null,
+                    'kekuatan_obat' => $row[2] ?? null,
+                    'kemasan_id' => $kemasan->id ?? null,
+                    'bentuk_sediaan_id' => $bentuk_sediaan->id ?? null,
+                    'exp_obat' => $expDate ?? now(),
+                    'satuan_id' => $satuan->id ?? null,
+                ]);
+
+                // Perbarui stok obat dan hitung sisa obat
+                $obat->update([
+                    'sisa_obat' => $obat->stok_obat + ($row[7] ?? 0),
+
+                    // 'harga_satuan' => $obat->stok_obat + ($row[7] ?? 0),
+                    // 'total_harga' => $obat->stok_obat + ($row[7] ?? 0),
+                ]);
+            } else {
+                // Jika belum ada, buat data obat baru
+                $obat = Obat::create([
+                    'kode_obat' => $row[0] ?? null,
+                    'nama_obat' => $row[1] ?? null,
+                    'kekuatan_obat' => $row[2] ?? null,
+                    'kemasan_id' => $kemasan->id ?? null,
+                    'bentuk_sediaan_id' => $bentuk_sediaan->id ?? null,
+                    'exp_obat' => $expDate ?? now(),
+                    'satuan_id' => $satuan->id ?? null,
+                    'stok_obat' => $row[7] ?? 0,
+                    'sisa_obat' => $row[7] ?? 0,
+                ]);
+            }
+
+            $tanggalMasuk = null;
+
+            if ($row[5]) {
+                if (is_numeric($row[5])) {
+                    $tanggalMasuk = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]))->format('Y-m-d');
+                } else {
+                    $tanggalMasuk = Carbon::createFromFormat('d/m/Y', $row[5])->format('Y-m-d');
+                }
+            }
+
+            // Buat entri StokMasuk
+            $stokMasuk = StokMasuk::create([
+                'semester_id' => $semesterAktif->id,
+                'obat_id' => $obat->id,
+                'jumlah_masuk' => $row[7] ?? 0,
+                'tanggal_masuk' => $tanggalMasuk ?? now(),
+
+                'harga_satuan' => $row[8] ?? 0,
+                'total_harga' => $row[7] * $row[8] ?? 0,
+            ]);
+
+            // Simpan foto wajib
+            Foto::create([
+                'stok_masuk_id' => $stokMasuk->id,
+                'foto_path' => $fotoPath,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Data obat berhasil diimpor.');
+    }
+
+    public function BCimportExcelBaru(Request $request)
     {
         // Validasi request file dan foto
         $request->validate([

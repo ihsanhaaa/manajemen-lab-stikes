@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('pengajuan_bahans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('semester_id')->onDelete('cascade');
+            $table->foreignId('user_id');
             $table->string('nama_mahasiswa')->nullable();
             $table->string('kelompok')->nullable();
             $table->string('kelas')->nullable();

@@ -7,59 +7,45 @@ use Illuminate\Http\Request;
 
 class BentukSediaanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-    }
+        $bentuk_sediaans = BentukSediaan::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('bentuk-sediaans.index', compact('bentuk_sediaans'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(BentukSediaan $bentukSediaan)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(BentukSediaan $bentukSediaan)
-    {
-        //
+        $request->validate([
+            'nama_bentuk_sediaan' => 'required|string|max:255',
+        ]);
+    
+        $bentuk_sediaan = new BentukSediaan();
+        $bentuk_sediaan->nama_bentuk_sediaan = $request->nama_bentuk_sediaan;
+        $bentuk_sediaan->save();
+    
+        return redirect()->route('data-bentuk-sediaan.index')->with('success', 'Data Bentuk Sediaan berhasil disimpan.');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, BentukSediaan $bentukSediaan)
+    public function update(Request $request, $id)
     {
-        //
+        $bentuk_sediaan = BentukSediaan::findOrFail($id);
+        $bentuk_sediaan->nama_bentuk_sediaan = $request->nama_bentuk_sediaan;
+        $bentuk_sediaan->save();
+
+        return redirect()->back()->with('success', 'Data Bentuk Sediaan berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BentukSediaan $bentukSediaan)
+    public function destroy($id)
     {
-        //
+        BentukSediaan::find($id)->delete();
+
+        return redirect()->route('data-bentuk-sediaan.index')
+            ->with('success', 'Data Bentuk Sediaan Berhasil dihapus');
     }
 }

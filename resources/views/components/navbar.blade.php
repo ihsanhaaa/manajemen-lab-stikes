@@ -4,21 +4,21 @@
         <div class="d-flex">
             <!-- LOGO -->
             <div class="navbar-brand-box">
-                <a href="index.html" class="logo logo-dark">
+                <a href="{{ url('/') }}" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="assets/images/logo-sm.png" alt="logo-sm" height="22">
+                        <img src="{{ asset('STIKES.png') }}" alt="logo-sm" height="47">
                     </span>
                     <span class="logo-lg">
-                        <img src="assets/images/logo-dark.png" alt="logo-dark" height="20">
+                        <img src="{{ asset('STIKES.png') }}" alt="logo-dark" height="45">
                     </span>
                 </a>
 
-                <a href="index.html" class="logo logo-light">
+                <a href="{{ url('/') }}" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="assets/images/logo-sm.png" alt="logo-sm-light" height="22">
+                        <img src="{{ asset('STIKES.png') }}" alt="logo-sm-light" height="47">
                     </span>
                     <span class="logo-lg">
-                        <img src="assets/images/logo-light.png" alt="logo-light" height="20">
+                        <img src="{{ asset('STIKES.png') }}" alt="logo-light" height="45">
                     </span>
                 </a>
             </div>
@@ -35,7 +35,7 @@
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg"
+                    <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/users/avatar-1.jpg') }}"
                         alt="Header Avatar">
                     @guest
                         <span class="d-none d-xl-inline-block ms-1"></span>
@@ -84,6 +84,78 @@
                         </a>
                     </li>
                 @else
+                    @role('Ketua STIKes')
+                        <li>
+                            <a href="{{ route('home') }}" class="waves-effect">
+                                <i class="ri-dashboard-line"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('semesters.index') }}" class="waves-effect">
+                                <i class="ri-dashboard-line"></i>
+                                <span>Manajemen Semester</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-profile-line"></i>
+                                <span>Surat</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('data-surat-masuk.index') }}">Surat Masuk</a></li>
+                                <li><a href="{{ route('data-bentuk-sediaan.index') }}">Surat Keluar</a></li>
+                                <li><a href="{{ route('data-satuan.index') }}">Surat Penting</a></li>
+                                <li><a href="{{ route('data-obat.index') }}">Surat SK</a></li>
+                                <li><a href="{{ route('data-surat-mou.index') }}">Surat MOU</a></li>
+                                <li><a href="{{ route('data-obat-masuk.index') }}">Surat Arsip</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-profile-line"></i>
+                                <span>Obat</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('data-kemasan.index') }}">Data Kemasan</a></li>
+                                <li><a href="{{ route('data-bentuk-sediaan.index') }}">Data Bentuk Sediaan</a></li>
+                                <li><a href="{{ route('data-satuan.index') }}">Data Satuan</a></li>
+                                <li><a href="{{ route('data-obat.index') }}">Data Obat</a></li>
+                                <li><a href="{{ route('data-obat-masuk.index') }}">Data Obat Masuk</a></li>
+                                <li><a href="{{ route('data-obat-keluar.index') }}">Data Obat Keluar</a></li>
+                                <li><a href="{{ route('pengajuan-bahan.index') }}">Pengajuan Bahan</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-profile-line"></i>
+                                <span>Bahan</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('data-bahan.index') }}">Data Bahan</a></li>
+                                <li><a href="{{ route('data-bahan-masuk.index') }}">Data Bahan Masuk</a></li>
+                                <li><a href="{{ route('data-bahan-keluar.index') }}">Data Bahan Keluar</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-profile-line"></i>
+                                <span>Alat</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('data-alat.index') }}">Data Asset (Alat)</a></li>
+                                <li><a href="{{ route('data-alat-masuk.index') }}">Data Alat Masuk</a></li>
+                                <li><a href="{{ route('data-alat-rusak.index') }}">Data Alat Rusak/Pecah</a></li>
+                            </ul>
+                        </li>
+                        
+                    @endrole
+
                     @role('Admin Lab')
                         <li>
                             <a href="{{ route('home') }}" class="waves-effect">
@@ -93,59 +165,31 @@
                         </li>
 
                         <li>
-                            <a href="{{ route('data-obat.index') }}" class=" waves-effect">
-                                <i class="ri-user-2-line"></i>
-                                <span>Data Kemasan</span>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-profile-line"></i>
+                                <span>Obat</span>
                             </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('data-kemasan.index') }}">Data Kemasan</a></li>
+                                <li><a href="{{ route('data-bentuk-sediaan.index') }}">Data Bentuk Sediaan</a></li>
+                                <li><a href="{{ route('data-satuan.index') }}">Data Satuan</a></li>
+                                <li><a href="{{ route('data-obat.index') }}">Data Obat</a></li>
+                                <li><a href="{{ route('data-obat-masuk.index') }}">Data Obat Masuk</a></li>
+                                <li><a href="{{ route('data-obat-keluar.index') }}">Data Obat Keluar</a></li>
+                                <li><a href="{{ route('pengajuan-bahan.index') }}">Pengajuan Bahan</a></li>
+                            </ul>
                         </li>
 
                         <li>
-                            <a href="{{ route('data-obat.index') }}" class=" waves-effect">
-                                <i class="ri-user-2-line"></i>
-                                <span>Data Bentuk Sediaan</span>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-profile-line"></i>
+                                <span>Alat</span>
                             </a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('data-obat.index') }}" class=" waves-effect">
-                                <i class="ri-user-2-line"></i>
-                                <span>Data Satuan</span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('data-obat.index') }}" class=" waves-effect">
-                                <i class="ri-user-2-line"></i>
-                                <span>Data Obat</span>
-                            </a>
-                        </li>
-            
-                        <li>
-                            <a href="{{  route('data-obat-masuk.index')}}" class=" waves-effect">
-                                <i class="ri-key-2-line"></i>
-                                <span>Data Obat Masuk</span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('data-obat-keluar.index') }}" class=" waves-effect">
-                                <i class="ri-map-2-line"></i>
-                                <span>Data Obat Keluar</span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('pengajuan-bahan.index') }}" class=" waves-effect">
-                                <i class="ri-book-2-line"></i>
-                                <span>Pengajuan Bahan</span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('pengajuan-bahan.index') }}" class=" waves-effect">
-                                <i class="ri-book-2-line"></i>
-                                <span>Pengajuan Bahan</span>
-                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('data-kemasan.index') }}">Data Asset (Alat)</a></li>
+                                <li><a href="{{ route('data-kemasan.index') }}">Data Alat Masuk</a></li>
+                                <li><a href="{{ route('data-kemasan.index') }}">Data Alat Rusak/Pecah</a></li>
+                            </ul>
                         </li>
                         
                     @endrole

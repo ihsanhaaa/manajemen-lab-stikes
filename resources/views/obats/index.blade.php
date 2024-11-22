@@ -37,6 +37,13 @@
                             </div>
                         @endif
 
+                        @if ($message = Session::get('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>Error!</strong> {{ $message }}.
+                            </div>
+                        @endif
+
                         @if (count($errors) > 0)
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -47,9 +54,13 @@
                         @endif
 
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <button type="button" class="btn btn-primary mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             <i class="fas fa-plus"></i> Tambah Data Obat
                         </button>
+
+                        <a href="{{ route('laporan.obat.exportPDF') }}" class="btn btn-info mb-3 mx-1">
+                            <i class="fas fa-download"></i> Download Laporan PDF
+                        </a>
 
                         <!-- Modal -->
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -64,7 +75,7 @@
                                         <form action="{{ route('data-obat.store') }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="mb-3">
-                                                <label for="kode_obat" class="form-label">Kode Obat</label>
+                                                <label for="kode_obat" class="form-label">Kode Obat <span style="color: red">*</span> </label>
                                                 <input type="text"
                                                     class="form-control @error('kode_obat') is-invalid @enderror" id="kode_obat"
                                                     name="kode_obat" value="{{ old('kode_obat') }}" required>
@@ -77,7 +88,7 @@
 
                                             </div>
                                             <div class="mb-3">
-                                                <label for="nama_obat" class="form-label">Nama Obat</label>
+                                                <label for="nama_obat" class="form-label">Nama Obat <span style="color: red">*</span> </label>
                                                 <input type="text"
                                                     class="form-control @error('nama_obat') is-invalid @enderror" id="nama_obat"
                                                     name="nama_obat" value="{{ old('nama_obat') }}" required>
@@ -90,7 +101,7 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="jenis_obat" class="form-label">Jenis Obat</label>
+                                                <label for="jenis_obat" class="form-label">Jenis Obat <span style="color: red">*</span> </label>
                                                 <select class="form-control @error('jenis_obat') is-invalid @enderror" id="jenis_obat" name="jenis_obat">
                                                     <option value="">-- Pilih Jenis Obat --</option>
                                                     <option value="Cair">Cair</option>
@@ -118,7 +129,7 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="kemasan_obat" class="form-label">Kemasan Obat</label>
+                                                <label for="kemasan_obat" class="form-label">Kemasan Obat <span style="color: red">*</span> </label>
                                                 <select class="form-control @error('kemasan_obat') is-invalid @enderror" id="kemasan_obat" name="kemasan_obat" required>
                                                     <option value="">-- Pilih Kemasan Obat --</option>
                                                     @foreach($kemasans as $kemasan)
@@ -134,7 +145,7 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="bentuk_sediaan" class="form-label">Bentuk Sediaan</label>
+                                                <label for="bentuk_sediaan" class="form-label">Bentuk Sediaan <span style="color: red">*</span> </label>
                                                 <select class="form-control @error('bentuk_sediaan') is-invalid @enderror" id="bentuk_sediaan" name="bentuk_sediaan" required>
                                                     <option value="">-- Pilih Bentuk Sediaan --</option>
                                                     @foreach($bentukSediaans as $bentukSediaan)
@@ -193,10 +204,10 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="stok_awal" class="form-label">Stok Awal</label>
+                                                <label for="stok_awal" class="form-label">Stok Awal <span style="color: red">*</span> </label>
                                                 <input type="number"
                                                     class="form-control @error('stok_awal') is-invalid @enderror" id="stok_awal"
-                                                    name="stok_awal" required value="{{ old('stok_awal') }}">
+                                                    name="stok_awal" value="{{ old('stok_awal') }}" required>
 
                                                 @error('stok_awal')
                                                     <span class="invalid-feedback" role="alert">
@@ -221,7 +232,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                    <h4 class="mb-sm-0">Data Obat</h4>
+                                    <h4 class="mb-sm-0">Data Obat ({{ $obats->count() }})</h4>
 
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
@@ -246,12 +257,11 @@
                                                     <th>#</th>
                                                     <th>Kode Obat</th>
                                                     <th>Nama obat</th>
-                                                    <th>Jenis Obat</th>
                                                     <th>Kekuatan Obat</th>
                                                     <th>Barang Masuk</th>
                                                     <th>Barang Keluar</th>
                                                     <th>Stok Akhir</th>
-                                                    {{-- <th>Expired</th> --}}
+                                                    <th>Expired</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
@@ -264,8 +274,6 @@
                                                         <th scope="row">{{ ++$key }}</th>
                                                         <td>{{ $obat->kode_obat }}</td>
                                                         <td>{{ $obat->nama_obat }}</td>
-
-                                                        <td>{{ $obat->jenis_obat }}</td>
                                                         <td>{{ $obat->kekuatan_obat }}</td>
 
                                                         {{-- <td>{{ $obat->stok_obat }}</td> --}}
@@ -286,7 +294,7 @@
                                                                 </span>
                                                             @endif
                                                         </td>
-                                                        {{-- <td>{{ $obat->exp_obat }}</td> --}}
+                                                        <td>{{ $obat->exp_obat }}</td>
                                                         <td>
                                                             <a href="{{ route('data-obat.show', $obat->id) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> Lihat Detail</a>
                                                         </td>
