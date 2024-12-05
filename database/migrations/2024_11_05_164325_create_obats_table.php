@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('kekuatan_obat')->nullable();
             $table->string('foto_path')->nullable();
             $table->string('exp_obat')->nullable();
+            $table->integer('stok_awal')->default(0);
             $table->integer('stok_obat')->default(0);
-            $table->integer('sisa_obat')->default(0);
             $table->timestamps();
         });
     }

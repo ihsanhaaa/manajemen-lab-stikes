@@ -15,7 +15,7 @@ class BahanKeluarController extends Controller
 
         $bahans = Bahan::all();
 
-        return view('obat-keluars.index', compact('bahan_keluars', 'bahans'));
+        return view('bahan-keluars.index', compact('bahan_keluars', 'bahans'));
     }
 
     /**

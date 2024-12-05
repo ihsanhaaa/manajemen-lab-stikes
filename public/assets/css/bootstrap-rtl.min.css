@@ -26,7 +26,7 @@ File: Custom Bootstrap Css File
   --bs-black: #000;
   --bs-white: #fff;
   --bs-gray: #6c757d;
-  --bs-gray-dark: #252b3b;
+  --bs-gray-dark: #ae4b95;
   --bs-gray-100: #f8f9fa;
   --bs-gray-200: #eff2f7;
   --bs-gray-300: #f1f5f7;
@@ -34,7 +34,7 @@ File: Custom Bootstrap Css File
   --bs-gray-500: #adb5bd;
   --bs-gray-600: #6c757d;
   --bs-gray-700: #2d3448;
-  --bs-gray-800: #252b3b;
+  --bs-gray-800: #ae4b95;
   --bs-gray-900: #1d222e;
   --bs-primary: #0f9cf3;
   --bs-secondary: #6c757d;
@@ -143,7 +143,7 @@ File: Custom Bootstrap Css File
   --bs-emphasis-color-rgb: 255, 255, 255;
   --bs-secondary-color: #919bae;
   --bs-secondary-color-rgb: 145, 155, 174;
-  --bs-secondary-bg: #252b3b;
+  --bs-secondary-bg: #ae4b95;
   --bs-secondary-bg-rgb: 37, 43, 59;
   --bs-tertiary-color: rgba(121, 133, 156, 0.5);
   --bs-tertiary-color-rgb: 121, 133, 156;
@@ -4207,7 +4207,7 @@ textarea.form-control-lg {
 
 .dropdown-menu-dark {
   --bs-dropdown-color: #f1f5f7;
-  --bs-dropdown-bg: #252b3b;
+  --bs-dropdown-bg: #ae4b95;
   --bs-dropdown-border-color: var(--bs-border-color-translucent);
   --bs-dropdown-box-shadow: ;
   --bs-dropdown-link-color: #f1f5f7;

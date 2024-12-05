@@ -65,10 +65,23 @@
                         </div>
                         <!-- end page title -->
 
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-warning btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            <i class="fas fa-edit"></i> Ubah Data Obat
-                        </button>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-info btn-sm mb-3 mx-1" onclick="window.location='{{ route('data-obat.index') }}'">
+                                <i class="fas fa-angle-left"></i> Kembali ke Daftar Obat
+                            </button>
+    
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-warning btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="fas fa-edit"></i> Edit Data Obat
+                            </button>
+    
+                            <form action="{{ route('data-obat.destroy', $obat->id) }}" method="POST"
+                                onsubmit="return confirm('Apakah anda yakin ingin menghapus obat ini?');">
+                                @csrf
+                                @method('DELETE')
+                                    <button type="submit" style="border: none;" class="btn btn-danger btn-sm mb-3 mx-1"><i class="fas fa-trash-alt"></i> Hapus Data</button>
+                            </form>
+                        </div>
 
                         <!-- Modal -->
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -241,8 +254,6 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('data-obat.destroy', $obat->id) }}" class="btn btn-danger btn-sm mb-3 mx-1"><i class="fas fa-trash-alt"></i> Hapus Data</a>
-
                         <div class="row">
 
                             <div class="col-4">
@@ -288,13 +299,14 @@
                                         <p><strong>Bentuk Sediaan:</strong> {{ $obat->bentukSediaan->nama_bentuk_sediaan ?? 'N/A' }}</p>
                                         <p><strong>Satuan:</strong> {{ $obat->satuan->nama_satuan ?? 'N/A' }}</p>
                                         
-                                        <p><strong>Stok Obat:</strong> {{ $obat->stok_obat ?? 'N/A' }}</p>
-                                        <p><strong>Sisa Obat:</strong> {{ $obat->sisa_obat ?? 'N/A' }}</p>
+                                        <p><strong>Stok Awal:</strong> {{ $obat->stok_awal ?? 'N/A' }}</p>
+                                        <p><strong>Stok Akhir:</strong> {{ $obat->stok_obat ?? 'N/A' }}</p>
+                                        
 
                                         <hr>
 
                                         <h3>Stok Masuk</h3>
-                                        <table class="table">
+                                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <thead>
                                                 <tr>
                                                     <th>Tanggal Masuk</th>
@@ -316,8 +328,8 @@
                                         </table>
                                 
                                         <!-- Stok Keluar -->
-                                        <h3>Stok Keluar</h3>
-                                        <table class="table">
+                                        <h3 class="mt-3">Stok Keluar</h3>
+                                        <table id="datatable2" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <thead>
                                                 <tr>
                                                     <th>Tanggal Keluar</th>
@@ -344,7 +356,7 @@
                 </div>
                 <!-- End Page-content -->
                 
-                {{-- @include('components.footer') --}}
+                @include('components.footer')
                 
             </div>
             <!-- end main content-->

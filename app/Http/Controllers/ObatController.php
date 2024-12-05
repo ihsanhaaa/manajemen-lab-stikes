@@ -217,10 +217,10 @@ class ObatController extends Controller
 
     public function exportPdf()
     {
-        $obats = Obat::orderBy('sisa_obat')->get();
+        $obats = Obat::orderBy('stok_obat')->get();
 
         $pdf = PDF::loadView('obats.laporan', compact('obats'))
-            ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'potrait');
 
         // Format nama file dengan tanggal saat ini
         $currentDate = Carbon::now()->format('dmY'); // Format: 12112024

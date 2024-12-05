@@ -48,6 +48,21 @@ class CreateAdminUserSeeder extends Seeder
      
         $ketua->assignRole([$role->id]);
 
+        // ketua stikes
+        $ketua = User::create([
+            'name' => 'Administrasi STIKes Sambas', 
+            'email' => 'administrasi@gmail.com',
+            'password' => bcrypt('1234567890')
+        ]);
+
+        $role = Role::create(['name' => 'Administrasi']);
+     
+        $permissions = Permission::pluck('id','id')->all();
+   
+        $role->syncPermissions($permissions);
+     
+        $ketua->assignRole([$role->id]);
+
 
         // mahasiswa
         $role = Role::create(['name' => 'Mahasiswa']);

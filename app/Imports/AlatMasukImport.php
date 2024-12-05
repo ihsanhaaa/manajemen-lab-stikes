@@ -23,7 +23,7 @@ class AlatMasukImport implements ToModel, WithStartRow
         // Cek apakah alat sudah ada di database berdasarkan nama yang telah dibersihkan
         $alat = Alat::whereRaw("REPLACE(LOWER(nama_barang), ' ', '') = ?", [$namaBarang])->first();
 
-        dd($alat)
+        dd($alat);
         
         if ($alat) {
             $alat->update([

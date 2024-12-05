@@ -65,10 +65,23 @@
                         </div>
                         <!-- end page title -->
 
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-warning btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            <i class="fas fa-edit"></i> Ubah Data Alat
-                        </button>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-info btn-sm mb-3 mx-1" onclick="window.location='{{ route('data-alat.index') }}'">
+                                <i class="fas fa-angle-left"></i> Kembali ke Daftar Alat
+                            </button>
+    
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-warning btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="fas fa-edit"></i> Ubah Data Alat
+                            </button>
+    
+                            <form action="{{ route('data-alat.destroy', $alat->id) }}" method="POST"
+                                    onsubmit="return confirm('Apakah anda yakin ingin menghapus alat ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                        <button type="submit" style="border: none;" class="btn btn-danger btn-sm mb-3 mx-1"><i class="fas fa-trash-alt"></i> Hapus Data</button>
+                            </form>
+                        </div>
 
                         <!-- Modal -->
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -84,59 +97,69 @@
                                             @csrf
                                             @method('PUT')
                                             <div class="mb-3">
-                                                <label for="nama_barang" class="form-label">Kode Alat <span style="color: red">*</span> </label>
-                                                <input type="text"
-                                                    class="form-control @error('nama_barang') is-invalid @enderror" id="nama_barang"
-                                                    name="nama_barang" value="{{ $alat->nama_barang }}" required>
-
+                                                <label for="nama_barang" class="form-label">Nama Barang/Alat <span style="color: red">*</span> </label>
+                                                <input 
+                                                    type="text"
+                                                    class="form-control @error('nama_barang') is-invalid @enderror" 
+                                                    id="nama_barang"
+                                                    name="nama_barang" 
+                                                    value="{{ old('nama_barang', $alat->nama_barang) }}" 
+                                                    required>
+                                            
                                                 @error('nama_barang')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-
                                             </div>
+                                            
                                             <div class="mb-3">
-                                                <label for="ukuran" class="form-label">Nama Alat <span style="color: red">*</span> </label>
-                                                <input type="text"
-                                                    class="form-control @error('ukuran') is-invalid @enderror" id="ukuran"
-                                                    name="ukuran" value="{{ $alat->ukuran }}" required>
-
+                                                <label for="ukuran" class="form-label">Ukuran</label>
+                                                <input 
+                                                    type="text"
+                                                    class="form-control @error('ukuran') is-invalid @enderror" 
+                                                    id="ukuran"
+                                                    name="ukuran" 
+                                                    value="{{ old('ukuran', $alat->ukuran) }}">
+                                            
                                                 @error('ukuran')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>
+                                            </div>                                            
 
                                             <div class="mb-3">
-                                                <label for="jenis_obat" class="form-label">Jenis Alat <span style="color: red">*</span> </label>
-                                                <select class="form-control @error('jenis_obat') is-invalid @enderror" id="jenis_obat" name="jenis_obat">
-                                                    <option value="Cair" {{ $alat->jenis_obat == 'Cair' ? 'selected' : '' }}>Cair</option>
-                                                    <option value="Padat" {{ $alat->jenis_obat == 'Padat' ? 'selected' : '' }}>Padat</option>
-                                                </select>
+                                                <label for="penyimpanan" class="form-label">Penyimpanan</label>
+                                                <input 
+                                                    type="text"
+                                                    class="form-control @error('penyimpanan') is-invalid @enderror" 
+                                                    id="penyimpanan" 
+                                                    name="penyimpanan" 
+                                                    value="{{ old('penyimpanan', $alat->penyimpanan) }}">
                                             
-                                                @error('jenis_obat')
+                                                @error('penyimpanan')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>
+                                            </div>                                            
 
                                             <div class="mb-3">
-                                                <label for="kekuatan_obat" class="form-label">Kekuatan Alat</label>
-                                                <input type="text"
-                                                    class="form-control @error('kekuatan_obat') is-invalid @enderror" id="kekuatan_obat"
-                                                    name="kekuatan_obat" value="{{ $alat->kekuatan_obat }}">
-
-                                                @error('kekuatan_obat')
+                                                <label for="letak_aset" class="form-label">Letak Aset</label>
+                                                <input 
+                                                    type="text"
+                                                    class="form-control @error('letak_aset') is-invalid @enderror" 
+                                                    id="letak_aset" 
+                                                    name="letak_aset" 
+                                                    value="{{ old('letak_aset', $alat->letak_aset) }}">
+                                            
+                                                @error('letak_aset')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>
-
-                                            
+                                            </div>                                            
 
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -149,8 +172,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <a href="{{ route('data-alat.destroy', $alat->id) }}" class="btn btn-danger btn-sm mb-3 mx-1"><i class="fas fa-trash-alt"></i> Hapus Data</a>
 
                         <div class="row">
 
@@ -196,12 +217,13 @@
                                         <p><strong>Letak Aset:</strong> {{ $alat->letak_aset }}</p>
                                         <p><strong>Penyimpanan:</strong> {{ $alat->penyimpanan ?? 'N/A' }}</p>
                                         
-                                        <p><strong>Stok Alat:</strong> {{ $alat->stok ?? 'N/A' }}</p>
+                                        <p><strong>Stok Awal:</strong> {{ $alat->stok_awal ?? 'N/A' }}</p>
+                                        <p><strong>Jumlah:</strong> {{ $alat->stok ?? 'N/A' }}</p>
 
                                         <hr>
 
                                         <h3>Alat Masuk</h3>
-                                        <table class="table">
+                                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <thead>
                                                 <tr>
                                                     <th>Tanggal Masuk</th>
@@ -219,8 +241,8 @@
                                         </table>
                                 
                                         <!-- Stok Keluar -->
-                                        <h3>Alat Rusak</h3>
-                                        <table class="table">
+                                        <h3 class="mt-3">Alat Rusak</h3>
+                                        <table id="datatable2" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <thead>
                                                 <tr>
                                                     <th>Tanggal Rusak</th>

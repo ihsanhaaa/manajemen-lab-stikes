@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bahan;
+use App\Models\BahanKeluar;
 use App\Models\BahanMasuk;
 use App\Models\FotoBahanMasuk;
 use App\Models\Semester;
@@ -18,20 +19,16 @@ class BahanMasukController extends Controller
 
         return view('bahan-masuks.index', compact('bahan_masuks'));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
+        // Ambil semester aktif
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
+        }
+
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls',
             'foto_path' => 'required|file|mimes:jpg,jpeg,png|max:2048', // Foto wajib
@@ -41,9 +38,13 @@ class BahanMasukController extends Controller
         $file = $request->file('file');
         $filePath = $file->store('import', 'public');
 
+        // Load Excel and skip the first 6 rows (header + empty rows)
+        $importedData = Excel::toArray([], $file)[0]; // Ambil sheet pertama
+        $importedData = array_slice($importedData, 3);
+
         // Upload Foto Bukti Transaksi
         $fotoFile = $request->file('foto_path');
-        $path = 'foto-bukti-transaksi/';
+        $path = 'foto-transaksi-bahan-masuk/';
         $newName = 'foto-' . date('Ymd') . '-' . uniqid() . '.' . $fotoFile->getClientOriginalExtension();
 
         // Pindahkan file ke folder public_path
@@ -52,118 +53,78 @@ class BahanMasukController extends Controller
         // Simpan path foto
         $fotoPath = $path . $newName;
 
-        // Load Excel and skip the first 6 rows (header + empty rows)
-        $importedData = Excel::toArray([], $file)[0]; // Ambil sheet pertama
-        $importedData = array_slice($importedData, 4); // Skip baris 1-6, mulai dari baris ke-7
-
-        // Ambil semester aktif
-        $semesterAktif = Semester::where('is_active', true)->first();
-
-        if (!$semesterAktif) {
-            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
-        }
-
         foreach ($importedData as $row) {
             // dd($row);
 
-            if ($row[8] != 0) {
-                $bahan = Bahan::where('kode_bahan', $row[1])->first();
+                // $bahan = Bahan::where('kode_bahan', $row[1])->first();
+
+                // dd($row[2]);
+
+                $namaBahan = ucwords(strtolower(trim(preg_replace('/\s+/', ' ', $row[2]))));
+                $bahan = Bahan::where('nama_bahan', $namaBahan)->first();
+
+
+                // dd($namaBahan);
 
                 $expDate = null;
-                if ($row[4]) {
+                if (!empty($row[4])) {
                     if (is_numeric($row[4])) {
                         $expDate = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]))->format('Y-m-d');
                     } else {
-                        $expDate = Carbon::createFromFormat('d/m/Y', $row[4])->format('Y-m-d');
+                        try {
+                            $expDate = Carbon::createFromFormat('d/m/Y', $row[4])->format('Y-m-d');
+                        } catch (\Exception $e) {
+                            // Handle error jika format tanggal salah
+                            $expDate = null;
+                        }
                     }
                 }
 
-                if (!$bahan) {
+                if ($bahan) {
+                    $bahan->update([
+                        'stok_bahan' => $bahan->stok_bahan + ($row[8] ?? 0),
+                    ]);
+                } else {
                     $bahan = Bahan::create([
                         'kode_bahan' => $row[1] ?? 0,
                         'nama_bahan' => $row[2] ?? 0,
                         'formula' => $row[3] ?? null,
-                        'exp_bahan' => $expDate ?? now(),
+                        'exp_bahan' => $expDate,
                         'jenis_bahan' => $row[5] ?? null,
                         'satuan' => $row[6] ?? null,
-                    ]);
-
-                    $bahan->update([
-                        'stok_bahan' => $bahan->stok_bahan + ($row[8] ?? 0),
-                    ]);
-                    
-                } else {
-                    $bahan->update([
-                        'stok_bahan' => $bahan->stok_bahan + ($row[8] ?? 0),
+                        'stok_awal' => $row[7] ?? null,
+                        'stok_bahan' => $row[7] + $row[8] - $row[9] ?? null,
                     ]);
                 }
 
-                // Buat catatan alat masuk
-                // $tanggalMasuk = null;
+                if($row[8] != 0) {
 
-                // if ($row[4]) {
-                //     if (is_numeric($row[4])) {
-                //         $tanggalMasuk = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]))->format('Y-m-d');
-                //     } else {
-                //         $tanggalMasuk = Carbon::createFromFormat('d/m/Y', $row[4])->format('Y-m-d');
-                //     }
-                // }
+                    $bahan_masuk = BahanMasuk::create([
+                        'semester_id' => $semesterAktif->id,
+                        'bahan_id' => $bahan->id,
+                        'jumlah_masuk' => $row[8] ?? 0,
+                        'tanggal_masuk' => now(),
+                        'harga_satuan' => $row[11] ?? 0,
+                        'total_harga' => $row[8] * $row[11] ?? 0,
+                    ]);
 
-                $bahan_masuk = BahanMasuk::create([
-                    'semester_id' => $semesterAktif->id,
-                    'bahan_id' => $bahan->id,
-                    'jumlah_masuk' => $row[8] ?? 0,
-                    'tanggal_masuk' => now(),
-                    'harga_satuan' => $row[11] ?? 0,
-                    'total_harga' => $row[8] * $row[11] ?? 0,
-                ]);
-                
-                // dd($bahan_masuk);
+                    FotoBahanMasuk::create([
+                        'bahan_masuk_id' => $bahan_masuk->id,
+                        'foto_path' => $fotoPath,
+                    ]);
+                }
 
-                FotoBahanMasuk::create([
-                    'bahan_masuk_id' => $bahan_masuk->id,
-                    'foto_path' => $fotoPath,
-                ]);
-            }
+                if($row[9] != 0) {
+                    $bahan_keluar = BahanKeluar::create([
+                        'semester_id' => $semesterAktif->id,
+                        'bahan_id' => $bahan->id,
+                        'jumlah_pemakaian' => $row[9] ?? 0,
+                        'tanggal_keluar' => now(),
+                    ]);
+                }
 
         }
 
-        return redirect()->back()->with('success', 'Data bahan berhasil ditambahkan.');
-    }
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $bahan = Bahan::with(['kemasan', 'bentukSediaan', 'satuan'])->findOrFail($id);
-
-        return view('alat-masuks.show', compact('obat'));
-
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(BahanMasuk $bahan)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, BahanMasuk $bahan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(BahanMasuk $bahan)
-    {
-        //
+        return redirect()->back()->with('success', 'Data bahan masuk berhasil diimpor.');
     }
 }

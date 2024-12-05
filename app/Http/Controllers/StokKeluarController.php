@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bahan;
 use App\Models\BentukSediaan;
 use App\Models\Kemasan;
 use App\Models\Obat;
 use App\Models\Satuan;
+use App\Models\Semester;
 use App\Models\StokKeluar;
 use Illuminate\Http\Request;
 
@@ -16,13 +18,13 @@ class StokKeluarController extends Controller
      */
     public function index()
     {
-        $obatKeluars = StokKeluar::all();
+        $obat_keluars = StokKeluar::all();
         $kemasans = Kemasan::all();
         $satuans = Satuan::all();
         $bentukSediaans = BentukSediaan::all();
         $obats = Obat::all();
 
-        return view('obat-keluars.index', compact('obatKeluars', 'kemasans', 'satuans', 'bentukSediaans', 'obats'));
+        return view('obat-keluars.index', compact('obat_keluars', 'kemasans', 'satuans', 'bentukSediaans', 'obats'));
     }
 
     /**
@@ -38,6 +40,13 @@ class StokKeluarController extends Controller
      */
     public function store(Request $request)
     {
+        // Ambil semester aktif
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
+        }
+
         // Validasi input dari form
         $validated = $request->validate([
             'obat_id' => 'required',
@@ -55,6 +64,7 @@ class StokKeluarController extends Controller
 
         // Buat catatan stok keluar
         StokKeluar::create([
+            'semester_id' => $semesterAktif->id,
             'obat_id' => $request->obat_id,
             'jumlah_pemakaian' => $request->jumlah_pemakaian,
             'tanggal_keluar' => $request->tanggal_keluar,

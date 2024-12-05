@@ -35,7 +35,7 @@
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/users/avatar-1.jpg') }}"
+                    <img class="rounded-circle header-profile-user" src="https://api.dicebear.com/5.x/identicon/svg?seed={{ Auth::user()->name }}"
                         alt="Header Avatar">
                     @guest
                         <span class="d-none d-xl-inline-block ms-1"></span>
@@ -47,14 +47,12 @@
                 <div class="dropdown-menu dropdown-menu-end">
 
                     @guest
-                        <a class="dropdown-item" href="{{ url('/') }}"><i class="ri-user-line align-middle me-1"></i> Dashboard</a>
-                        <a class="dropdown-item" href="{{ route('home') }}"><i class="ri-user-line align-middle me-1"></i> Dashboard</a>
+                        <a class="dropdown-item" href="{{ url('/') }}"><i class="ri-home-line align-middle me-1"></i> Dashboard</a>
                         <li><a class="dropdown-item" href="{{ route('login') }}">Masuk</a></li>
                     @else
-                        <a class="dropdown-item" href="#"><i class="ri-user-line align-middle me-1"></i> Dashboard</a>
-                        <a class="dropdown-item" href=""><i class="ri-wallet-2-line align-middle me-1"></i> Profil</a>
+                        <a class="dropdown-item" href="{{ route('home') }}"><i class="ri-home-line align-middle me-1"></i> Dashboard</a>
                                 
-                        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> Keluar </a>
+                        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <span style="color:red;"> <i class="ri-logout-circle-r-line me-1"></i> Keluar</span> </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
                         </form>
@@ -87,21 +85,21 @@
                     @role('Ketua STIKes')
                         <li>
                             <a href="{{ route('home') }}" class="waves-effect">
-                                <i class="ri-dashboard-line"></i>
+                                <i class="ri-home-line"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
 
                         <li>
                             <a href="{{ route('semesters.index') }}" class="waves-effect">
-                                <i class="ri-dashboard-line"></i>
+                                <i class="ri-book-mark-line"></i>
                                 <span>Manajemen Semester</span>
                             </a>
                         </li>
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-profile-line"></i>
+                                <i class="ri-article-line"></i>
                                 <span>Surat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
@@ -116,7 +114,7 @@
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-profile-line"></i>
+                                <i class="ri-contrast-fill"></i>
                                 <span>Obat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
@@ -126,13 +124,13 @@
                                 <li><a href="{{ route('data-obat.index') }}">Data Obat</a></li>
                                 <li><a href="{{ route('data-obat-masuk.index') }}">Data Obat Masuk</a></li>
                                 <li><a href="{{ route('data-obat-keluar.index') }}">Data Obat Keluar</a></li>
-                                <li><a href="{{ route('pengajuan-bahan.index') }}">Pengajuan Bahan</a></li>
+                                <li><a href="{{ route('pengajuan-bahan.index') }}">Pengajuan Obat dan Bahan</a></li>
                             </ul>
                         </li>
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-profile-line"></i>
+                                <i class="ri-sip-line"></i>
                                 <span>Bahan</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
@@ -144,7 +142,7 @@
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-profile-line"></i>
+                                <i class="ri-pencil-ruler-2-line"></i>
                                 <span>Alat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
@@ -159,14 +157,14 @@
                     @role('Admin Lab')
                         <li>
                             <a href="{{ route('home') }}" class="waves-effect">
-                                <i class="ri-dashboard-line"></i>
+                                <i class="ri-home-line"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-profile-line"></i>
+                                <i class="ri-contrast-fill"></i>
                                 <span>Obat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
@@ -176,13 +174,13 @@
                                 <li><a href="{{ route('data-obat.index') }}">Data Obat</a></li>
                                 <li><a href="{{ route('data-obat-masuk.index') }}">Data Obat Masuk</a></li>
                                 <li><a href="{{ route('data-obat-keluar.index') }}">Data Obat Keluar</a></li>
-                                <li><a href="{{ route('pengajuan-bahan.index') }}">Pengajuan Bahan</a></li>
+                                <li><a href="{{ route('pengajuan-bahan.index') }}">Pengajuan Obat dan Bahan</a></li>
                             </ul>
                         </li>
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-profile-line"></i>
+                                <i class="ri-pencil-ruler-2-line"></i>
                                 <span>Alat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
@@ -197,7 +195,7 @@
                     @role('Mahasiswa')
                         <li>
                             <a href="{{ route('home') }}" class="waves-effect">
-                                <i class="ri-dashboard-line"></i>
+                                <i class="ri-home-line"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>

@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use PDF;
 
 class AlatController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $alats = Alat::with('alatRusaks')->get();
@@ -17,23 +16,12 @@ class AlatController extends Controller
         return view('alats.index', compact('alats'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'nama_barang' => 'required|string|max:255',
             'stok' => 'required|string|max:255',
-            'ukuran' => 'required|string|max:255',
+            'ukuran' => 'nullable|string|max:255',
             'penyimpanan' => 'required|string|max:255',
             'letak_aset' => 'required|string|max:255',
             'foto_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -59,38 +47,56 @@ class AlatController extends Controller
         return redirect()->route('data-alat.index')->with('success', 'Data Alat berhasil disimpan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $alat = Alat::with(['alatMasuks', 'alatRusaks']) ->findOrFail($id);
 
         return view('alats.show', compact('alat'));
-
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Alat $alat)
+    public function destroy($id)
     {
-        //
+        Alat::find($id)->delete();
+
+        return redirect()->route('data-alat.index')
+            ->with('success', 'Data alat berhasil dihapus');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Alat $alat)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'ukuran' => 'required|string|max:20',
+            'penyimpanan' => 'required|string|max:50',
+            'letak_aset' => 'required|string|max:50',
+        ]);
+
+        // Temukan data obat berdasarkan ID
+        $alat = Alat::findOrFail($id);
+
+        // Update data obat
+        $alat->update([
+            'nama_barang' => $request->nama_barang,
+            'ukuran' => $request->ukuran,
+            'penyimpanan' => $request->penyimpanan,
+            'letak_aset' => $request->letak_aset,
+        ]);
+
+        return redirect()->route('data-alat.show', $alat->id)->with('success', 'Data alat berhasil diperbarui');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Alat $alat)
+    public function exportPdf()
     {
-        //
+        $alats = Alat::orderBy('stok')->get();
+
+        $pdf = PDF::loadView('alats.laporan', compact('alats'))
+            ->setPaper('a4', 'potrait');
+
+        // Format nama file dengan tanggal saat ini
+        $currentDate = Carbon::now()->format('dmY');
+        $fileName = "Laporan_Alat-{$currentDate}.pdf";
+
+        // Unduh file dengan nama yang sudah diformat
+        return $pdf->download($fileName);
     }
 }

@@ -68,9 +68,9 @@
     <div class="kop-container">
         <!-- Logo -->
         <div class="d-flex">
-            <div class="kop-logo">
+            {{-- <div class="kop-logo">
                 <img src="{{ public_path('logo-stikes.png') }}" alt="Logo">
-            </div>
+            </div> --}}
             <!-- Teks Kop -->
             <div class="kop-text">
                 <p class="kop-title">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI</p>
@@ -92,8 +92,6 @@
             <tr>
                 <th>Kode Obat</th>
                 <th>Nama Obat</th>
-                <th>Jenis Obat</th>
-                <th>Sisa Stok</th>
                 <th>Stok Obat</th>
                 <th>Exp Obat</th>
             </tr>
@@ -101,14 +99,12 @@
         <tbody>
             @foreach ($obats as $obat)
                 <tr class="
-                    @if($obat->sisa_obat == 0) out-of-stock
-                    @elseif($obat->sisa_obat < 5) low-stock
+                    @if($obat->stok_obat == 0) out-of-stock
+                    @elseif($obat->stok_obat <= 5) low-stock
                     @endif
                 ">
                     <td>{{ $obat->kode_obat }}</td>
                     <td>{{ $obat->nama_obat }}</td>
-                    <td>{{ $obat->jenis_obat }}</td>
-                    <td>{{ $obat->sisa_obat }}</td>
                     <td>{{ $obat->stok_obat }}</td>
                     <td>{{ $obat->exp_obat }}</td>
                 </tr>

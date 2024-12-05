@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bahan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use PDF;
 
 class BahanController extends Controller
 {
@@ -196,14 +197,14 @@ class BahanController extends Controller
 
     public function exportPdf()
     {
-        $bahans = Bahan::orderBy('sisa_obat')->get();
+        $bahans = Bahan::orderBy('stok_bahan')->get();
 
         $pdf = PDF::loadView('bahans.laporan', compact('bahans'))
-            ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'potrait');
 
         // Format nama file dengan tanggal saat ini
-        $currentDate = Carbon::now()->format('dmY'); // Format: 12112024
-        $fileName = "Laporan_Obat-{$currentDate}.pdf";
+        $currentDate = Carbon::now()->format('dmY');
+        $fileName = "Laporan_Bahan-{$currentDate}.pdf";
 
         // Unduh file dengan nama yang sudah diformat
         return $pdf->download($fileName);

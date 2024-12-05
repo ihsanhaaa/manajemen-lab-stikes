@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('jenis_bahan')->nullable();
             $table->string('satuan')->nullable();
             $table->string('foto_path')->nullable();
+            $table->integer('stok_awal')->default(0);
             $table->integer('stok_bahan')->default(0);
-
             $table->timestamps();
         });
     }

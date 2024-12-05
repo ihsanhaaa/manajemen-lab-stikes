@@ -1,56 +1,72 @@
 @extends('layouts.app')
 
 @section('title')
-    Data Pengajuan Bahan
+    Data Pengajuan Obat dan Bahan
 @endsection
 
 @section('content')
     @push('css-plugins')
-        <!-- DataTables -->
-        <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('assets/libs/datatables.net-select-bs4/css//select.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
         
-        <!-- Responsive datatable examples -->
-        <link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     @endpush
 
-    <body data-topbar="dark">
-    
-    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+    <!-- Begin page -->
+    <div id="layout-wrapper">
 
-        <!-- Begin page -->
-        <div id="layout-wrapper">
+        <!-- header -->
+        @include('components.navbar')
+        
+        <!-- Start right Content here -->
+        <div class="main-content">
 
-            
-            @include('components.navbar')
+            <div class="page-content">
+                <div class="container-fluid">
+                    
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0">Data Pengajuan Obat dan Bahan ({{ $pengajuanbahans->count() }})</h4>
 
-            <div class="main-content">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Obat</a></li>
+                                        <li class="breadcrumb-item active"><a href="javascript: void(0);">Data Pengajuan Obat dan Bahan</a></li>
+                                    </ol>
+                                </div>
 
-                <div class="page-content">
-                    <div class="container-fluid">
-
-                        @if ($message = Session::get('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                <strong>Success!</strong> {{ $message }}.
                             </div>
-                        @endif
+                        </div>
+                    </div>
+                    <!-- end page title -->
 
-                        @if (count($errors) > 0)
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                @foreach ($errors->all() as $error)
-                                    <strong>{{ $error }}</strong><br>
-                                @endforeach
-                            </div>
-                        @endif
+                    @if (count($errors) > 0)
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @foreach ($errors->all() as $error)
+                                <strong>{{ $error }}</strong><br>
+                            @endforeach
+                        </div>
+                    @endif
 
-                        @if($semesterAktif)
-                            <p>Semester Aktif: {{ $semesterAktif->semester }} {{ $semesterAktif->tahun_ajaran }}</p>
-                            
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <strong>Success!</strong> {{ $message }}.
+                        </div>
+                    @endif
+
+                    @if ($message = Session::get('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <strong>Error!</strong> {{ $message }}.
+                        </div>
+                    @endif
+                    
+                    <div class="row">
+                        <div class="col-lg-12">
+
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#importModal">
+                            <button type="button" class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#importModal">
                                 <i class="fas fa-plus"></i> Tambah Pengajuan Bahan
                             </button>
 
@@ -199,50 +215,28 @@
                                 </div>
                             </div>
 
-                            <!-- start page title -->
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                        <h4 class="mb-sm-0">Data Pengajuan Bahan ({{ $pengajuanbahans->count() }})</h4>
-
-                                        <div class="page-title-right">
-                                            <ol class="breadcrumb m-0">
-                                                <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
-                                                <li class="breadcrumb-item active">Pengajuan Bahan</li>
-                                            </ol>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end page title -->
-                            
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-body">
-
-                                            @role('Admin Lab')
-                                                <table id="selection-datatable" class="table dt-responsive nowrap w-100">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Nama Praktikum</th>
-                                                            <th>Nama Kelompok</th>
-                                                            <th>NIM Kelompok</th>
-                                                            <th>Kelas</th>
-                                                            <th>Tanggal Pelaksanaan</th>
-                                                            @role('Admin Lab')
-                                                                <th>Status</th>
-                                                            @endrole
-                                                            <th>Aksi</th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                
-                                                
-                                                    <tbody>
-                                                        @foreach($pengajuanbahans as $key => $obat)
+                            <div class="card">
+                                <div class="card-body">
+        
+                                    <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nama Praktikum</th>
+                                                <th>Nama Kelompok</th>
+                                                <th>NIM Kelompok</th>
+                                                <th>Kelas</th>
+                                                <th>Tanggal Pelaksanaan</th>
+                                                @role('Admin Lab')
+                                                    <th>Status</th>
+                                                @endrole
+                                                <th>Aksi</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+                                            @foreach($pengajuanbahans as $key => $obat)
 
                                                             <tr>
                                                                 <th scope="row">{{ ++$key }}</th>
@@ -274,111 +268,30 @@
                                                                 </td>
                                                             </tr>
                                                         @endforeach
-                                                        
-                                                    </tbody>
-                                                </table>
-                                            @endrole
+                                        </tbody>
+                                    </table>
 
-                                            @role('Mahasiswa')
-                                                <table id="selection-datatable" class="table dt-responsive nowrap w-100">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Nama Praktikum</th>
-                                                            <th>Nama Kelompok</th>
-                                                            <th>NIM Kelompok</th>
-                                                            <th>Kelas</th>
-                                                            <th>Tanggal Pelaksanaan</th>
-                                                            @role('Admin Lab')
-                                                                <th>Status</th>
-                                                            @endrole
-                                                            <th>Aksi</th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                
-                                                
-                                                    <tbody>
-                                                        @foreach($pengajuanbahans as $key => $obat)
-                                                            @if ($obat->user_id ==  Auth::user()->id)
-                                                                <tr>
-                                                                    <th scope="row">{{ ++$key }}</th>
-                                                                    <td>{{ $obat->nama_praktikum }}</td>
-                                                                    <td>{{ $obat->nama_mahasiswa }}</td>
-                                                                    <td>{{ $obat->kelompok }}</td>
-                                                                    <td>{{ $obat->kelas }}</td>
-                                                                    <td>{{ $obat->tanggal_pelaksanaan }}</td>
-                                                                    <td>
-                                                                        @if ($obat->status == 0)
-                                                                            <span class="badge bg-warning btn-sm">Belum di ACC</span>
-                                                                        @else
-                                                                            <span class="badge bg-success btn-sm">Sudah di ACC</span>
-                                                                        @endif
-                                                                    </td>
-                                                                    <td>
-                                                                        @role('Admin Lab')
-                                                                            @if ($obat->status == 0)
-                                                                                <form action="{{ route('pengajuan-bahan.konfirmasi.update', $obat->id) }}" method="post"
-                                                                                    onclick="return confirm('Apakah anda yakin ingin mengkonfirmasi ini?')">
-                                                                                    @csrf
-                                                                                    <button class="btn btn-success btn-sm"><i class="fas fa-edit"></i> ACC Sekarang</button>
-                                                                                </form>
-                                                                            @endif
-                                                                        @endrole
-                                                                    </td>
-                                                                    <td>
-                                                                        <a href="{{ route('pengajuan-bahan.show', $obat->id) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> Lihat Detail</a>
-                                                                    </td>
-                                                                </tr>
-                                                            @endif
-                                                        @endforeach
-                                                        
-                                                    </tbody>
-                                                </table>
-                                            @endrole
-                                        
-                                        </div> <!-- end card body-->
-                                    </div> <!-- end card -->
-                                </div><!-- end col-->
-                            </div>
-                            <!-- end row-->
-                            
-                        @else
-                            <p>Tidak ada semester aktif. Silakan aktifkan semester terlebih dahulu.</p>
-                        @endif
-                        
-                    </div> <!-- container-fluid -->
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                    <!-- end row -->
+
                 </div>
-                <!-- End Page-content -->
-                
-                {{-- @include('components.footer') --}}
                 
             </div>
-            <!-- end main content-->
-
+            <!-- End Page-content -->
+           
+            <!-- footer -->
+            @include('components.footer')
+            
         </div>
-        <!-- END layout-wrapper -->
+        <!-- end main content-->
 
-    </body>
-</html>
-
+    </div>
+    <!-- END layout-wrapper -->
 
     @push('javascript-plugins')
-
-        <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-
-        <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
-
-        <!-- Responsive examples -->
-        <script src="≈{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
-
-        <!-- Datatable init js -->
-        <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
-
         <script>
             // JavaScript untuk menangani penambahan dan penghapusan form
             document.getElementById('add-form-btn').addEventListener('click', function() {
@@ -405,41 +318,5 @@
                 }
             });
         </script>
-
-        {{-- <script>
-            $(document).ready(function() {
-                // Saat user memilih obat, ambil sisa_stok dari server
-                $('select[name="obat_id[]"]').on('change', function() {
-                    var obatId = $(this).val();
-                    var sisaStokField = $(this).closest('.dynamic-form').find('.sisa_stok');
-                    var jumlahPemakaianField = $(this).closest('.dynamic-form').find('input[name="jumlah_pemakaian[]"]');
-                    
-                    if (obatId) {
-                        // Lakukan request AJAX untuk mendapatkan sisa stok
-                        $.ajax({
-                            url: '/get-sisa-stok/' + obatId,
-                            type: 'GET',
-                            success: function(data) {
-                                sisaStokField.val(data.sisa_stok); // Tampilkan sisa stok
-                            }
-                        });
-                    } else {
-                        sisaStokField.val(''); // Kosongkan jika tidak ada obat yang dipilih
-                    }
-                });
-
-                // Validasi jumlah pemakaian saat user mengisinya
-                $(document).on('input', 'input[name="jumlah_pemakaian[]"]', function() {
-                    var jumlahPemakaian = parseInt($(this).val());
-                    var sisaStok = parseInt($(this).closest('.dynamic-form').find('.sisa_stok').val());
-
-                    if (jumlahPemakaian > sisaStok) {
-                        alert('Jumlah pemakaian melebihi stok yang tersedia!');
-                        $(this).val(''); // Reset jumlah pemakaian jika melebihi stok
-                    }
-                });
-            });
-        </script> --}}
-
     @endpush
 @endsection

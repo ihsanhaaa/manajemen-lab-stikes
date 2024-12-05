@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('alats', function (Blueprint $table) {
             $table->id();
             $table->string('nama_barang')->nullable();
+            $table->integer('stok_awal')->default(0);
             $table->integer('stok')->default(0);
             $table->string('ukuran')->nullable();
             $table->string('penyimpanan')->nullable();

@@ -496,7 +496,7 @@
                                                     <p class="text-truncate font-size-17 mb-2">Selamat Datang {{ Auth::user()->name }}</p>
                                                     <p class="text-truncate font-size-14 mb-2">Anda masuk sebagai: {{ Auth::user()->getRoleNames()->first() }}</p>
 
-                                                    <h4 class="mb-2">{{ $dataPengajuanBahanUser->count() }}</h4>
+                                                    <a href="{{ route('pengajuan-bahan.index') }}"><h4 class="mb-2">{{ $dataPengajuanBahanUser->count() }}</h4></a>
                                                     <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"></span>Pengajuan Bahan Saya</p>
                                                 </div>
                                             </div>                                            

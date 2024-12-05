@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('semester_id')->onDelete('cascade');
             $table->foreignId('obat_id')->constrained('obats')->onDelete('cascade');
             $table->integer('jumlah_masuk');
-            $table->date('tanggal_masuk');
+            $table->date('tanggal_masuk')->nullable();
             $table->bigInteger('harga_satuan')->default(0);
             $table->bigInteger('total_harga')->default(0);
             $table->timestamps();

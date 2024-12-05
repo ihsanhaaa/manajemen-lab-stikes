@@ -60,6 +60,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/laporan/obat/export-pdf', [ObatController::class, 'exportPDF'])->name('laporan.obat.exportPDF');
 
+    Route::get('/laporan/bahan/export-pdf', [BahanController::class, 'exportPDF'])->name('laporan.bahan.exportPDF');
+
+    Route::get('/laporan/alat/export-pdf', [AlatController::class, 'exportPDF'])->name('laporan.alat.exportPDF');
+
     Route::post('/obat/{id}/upload-fotos', [ObatController::class, 'uploadPhotoDetail'])->name('data-obat.uploadFoto');
 
     Route::post('/bahan/{id}/upload-fotos', [BahanController::class, 'uploadPhotoDetail'])->name('data-bahan.uploadFoto');
@@ -99,7 +103,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/get-stok/{obatId}', function ($obatId) {
         $obat = Obat::find($obatId);
         if ($obat) {
-            return response()->json(['stok_obat' => $obat->sisa_obat]);
+            return response()->json(['stok_obat' => $obat->stok_obat]);
         }
         return response()->json(['stok_obat' => 0]); // Jika obat tidak ditemukan, return 0 stok
     });
