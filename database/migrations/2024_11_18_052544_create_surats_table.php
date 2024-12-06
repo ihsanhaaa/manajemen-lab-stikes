@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('tanggal_berkas')->nullable();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_berakhir')->nullable();
-            $table->string('file_berkas');
             $table->timestamps();
         });
     }

@@ -17,6 +17,11 @@ class ObatPengajuanBahan extends Model
         return $this->belongsTo(Obat::class);
     }
 
+    public function bahan()
+    {
+        return $this->belongsTo(Bahan::class);
+    }
+
     public function pengajuanBahan()
     {
         return $this->belongsTo(PengajuanBahan::class);

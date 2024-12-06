@@ -13,6 +13,8 @@ use App\Models\Surat;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -109,7 +111,7 @@ class HomeController extends Controller
                 ->get();
 
         // Inisialisasi array untuk setiap kategori berkas
-        $kategoriList = ['Surat Masuk', 'Surat Keluar', 'Surat SK', 'Surat Penting', 'Surat Arsip'];
+        $kategoriList = ['Surat Masuk', 'Surat Keluar', 'Surat SK', 'Surat Penting', 'Surat MOU', 'Surat Arsip'];
 
         // Inisialisasi data surat per kategori dan per bulan (semua bulan diisi 0 sebagai default)
         $dataSurat = [];
@@ -133,4 +135,53 @@ class HomeController extends Controller
                                                  'bulan', 'dataSurat', 'tahunSekarang', 'obatMasuk', 'bahanMasuk', 'alatMasuk', 'semesterAktif',
                                                 'totalObatMasuk', 'totalBahanMasuk', 'totalAlatMasuk'));
     }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        // Update data user
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->back()->with('success', 'Password berhasil diperbarui!');
+    }
+
+    public function showByMonth($bulan)
+    {
+        // Ubah nama bulan ke angka bulan
+        $monthNumber = Carbon::parse($bulan)->month; 
+
+        // Ambil data surat berdasarkan bulan
+        $surat = Surat::whereMonth('tanggal_berkas', $monthNumber)
+                    ->whereYear('tanggal_berkas', Carbon::now()->year)
+                    ->get();
+
+        return view('suratBulan', compact('surat', 'bulan'));
+    }
+
 }

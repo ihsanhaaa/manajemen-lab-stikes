@@ -90,7 +90,15 @@
                                                 <form action="{{ route('pengajuan-bahan.konfirmasi.update', $pengajuanBahan->id) }}" method="post"
                                                     onclick="return confirm('Apakah anda yakin ingin mengkonfirmasi ini?')">
                                                     @csrf
-                                                    <button class="btn btn-success btn-sm"><i class="fas fa-edit"></i> ACC Sekarang</button>
+                                                    <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> ACC Sekarang</button>
+                                                </form>
+                                            @endrole
+
+                                            @role('Ketua STIKes')
+                                                <form action="{{ route('pengajuan-bahan.konfirmasi.update', $pengajuanBahan->id) }}" method="post"
+                                                    onclick="return confirm('Apakah anda yakin ingin mengkonfirmasi ini?')">
+                                                    @csrf
+                                                    <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> ACC Sekarang</button>
                                                 </form>
                                             @endrole
                                         @else
@@ -105,6 +113,7 @@
                                                 <tr>
                                                     <th>Kode Bahan/Obat</th>
                                                     <th>Nama Bahan/Obat</th>
+                                                    <th>Tipe</th>
                                                     <th>Jumlah Pemakaian</th>
                                                     <th>Satuan</th>
                                                     <th>Jenis Bahan/Obat</th>
@@ -113,14 +122,27 @@
                                             </thead>
                                             <tbody>
                                                 @foreach($pengajuanBahan->obatPengajuanBahans as $obatPengajuanBahan)
-                                                    <tr>
-                                                        <td>{{ $obatPengajuanBahan->obat->kode_obat ?? 'N/A' }}</td>
-                                                        <td>{{ $obatPengajuanBahan->obat->nama_obat ?? 'N/A' }}</td>
-                                                        <td>{{ $obatPengajuanBahan->jumlah_pemakaian }}</td> <!-- jumlah_pemakaian accessed directly from obatPengajuanBahan -->
-                                                        <td>{{ $obatPengajuanBahan->obat->satuan->nama_satuan ?? 'N/A' }}</td> <!-- Accessing satuan if it is a related model -->
-                                                        <td>{{ $obatPengajuanBahan->jenis_obat }}</td>
-                                                        <td>{{ $obatPengajuanBahan->keterangan }}</td>
-                                                    </tr>
+                                                    @if($obatPengajuanBahan->tipe == 'bahan')
+                                                        <tr>
+                                                            <td>{{ $obatPengajuanBahan->bahan->kode_bahan ?? 'N/A' }}</td>
+                                                            <td>{{ $obatPengajuanBahan->bahan->nama_bahan ?? 'N/A' }}</td>
+                                                            <td>{{ $obatPengajuanBahan->tipe ?? 'N/A' }} - {{ $obatPengajuanBahan->bahan->jenis_bahan ?? 'N/A' }}</td>
+                                                            <td>{{ $obatPengajuanBahan->jumlah_pemakaian }}</td>
+                                                            <td>{{ $obatPengajuanBahan->satuan ?? 'N/A' }}</td>
+                                                            <td>{{ $obatPengajuanBahan->jenis_obat }}</td>
+                                                            <td>{{ $obatPengajuanBahan->keterangan }}</td>
+                                                        </tr>
+                                                    @elseif($obatPengajuanBahan->tipe == 'obat')
+                                                        <tr>
+                                                            <td>{{ $obatPengajuanBahan->obat->kode_obat ?? 'N/A' }}</td>
+                                                            <td>{{ $obatPengajuanBahan->obat->nama_obat ?? 'N/A' }}</td>
+                                                            <td>{{ $obatPengajuanBahan->tipe ?? 'N/A' }}</td>
+                                                            <td>{{ $obatPengajuanBahan->jumlah_pemakaian }}</td>
+                                                            <td>{{ $obatPengajuanBahan->satuan ?? 'N/A' }}</td>
+                                                            <td>{{ $obatPengajuanBahan->jenis_obat }}</td>
+                                                            <td>{{ $obatPengajuanBahan->keterangan }}</td>
+                                                        </tr>
+                                                    @endif
                                                 @endforeach
                                             </tbody>
                                         </table>

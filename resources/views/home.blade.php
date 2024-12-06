@@ -68,12 +68,125 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="d-flex">
-                                                <div class="flex-grow-1">
-                                                    <p class="text-truncate font-size-17 mb-2">Selamat Datang {{ Auth::user()->name }}</p>
-                                                    <p class="text-truncate font-size-14 mb-2">Anda masuk sebagai: {{ Auth::user()->getRoleNames()->first() }}</p>
+                                            <div class="flex-grow-1">
+                                                <p class="text-truncate font-size-17 mb-2">Selamat Datang {{ Auth::user()->name }}</p>
+                                                <p class="text-truncate font-size-14 mb-2">Email: {{ Auth::user()->email }}</p>
+                                                <p class="text-truncate font-size-14 mb-2">Bergabung Pada: {{ Auth::user()->created_at }}</p>
+                                                <p class="text-truncate font-size-14 mb-2">Anda masuk sebagai: {{ Auth::user()->getRoleNames()->first() }}</p>
+
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-success btn-sm mt-3" data-bs-toggle="modal" data-bs-target="#userModal">
+                                                    <i class="fas fa-user"></i> Ubah Profil Saya
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="userModalLabel">Ubah Profil Saya</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+
+                                                                <form action="{{ route('update.profile') }}" method="POST">
+                                                                    @csrf
+                                                                    <div class="mb-3">
+                                                                        <label for="name" class="form-label">Nama <span style="color: red">*</span></label>
+                                                                        <input type="text"
+                                                                            class="form-control @error('name') is-invalid @enderror" id="name"
+                                                                            name="name" value="{{ old('name', Auth::user()->name) }}" required>
+
+                                                                        @error('name')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                        @enderror
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="email" class="form-label">Email <span style="color: red">*</span></label>
+                                                                        <input type="email"
+                                                                            class="form-control @error('email') is-invalid @enderror" id="email"
+                                                                            name="email" value="{{ old('email', Auth::user()->email) }}" required>
+
+                                                                        @error('email')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
+
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                        <button type="submit" class="btn btn-primary">Simpan Data</button>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>                                            
+
+
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-info btn-sm mt-3 mx-1" data-bs-toggle="modal" data-bs-target="#passwordModal">
+                                                    <i class="fas fa-unlock-alt"></i> Ubah Password
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="passwordModalLabel">Ubah Password</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+
+                                                                <form action="{{ route('update.password') }}" method="POST">
+                                                                    @csrf
+                                                                    <div class="mb-3">
+                                                                        <label for="password" class="form-label">Password Baru <span style="color: red">*</span></label>
+                                                                        <input type="password"
+                                                                            class="form-control @error('password') is-invalid @enderror" id="password"
+                                                                            name="password" required>
+
+                                                                        @error('password')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label for="password_confirmation" class="form-label">Konfirmasi Password Baru <span style="color: red">*</span></label>
+                                                                        <input type="password"
+                                                                            class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation"
+                                                                            name="password_confirmation" required>
+
+                                                                        @error('password_confirmation')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
+
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                        <button type="submit" class="btn btn-primary">Ubah Password</button>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>                                          
                                         </div><!-- end cardbody -->
                                     </div> <!-- end card -->
                                 </div><!-- end col-->
@@ -327,12 +440,126 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="d-flex">
-                                                <div class="flex-grow-1">
-                                                    <p class="text-truncate font-size-17 mb-2">Selamat Datang {{ Auth::user()->name }}</p>
-                                                    <p class="text-truncate font-size-14 mb-2">Anda masuk sebagai: {{ Auth::user()->getRoleNames()->first() }}</p>
+                                            <div class="flex-grow-1">
+                                                <p class="text-truncate font-size-17 mb-2">Selamat Datang {{ Auth::user()->name }}</p>
+                                                <p class="text-truncate font-size-14 mb-2">Email: {{ Auth::user()->email }}</p>
+                                                <p class="text-truncate font-size-14 mb-2">Bergabung Pada: {{ Auth::user()->created_at }}</p>
+                                                <p class="text-truncate font-size-14 mb-2">Anda masuk sebagai: {{ Auth::user()->getRoleNames()->first() }}</p>
+
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-success btn-sm mt-3" data-bs-toggle="modal" data-bs-target="#userModal">
+                                                    <i class="fas fa-user"></i> Ubah Profil Saya
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="userModalLabel">Ubah Profil Saya</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+
+                                                                <form action="{{ route('update.profile') }}" method="POST">
+                                                                    @csrf
+                                                                    <div class="mb-3">
+                                                                        <label for="name" class="form-label">Nama <span style="color: red">*</span></label>
+                                                                        <input type="text"
+                                                                            class="form-control @error('name') is-invalid @enderror" id="name"
+                                                                            name="name" value="{{ old('name', Auth::user()->name) }}" required>
+
+                                                                        @error('name')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                        @enderror
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="email" class="form-label">Email <span style="color: red">*</span></label>
+                                                                        <input type="email"
+                                                                            class="form-control @error('email') is-invalid @enderror" id="email"
+                                                                            name="email" value="{{ old('email', Auth::user()->email) }}" required>
+
+                                                                        @error('email')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
+
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                        <button type="submit" class="btn btn-primary">Simpan Data</button>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>                                            
+
+
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-info btn-sm mt-3 mx-1" data-bs-toggle="modal" data-bs-target="#passwordModal">
+                                                    <i class="fas fa-unlock-alt"></i> Ubah Password
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="passwordModalLabel">Ubah Password</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+
+                                                                <form action="{{ route('update.password') }}" method="POST">
+                                                                    @csrf
+                                                                    <div class="mb-3">
+                                                                        <label for="password" class="form-label">Password Baru <span style="color: red">*</span></label>
+                                                                        <input type="password"
+                                                                            class="form-control @error('password') is-invalid @enderror" id="password"
+                                                                            name="password" required>
+
+                                                                        @error('password')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label for="password_confirmation" class="form-label">Konfirmasi Password Baru <span style="color: red">*</span></label>
+                                                                        <input type="password"
+                                                                            class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation"
+                                                                            name="password_confirmation" required>
+
+                                                                        @error('password_confirmation')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong>{{ $message }}</strong>
+                                                                        </span>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
+
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                        <button type="submit" class="btn btn-primary">Ubah Password</button>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>                                           
                                         </div><!-- end cardbody -->
                                     </div> <!-- end card -->
                                 </div><!-- end col-->
@@ -486,6 +713,160 @@
 
                         @endrole
 
+                        @role('Administrasi')
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <div class="flex-grow-1">
+                                                    <p class="text-truncate font-size-17 mb-2">Selamat Datang {{ Auth::user()->name }}</p>
+                                                    <p class="text-truncate font-size-14 mb-2">Email: {{ Auth::user()->email }}</p>
+                                                    <p class="text-truncate font-size-14 mb-2">Bergabung Pada: {{ Auth::user()->created_at }}</p>
+                                                    <p class="text-truncate font-size-14 mb-2">Anda masuk sebagai: {{ Auth::user()->getRoleNames()->first() }}</p>
+
+                                                    <!-- Button trigger modal -->
+                                                    <button type="button" class="btn btn-success btn-sm mt-3" data-bs-toggle="modal" data-bs-target="#userModal">
+                                                        <i class="fas fa-user"></i> Ubah Profil Saya
+                                                    </button>
+
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="userModalLabel">Ubah Profil Saya</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+
+                                                                    <form action="{{ route('update.profile') }}" method="POST">
+                                                                        @csrf
+                                                                        <div class="mb-3">
+                                                                            <label for="name" class="form-label">Nama <span style="color: red">*</span></label>
+                                                                            <input type="text"
+                                                                                class="form-control @error('name') is-invalid @enderror" id="name"
+                                                                                name="name" value="{{ old('name', Auth::user()->name) }}" required>
+
+                                                                            @error('name')
+                                                                            <span class="invalid-feedback" role="alert">
+                                                                                <strong>{{ $message }}</strong>
+                                                                            </span>
+                                                                            @enderror
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <label for="email" class="form-label">Email <span style="color: red">*</span></label>
+                                                                            <input type="email"
+                                                                                class="form-control @error('email') is-invalid @enderror" id="email"
+                                                                                name="email" value="{{ old('email', Auth::user()->email) }}" required>
+
+                                                                            @error('email')
+                                                                            <span class="invalid-feedback" role="alert">
+                                                                                <strong>{{ $message }}</strong>
+                                                                            </span>
+                                                                            @enderror
+                                                                        </div>
+
+                                                                        <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
+
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                            <button type="submit" class="btn btn-primary">Simpan Data</button>
+                                                                        </div>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- Button trigger modal -->
+                                                    <button type="button" class="btn btn-info btn-sm mt-3 mx-1" data-bs-toggle="modal" data-bs-target="#passwordModal">
+                                                        <i class="fas fa-unlock-alt"></i> Ubah Password
+                                                    </button>
+
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="passwordModalLabel">Ubah Password</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+
+                                                                    <form action="{{ route('update.password') }}" method="POST">
+                                                                        @csrf
+                                                                        <div class="mb-3">
+                                                                            <label for="password" class="form-label">Password Baru <span style="color: red">*</span></label>
+                                                                            <input type="password"
+                                                                                class="form-control @error('password') is-invalid @enderror" id="password"
+                                                                                name="password" required>
+
+                                                                            @error('password')
+                                                                            <span class="invalid-feedback" role="alert">
+                                                                                <strong>{{ $message }}</strong>
+                                                                            </span>
+                                                                            @enderror
+                                                                        </div>
+
+                                                                        <div class="mb-3">
+                                                                            <label for="password_confirmation" class="form-label">Konfirmasi Password Baru <span style="color: red">*</span></label>
+                                                                            <input type="password"
+                                                                                class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation"
+                                                                                name="password_confirmation" required>
+
+                                                                            @error('password_confirmation')
+                                                                            <span class="invalid-feedback" role="alert">
+                                                                                <strong>{{ $message }}</strong>
+                                                                            </span>
+                                                                            @enderror
+                                                                        </div>
+
+                                                                        <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
+
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                                            <button type="submit" class="btn btn-primary">Ubah Password</button>
+                                                                        </div>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>                                            
+                                        </div><!-- end cardbody -->
+                                    </div> <!-- end card -->
+                                </div><!-- end col-->
+                            </div>
+                            <!-- end row-->
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <div class="flex-grow-1">
+                                                    <div class="mb-3">
+                                                        <h4 class="mb-sm-0 font-size-18">Rekap Surat Tahun {{ $tahunSekarang }}</h4>
+                                                    </div>
+                                                    <div style="width: 100%; height: 400px;">
+                                                        <canvas id="suratChart"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>                                            
+                                        </div><!-- end cardbody -->
+                                    </div> <!-- end card -->
+                                </div><!-- end col-->
+                            </div>
+                            <!-- end row-->
+                        @endrole
+
                         @role('Mahasiswa')
                             <div class="row">
                                 <div class="col-12">
@@ -597,37 +978,44 @@
                     datasets: [
                         {
                             label: 'Surat Masuk',
-                            data: {!! json_encode(array_values($dataSurat['Surat Masuk'])) !!}, // Data Surat Masuk
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)', // Warna batang biru
-                            borderColor: 'rgba(54, 162, 235, 1)', // Garis batang biru
+                            data: {!! json_encode(array_values($dataSurat['Surat Masuk'])) !!},
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)', // Warna biru
+                            borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Surat Keluar',
-                            data: {!! json_encode(array_values($dataSurat['Surat Keluar'])) !!}, // Data Surat Keluar
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)', // Warna batang merah
-                            borderColor: 'rgba(255, 99, 132, 1)', // Garis batang merah
+                            data: {!! json_encode(array_values($dataSurat['Surat Keluar'])) !!},
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)', // Warna merah
+                            borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Surat SK',
-                            data: {!! json_encode(array_values($dataSurat['Surat SK'])) !!}, // Data SK
-                            backgroundColor: 'rgba(75, 192, 192, 0.5)', // Warna batang hijau
-                            borderColor: 'rgba(75, 192, 192, 1)', // Garis batang hijau
+                            data: {!! json_encode(array_values($dataSurat['Surat SK'])) !!},
+                            backgroundColor: 'rgba(255, 206, 86, 0.5)', // Warna kuning
+                            borderColor: 'rgba(255, 206, 86, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Surat Penting',
-                            data: {!! json_encode(array_values($dataSurat['Surat Penting'])) !!}, // Data Surat Penting
-                            backgroundColor: 'rgba(153, 102, 255, 0.5)', // Warna batang ungu
-                            borderColor: 'rgba(153, 102, 255, 1)', // Garis batang ungu
+                            data: {!! json_encode(array_values($dataSurat['Surat Penting'])) !!},
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)', // Warna hijau
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Surat MOU',
+                            data: {!! json_encode(array_values($dataSurat['Surat MOU'])) !!},
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)', // Warna ungu
+                            borderColor: 'rgba(153, 102, 255, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Surat Arsip Yayasan PKPI',
-                            data: {!! json_encode(array_values($dataSurat['Surat Arsip'])) !!}, // Data Surat Arsip
-                            backgroundColor: 'rgba(255, 159, 64, 0.5)', // Warna batang oranye
-                            borderColor: 'rgba(255, 159, 64, 1)', // Garis batang oranye
+                            data: {!! json_encode(array_values($dataSurat['Surat Arsip'])) !!},
+                            backgroundColor: 'rgba(255, 159, 64, 0.5)', // Warna oranye
+                            borderColor: 'rgba(255, 159, 64, 1)',
                             borderWidth: 1
                         }
                     ]
@@ -657,5 +1045,6 @@
                 }
             });
         </script>
+        
     @endpush
 @endsection

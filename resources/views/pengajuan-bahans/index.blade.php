@@ -150,12 +150,31 @@
 
                                                     <!-- Form for dynamic fields -->
                                                     <div id="dynamic-form-container">
+
                                                         <div class="row mb-3 dynamic-form">
+
                                                             <div class="col">
-                                                                <label for="obat_id" class="form-label">Nama Bahan <span style="color: red">*</span> </label>
-                                                                <select class="form-control" name="obat_id[]" required>
+                                                                <label for="tipe" class="form-label">Tipe <span style="color: red">*</span></label>
+                                                                <select class="form-control tipe-select" name="tipe[]">
+                                                                    <option value="bahan">Bahan</option>
+                                                                    <option value="obat">Obat</option>
+                                                                </select>
+                                                            </div>
+                                                            <!-- Dropdown Bahan -->
+                                                            <div class="col bahan-dropdown">
+                                                                <label for="bahan_id" class="form-label">Nama Bahan <span style="color: red">*</span></label>
+                                                                <select class="form-control bahan-select" name="bahan_id[]">
+                                                                    <option value="">-- Pilih Bahan --</option>
+                                                                    @foreach($bahans as $bahan)
+                                                                        <option value="{{ $bahan->id }}">{{ $bahan->kode_bahan }} - {{ $bahan->nama_bahan }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <!-- Dropdown Obat -->
+                                                            <div class="col obat-dropdown d-none">
+                                                                <label for="obat_id" class="form-label">Nama Obat <span style="color: red">*</span></label>
+                                                                <select class="form-control obat-select" name="obat_id[]">
                                                                     <option value="">-- Pilih Obat --</option>
-                                                                    <!-- Options obat akan diulang dari $obats -->
                                                                     @foreach($obats as $obat)
                                                                         <option value="{{ $obat->id }}">{{ $obat->kode_obat }} - {{ $obat->nama_obat }}</option>
                                                                     @endforeach
@@ -171,15 +190,16 @@
                                                                 <label for="satuan" class="form-label">Satuan <span style="color: red">*</span> </label>
                                                                 <select class="form-control" name="satuan[]">
                                                                     <option value="">-- Pilih Satuan --</option>
-                                                                    <!-- Options satuan akan diulang dari $satuans -->
-                                                                    @foreach($satuans as $satuan)
-                                                                        <option value="{{ $satuan->id }}">{{ $satuan->nama_satuan }}</option>
-                                                                    @endforeach
+                                                                    <option value="ml">ml</option>
+                                                                    <option value="gram">gram</option>
+                                                                    <option value="tetes">tetes</option>
+                                                                    <option value="tablet">tablet</option>
+                                                                    <option value="kapusl">kapsul</option>
                                                                 </select>
                                                             </div>
 
                                                             <div class="col">
-                                                                <label for="jenis_obat" class="form-label">Jenis Obat <span style="color: red">*</span> </label>
+                                                                <label for="jenis_obat" class="form-label">Jenis Bahan/Obat <span style="color: red">*</span> </label>
                                                                 <select class="form-control" name="jenis_obat[]">
                                                                     <option value="">-- Pilih Jenis Obat --</option>
                                                                     <option value="Cair">Cair</option>
@@ -227,11 +247,8 @@
                                                 <th>NIM Kelompok</th>
                                                 <th>Kelas</th>
                                                 <th>Tanggal Pelaksanaan</th>
-                                                @role('Admin Lab')
-                                                    <th>Status</th>
-                                                @endrole
+                                                <th>Status</th>
                                                 <th>Aksi</th>
-                                                <th></th>
                                             </tr>
                                         </thead>
                                         
@@ -262,8 +279,7 @@
                                                                             </form>
                                                                         @endif
                                                                     @endrole
-                                                                </td>
-                                                                <td>
+
                                                                     <a href="{{ route('pengajuan-bahan.show', $obat->id) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> Lihat Detail</a>
                                                                 </td>
                                                             </tr>
@@ -293,30 +309,53 @@
 
     @push('javascript-plugins')
         <script>
-            // JavaScript untuk menangani penambahan dan penghapusan form
-            document.getElementById('add-form-btn').addEventListener('click', function() {
-                // Clone the existing form group
-                const container = document.getElementById('dynamic-form-container');
-                const newForm = container.firstElementChild.cloneNode(true);
-        
-                // Reset values in the cloned form
-                newForm.querySelectorAll('input, select').forEach(input => input.value = '');
-        
-                // Append the new form to the container
-                container.appendChild(newForm);
-            });
-        
-            // Event listener untuk hapus form
-            document.getElementById('dynamic-form-container').addEventListener('click', function(event) {
-                if (event.target.classList.contains('remove-form-btn')) {
-                    const formGroup = event.target.closest('.dynamic-form');
-                    if (formGroup && document.querySelectorAll('.dynamic-form').length > 1) {
-                        formGroup.remove();
-                    } else {
-                        alert("Minimal satu form harus ada.");
+            document.addEventListener('DOMContentLoaded', function () {
+                const formContainer = document.getElementById('dynamic-form-container');
+                const addFormBtn = document.getElementById('add-form-btn');
+
+                // Event Listener untuk perubahan tipe
+                formContainer.addEventListener('change', function (event) {
+                    if (event.target.classList.contains('tipe-select')) {
+                        const formGroup = event.target.closest('.dynamic-form');
+                        const bahanDropdown = formGroup.querySelector('.bahan-dropdown');
+                        const obatDropdown = formGroup.querySelector('.obat-dropdown');
+
+                        if (event.target.value === 'bahan') {
+                            bahanDropdown.classList.remove('d-none');
+                            obatDropdown.classList.add('d-none');
+                        } else {
+                            bahanDropdown.classList.add('d-none');
+                            obatDropdown.classList.remove('d-none');
+                        }
                     }
-                }
+                });
+
+                // Tambah Form Baru
+                addFormBtn.addEventListener('click', function () {
+                    const firstForm = formContainer.firstElementChild.cloneNode(true);
+
+                    // Reset Nilai pada Form yang Dikloning
+                    firstForm.querySelectorAll('input, select').forEach(input => input.value = '');
+                    firstForm.querySelector('.bahan-dropdown').classList.remove('d-none');
+                    firstForm.querySelector('.obat-dropdown').classList.add('d-none');
+
+                    formContainer.appendChild(firstForm);
+                });
+
+                // Hapus Form
+                formContainer.addEventListener('click', function (event) {
+                    if (event.target.classList.contains('remove-form-btn')) {
+                        const formGroup = event.target.closest('.dynamic-form');
+                        if (formContainer.childElementCount > 1) {
+                            formGroup.remove();
+                        } else {
+                            alert('Minimal satu form harus ada.');
+                        }
+                    }
+                });
             });
+
         </script>
+    
     @endpush
 @endsection

@@ -7,6 +7,7 @@ use App\Http\Controllers\BahanController;
 use App\Http\Controllers\BahanKeluarController;
 use App\Http\Controllers\BahanMasukController;
 use App\Http\Controllers\BentukSediaanController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KemasanController;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\PengajuanBahanController;
@@ -15,8 +16,12 @@ use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\StokKeluarController;
 use App\Http\Controllers\StokMasukController;
+use App\Http\Controllers\SuratArsipController;
 use App\Http\Controllers\SuratController;
+use App\Http\Controllers\SuratKeluarController;
 use App\Http\Controllers\SuratMOUController;
+use App\Http\Controllers\SuratPentingController;
+use App\Http\Controllers\SuratSKController;
 use App\Models\Alat;
 use App\Models\Bahan;
 use App\Models\BentukSediaan;
@@ -54,7 +59,18 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('/data-surat-masuk', SuratController::class);
 
+    Route::get('/data-surat-keluar', [SuratKeluarController::class, 'index'])->name('data-surat-keluar.index');
+
+    Route::get('/data-surat-penting', [SuratPentingController::class, 'index'])->name('data-surat-penting.index');
+
+    Route::get('/data-surat-sk', [SuratSKController::class, 'index'])->name('data-surat-sk.index');
+
+    Route::get('/data-surat-arsip', [SuratArsipController::class, 'index'])->name('data-surat-arsip.index');
+
     Route::get('/data-surat-mou', [SuratMOUController::class, 'index'])->name('data-surat-mou.index');
+
+
+
 
     Route::get('/obats/{status}', [ObatController::class, 'filterByStatus'])->name('obats.filter');
 
@@ -131,7 +147,18 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('semesters/{id}/activate', [SemesterController::class, 'activate'])->name('semesters.activate');
     Route::post('semesters/{id}/deactivate', [SemesterController::class, 'deactivate'])->name('semesters.deactivate');
 
-    
+    Route::get('/autocomplete-bahan', [PengajuanBahanController::class, 'autocompleteBahan'])->name('autocomplete.bahan');
+
+    Route::post('/surat-masuk/update/{id}', [SuratController::class, 'update']);
+
+    Route::post('/surats/update-kategori/{id}', [SuratController::class, 'updateKategori'])->name('surats.updateKategori');
+
+    Route::post('/update-profile', [HomeController::class, 'updateProfile'])->name('update.profile');
+
+    Route::post('/update-password', [HomeController::class, 'updatePassword'])->name('update.password');
+
+    Route::get('/surat/{bulan}', [HomeController::class, 'showByMonth'])->name('surat.bulan');
+
 });
 
 

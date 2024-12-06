@@ -13,12 +13,11 @@ class SuratMOUController extends Controller
         $surat_mous = Surat::where('kategori_berkas', 'Surat MOU')->get();
 
         foreach ($surat_mous as $surat) {
-            if ($surat->tanggal_mulai && $surat->tanggal_berakhir) {
-                $tanggalMulai = Carbon::parse($surat->tanggal_mulai);
+            if ($surat->tanggal_berakhir) {
                 $tanggalBerakhir = Carbon::parse($surat->tanggal_berakhir);
-                $surat->selisih_hari = $tanggalMulai->diffInDays($tanggalBerakhir);
+                $surat->selisih_hari = Carbon::now()->diffInDays($tanggalBerakhir, false); // Hitung selisih hari dari hari ini
             } else {
-                $surat->selisih_hari = null; // Jika tanggal tidak lengkap
+                $surat->selisih_hari = null; // Jika tanggal berakhir tidak tersedia
             }
         }
 

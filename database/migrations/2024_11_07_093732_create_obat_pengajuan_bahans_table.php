@@ -14,14 +14,17 @@ return new class extends Migration
         Schema::create('obat_pengajuan_bahans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable();
-            $table->foreignId('obat_id')->constrained('obats')->onDelete('cascade');
+            $table->foreignId('bahan_id')->nullable();
+            $table->foreignId('obat_id')->nullable();
             $table->foreignId('pengajuan_bahan_id')->constrained('pengajuan_bahans')->onDelete('cascade');
             $table->integer('jumlah_pemakaian');
+            $table->enum('tipe', ['bahan', 'obat']);
             $table->string('satuan')->nullable();
             $table->string('jenis_obat')->nullable();
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });
+        
     }
 
     /**

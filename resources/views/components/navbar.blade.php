@@ -104,11 +104,11 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
                                 <li><a href="{{ route('data-surat-masuk.index') }}">Surat Masuk</a></li>
-                                <li><a href="{{ route('data-bentuk-sediaan.index') }}">Surat Keluar</a></li>
-                                <li><a href="{{ route('data-satuan.index') }}">Surat Penting</a></li>
-                                <li><a href="{{ route('data-obat.index') }}">Surat SK</a></li>
+                                <li><a href="{{ route('data-surat-keluar.index') }}">Surat Keluar</a></li>
+                                <li><a href="{{ route('data-surat-penting.index') }}">Surat Penting</a></li>
+                                <li><a href="{{ route('data-surat-sk.index') }}">Surat SK</a></li>
+                                <li><a href="{{ route('data-surat-arsip.index') }}">Surat Arsip</a></li>
                                 <li><a href="{{ route('data-surat-mou.index') }}">Surat MOU</a></li>
-                                <li><a href="{{ route('data-obat-masuk.index') }}">Surat Arsip</a></li>
                             </ul>
                         </li>
 
@@ -124,7 +124,6 @@
                                 <li><a href="{{ route('data-obat.index') }}">Data Obat</a></li>
                                 <li><a href="{{ route('data-obat-masuk.index') }}">Data Obat Masuk</a></li>
                                 <li><a href="{{ route('data-obat-keluar.index') }}">Data Obat Keluar</a></li>
-                                <li><a href="{{ route('pengajuan-bahan.index') }}">Pengajuan Obat dan Bahan</a></li>
                             </ul>
                         </li>
 
@@ -138,6 +137,13 @@
                                 <li><a href="{{ route('data-bahan-masuk.index') }}">Data Bahan Masuk</a></li>
                                 <li><a href="{{ route('data-bahan-keluar.index') }}">Data Bahan Keluar</a></li>
                             </ul>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('pengajuan-bahan.index') }}" class="waves-effect">
+                                <i class="ri-book-mark-line"></i>
+                                <span>Pengajuan Bahan Obat</span>
+                            </a>
                         </li>
 
                         <li>
@@ -174,8 +180,26 @@
                                 <li><a href="{{ route('data-obat.index') }}">Data Obat</a></li>
                                 <li><a href="{{ route('data-obat-masuk.index') }}">Data Obat Masuk</a></li>
                                 <li><a href="{{ route('data-obat-keluar.index') }}">Data Obat Keluar</a></li>
-                                <li><a href="{{ route('pengajuan-bahan.index') }}">Pengajuan Obat dan Bahan</a></li>
                             </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-sip-line"></i>
+                                <span>Bahan</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('data-bahan.index') }}">Data Bahan</a></li>
+                                <li><a href="{{ route('data-bahan-masuk.index') }}">Data Bahan Masuk</a></li>
+                                <li><a href="{{ route('data-bahan-keluar.index') }}">Data Bahan Keluar</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('pengajuan-bahan.index') }}" class="waves-effect">
+                                <i class="ri-book-mark-line"></i>
+                                <span>Pengajuan Bahan Obat</span>
+                            </a>
                         </li>
 
                         <li>
@@ -184,9 +208,34 @@
                                 <span>Alat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{{ route('data-kemasan.index') }}">Data Asset (Alat)</a></li>
-                                <li><a href="{{ route('data-kemasan.index') }}">Data Alat Masuk</a></li>
-                                <li><a href="{{ route('data-kemasan.index') }}">Data Alat Rusak/Pecah</a></li>
+                                <li><a href="{{ route('data-alat.index') }}">Data Asset (Alat)</a></li>
+                                <li><a href="{{ route('data-alat-masuk.index') }}">Data Alat Masuk</a></li>
+                                <li><a href="{{ route('data-alat-rusak.index') }}">Data Alat Rusak/Pecah</a></li>
+                            </ul>
+                        </li>
+                        
+                    @endrole
+
+                    @role('Administrasi')
+                        <li>
+                            <a href="{{ route('home') }}" class="waves-effect">
+                                <i class="ri-home-line"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-article-line"></i>
+                                <span>Surat</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('data-surat-masuk.index') }}">Surat Masuk</a></li>
+                                <li><a href="{{ route('data-surat-keluar.index') }}">Surat Keluar</a></li>
+                                <li><a href="{{ route('data-surat-penting.index') }}">Surat Penting</a></li>
+                                <li><a href="{{ route('data-surat-sk.index') }}">Surat SK</a></li>
+                                <li><a href="{{ route('data-surat-arsip.index') }}">Surat Arsip</a></li>
+                                <li><a href="{{ route('data-surat-mou.index') }}">Surat MOU</a></li>
                             </ul>
                         </li>
                         
