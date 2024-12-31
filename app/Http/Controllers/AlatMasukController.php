@@ -26,7 +26,7 @@ class AlatMasukController extends Controller
         $semesterAktif = Semester::where('is_active', true)->first();
 
         if (!$semesterAktif) {
-            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
         }
 
         $request->validate([
@@ -110,7 +110,7 @@ class AlatMasukController extends Controller
 
         }
 
-        return redirect()->back()->with('success', 'Data alat masuk berhasil diimpor.');
+        return redirect()->back()->with('success', 'Data alat masuk berhasil diimpor');
     }
 
 
@@ -147,5 +147,18 @@ class AlatMasukController extends Controller
     public function destroy(AlatMasuk $stokMasuk)
     {
         //
+    }
+
+    public function updateTanggalMasuk(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_masuk' => 'required|date',
+        ]);
+
+        $alatMasuk = AlatMasuk::findOrFail($id);
+        $alatMasuk->tanggal_masuk = $request->tanggal_masuk;
+        $alatMasuk->save();
+
+        return response()->json(['success' => true, 'message' => 'Tanggal masuk berhasil diperbarui']);
     }
 }

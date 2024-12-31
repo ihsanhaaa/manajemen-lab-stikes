@@ -26,7 +26,7 @@ class BahanMasukController extends Controller
         $semesterAktif = Semester::where('is_active', true)->first();
 
         if (!$semesterAktif) {
-            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
         }
 
         $request->validate([
@@ -125,6 +125,20 @@ class BahanMasukController extends Controller
 
         }
 
-        return redirect()->back()->with('success', 'Data bahan masuk berhasil diimpor.');
+        return redirect()->back()->with('success', 'Data bahan masuk berhasil diimpor');
+    }
+
+    public function updateTanggalMasuk(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_masuk' => 'required|date',
+        ]);
+
+        $bahanMasuk = BahanMasuk::findOrFail($id);
+        // dd($bahanMasuk);
+        $bahanMasuk->tanggal_masuk = $request->tanggal_masuk;
+        $bahanMasuk->save();
+
+        return response()->json(['success' => true, 'message' => 'Tanggal masuk berhasil diperbarui']);
     }
 }

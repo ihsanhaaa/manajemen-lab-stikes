@@ -123,4 +123,17 @@ class StokKeluarController extends Controller
     {
         //
     }
+
+    public function updateTanggalKeluar(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_keluar' => 'required|date',
+        ]);
+
+        $stokKeluar = StokKeluar::findOrFail($id);
+        $stokKeluar->tanggal_keluar = $request->tanggal_keluar;
+        $stokKeluar->save();
+
+        return response()->json(['success' => true, 'message' => 'Tanggal keluar berhasil diperbarui.']);
+    }
 }

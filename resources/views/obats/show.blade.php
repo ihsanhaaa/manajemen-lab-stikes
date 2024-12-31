@@ -88,7 +88,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit Data</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Obat</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -154,12 +154,11 @@
                                                 <select class="form-control @error('kemasan_obat') is-invalid @enderror" id="kemasan_obat" name="kemasan_obat" required>
                                                     <option value="">-- Pilih Kemasan Obat --</option>
                                                     @foreach($kemasans as $kemasan)
-                                                        <option value="{{ $kemasan->id }}" {{ $obat->kemasan_obat == $kemasan->id ? 'selected' : '' }}>
+                                                        <option value="{{ $kemasan->id }}" {{ old('kemasan_obat', $obat->kemasan_obat) == $kemasan->id ? 'selected' : '' }}>
                                                             {{ $kemasan->nama_kemasan }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            
                                                 @error('kemasan_obat')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -172,26 +171,12 @@
                                                 <select class="form-control @error('bentuk_sediaan') is-invalid @enderror" id="bentuk_sediaan" name="bentuk_sediaan" required>
                                                     <option value="">-- Pilih Bentuk Sediaan --</option>
                                                     @foreach($bentukSediaans as $bentukSediaan)
-                                                        <option value="{{ $bentukSediaan->id }}" {{ $obat->bentuk_sediaan == $bentukSediaan->id ? 'selected' : '' }}>
+                                                        <option value="{{ $bentukSediaan->id }}" {{ old('bentuk_sediaan', $obat->bentuk_sediaan) == $bentukSediaan->id ? 'selected' : '' }}>
                                                             {{ $bentukSediaan->nama_bentuk_sediaan }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            
                                                 @error('bentuk_sediaan')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="exp_obat" class="form-label">Expired Obat</label>
-                                                <input type="date"
-                                                    class="form-control @error('exp_obat') is-invalid @enderror" id="exp_obat"
-                                                    name="exp_obat" value="{{ $obat->exp_obat }}">
-
-                                                @error('exp_obat')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -217,12 +202,12 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="stok_awal" class="form-label">Stok Awal</label>
-                                                <input type="number"
-                                                    class="form-control @error('stok_awal') is-invalid @enderror" id="stok_awal"
-                                                    name="stok_awal" value="{{ $obat->stok_obat }}" required>
+                                                <label for="exp_obat" class="form-label">Expired Obat</label>
+                                                <input type="date"
+                                                    class="form-control @error('exp_obat') is-invalid @enderror" id="exp_obat"
+                                                    name="exp_obat" value="{{ $obat->exp_obat }}">
 
-                                                @error('stok_awal')
+                                                @error('exp_obat')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -230,12 +215,12 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="sisa_obat" class="form-label">Sisa Obat</label>
+                                                <label for="stok_obat" class="form-label">Stok Obat</label>
                                                 <input type="number"
-                                                    class="form-control @error('sisa_obat') is-invalid @enderror" id="sisa_obat"
-                                                    name="sisa_obat" value="{{ $obat->sisa_obat }}" required>
+                                                    class="form-control @error('stok_obat') is-invalid @enderror" id="stok_obat"
+                                                    name="stok_obat" value="{{ $obat->stok_obat }}" required>
 
-                                                @error('sisa_obat')
+                                                @error('stok_obat')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -244,7 +229,7 @@
 
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Update Data</button>
+                                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                             </div>
 
                                         </form>
@@ -313,6 +298,7 @@
                                                     <th>Jumlah Masuk</th>
                                                     <th>Harga Satuan</th>
                                                     <th>Total Harga</th>
+                                                    <th>keterangan</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -322,6 +308,7 @@
                                                         <td>{{ $stokMasuk->jumlah_masuk }}</td>
                                                         <td>Rp. {{ number_format((float) $stokMasuk->harga_satuan) }}</td>
                                                         <td>Rp. {{ number_format((float) $stokMasuk->total_harga) }}</td>
+                                                        <td>{{ $stokMasuk->keterangan }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -334,6 +321,7 @@
                                                 <tr>
                                                     <th>Tanggal Keluar</th>
                                                     <th>Jumlah Pemakaian</th>
+                                                    <th>keterangan</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -341,6 +329,7 @@
                                                     <tr>
                                                         <td>{{ $stokKeluar->tanggal_keluar }}</td>
                                                         <td>{{ $stokKeluar->jumlah_pemakaian }}</td>
+                                                        <td>{{ $stokKeluar->keterangan }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

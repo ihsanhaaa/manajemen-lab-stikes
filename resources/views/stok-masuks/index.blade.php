@@ -134,7 +134,7 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Tanggal Masuk</th>
-                                                <th>Nama obat</th>
+                                                <th>Kode - Nama Obat</th>
                                                 <th>Jumlah</th>
                                                 <th>Harga Satuan</th>
                                                 <th>Total Harga</th>
@@ -147,13 +147,26 @@
 
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td>{{ $obat->tanggal_masuk }}</td>
-                                                        <td>{{ $obat->obat->nama_obat }}</td>
+                                                        <td>
+                                                            <!-- Teks tanggal dan tombol edit -->
+                                                            <span id="tanggal-text-{{ $obat->id }}">
+                                                                {{ $obat->tanggal_masuk ? \Carbon\Carbon::parse($obat->tanggal_masuk)->format('d-m-Y') : '-' }}
+                                                            </span>
+                                                            <i class="fas fa-edit" style="cursor: pointer;" onclick="editTanggal({{ $obat->id }})"></i>
+                                                            
+                                                            <!-- Form edit -->
+                                                            <form id="edit-form-{{ $obat->id }}" class="d-none" onsubmit="return false;">
+                                                                <input type="date" id="tanggal-input-{{ $obat->id }}" value="{{ $obat->tanggal_masuk }}" class="form-control d-inline w-auto" />
+                                                                <button type="button" onclick="saveTanggal({{ $obat->id }})" class="btn btn-sm btn-success">Simpan</button>
+                                                                <button type="button" onclick="cancelEdit({{ $obat->id }})" class="btn btn-sm btn-secondary">Batal</button>
+                                                            </form>
+                                                        </td>
+                                                        <td><a style="color: black" href="{{ route('data-obat.show', $obat->obat->id) }}">{{ $obat->obat->kode_obat }} - {{ $obat->obat->nama_obat }}</a></td>
                                                         <td>{{ $obat->jumlah_masuk }}</td>
                                                         <td>Rp. {{ number_format((float) $obat->harga_satuan) }}</td>
                                                         <td>Rp. {{ number_format((float) $obat->total_harga) }}</td>
                                                         <td>
-                                                            <a href="{{ route('data-obat.show', $obat->id) }}" class="btn btn-success btn-sm" title="Lihat Detail"><i class="fas fa-eye"></i> </a>
+                                                            <a href="{{ route('data-obat.show', $obat->obat->id) }}" class="btn btn-success btn-sm" title="Lihat Detail"><i class="fas fa-eye"></i> </a>
 
                                                             @if ($obat->fotos->count() > 0)
                                                                 @foreach ($obat->fotos as $foto)
@@ -190,6 +203,52 @@
     <!-- END layout-wrapper -->
 
     @push('javascript-plugins')
+        <script>
+            function editTanggal(id) {
+                // Sembunyikan teks tanggal dan tampilkan form edit
+                document.getElementById(`tanggal-text-${id}`).style.display = 'none';
+                document.getElementById(`edit-form-${id}`).classList.remove('d-none');
+            }
+        
+            function cancelEdit(id) {
+                // Tampilkan teks tanggal dan sembunyikan form edit
+                document.getElementById(`edit-form-${id}`).classList.add('d-none');
+                document.getElementById(`tanggal-text-${id}`).style.display = 'inline';
+            }
+        
+            function saveTanggal(id) {
+                const tanggalMasuk = document.getElementById(`tanggal-input-${id}`).value;
 
+                fetch(`/stok-masuk/${id}/update-tanggal`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({ tanggal_masuk: tanggalMasuk })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Format tanggal ke d-m-Y
+                        const [year, month, day] = tanggalMasuk.split('-');
+                        const formattedDate = `${day}-${month}-${year}`;
+
+                        // Perbarui teks tanggal
+                        document.getElementById(`tanggal-text-${id}`).textContent = formattedDate;
+
+                        // Sembunyikan form dan tampilkan teks
+                        cancelEdit(id);
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                    console.error(error);
+                });
+            }
+
+        </script>
+    
     @endpush
 @endsection

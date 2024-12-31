@@ -142,7 +142,10 @@
                         <li>
                             <a href="{{ route('pengajuan-bahan.index') }}" class="waves-effect">
                                 <i class="ri-book-mark-line"></i>
-                                <span>Pengajuan Bahan Obat</span>
+                                <span style="font-size: 12px">Pemakaian Bahan Obat</span>
+                                @if($countPemakaianBahan > 0)
+                                    <span class="badge bg-secondary">{{ $countPemakaianBahan }}</span>
+                                @endif
                             </a>
                         </li>
 
@@ -156,6 +159,16 @@
                                 <li><a href="{{ route('data-alat-masuk.index') }}">Data Alat Masuk</a></li>
                                 <li><a href="{{ route('data-alat-rusak.index') }}">Data Alat Rusak/Pecah</a></li>
                             </ul>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('pengajuan-alat.index') }}" class="waves-effect">
+                                <i class="ri-book-mark-line"></i>
+                                <span>Pemakaian Alat</span>
+                                @if($countPemakaianAlat > 0)
+                                    <span class="badge bg-secondary">{{ $countPemakaianAlat }}</span>
+                                @endif
+                            </a>
                         </li>
                         
                     @endrole
@@ -198,7 +211,10 @@
                         <li>
                             <a href="{{ route('pengajuan-bahan.index') }}" class="waves-effect">
                                 <i class="ri-book-mark-line"></i>
-                                <span>Pengajuan Bahan Obat</span>
+                                <span style="font-size: 12px">Pemakaian Bahan Obat</span>
+                                @if($countPemakaianBahan > 0)
+                                    <span class="badge bg-secondary">{{ $countPemakaianBahan }}</span>
+                                @endif
                             </a>
                         </li>
 
@@ -212,6 +228,16 @@
                                 <li><a href="{{ route('data-alat-masuk.index') }}">Data Alat Masuk</a></li>
                                 <li><a href="{{ route('data-alat-rusak.index') }}">Data Alat Rusak/Pecah</a></li>
                             </ul>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('pengajuan-alat.index') }}" class="waves-effect">
+                                <i class="ri-book-mark-line"></i>
+                                <span>Pemakaian Alat</span>
+                                @if($countPemakaianAlat > 0)
+                                    <span class="badge bg-secondary">{{ $countPemakaianAlat }}</span>
+                                @endif
+                            </a>
                         </li>
                         
                     @endrole
@@ -252,9 +278,23 @@
                         <li>
                             <a href="{{ route('pengajuan-bahan.index') }}" class=" waves-effect">
                                 <i class="ri-book-2-line"></i>
-                                <span>Pengajuan Bahan</span>
+                                <span>Pemakaian Bahan</span>
                             </a>
                         </li>
+
+                        <li>
+                            <a href="{{ route('pemakaian-alat.index') }}" class=" waves-effect">
+                                <i class="ri-book-2-line"></i>
+                                <span>Pemakaian Alat</span>
+                            </a>
+                        </li>
+
+                        {{-- <li>
+                            <a href="{{ route('konfirmasi-pembayaran.index') }}" class=" waves-effect">
+                                <i class="ri-book-2-line"></i>
+                                <span>Konfirmasi Pembayaran</span>
+                            </a>
+                        </li> --}}
                     @endrole
                     
                 @endguest

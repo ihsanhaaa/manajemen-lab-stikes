@@ -35,7 +35,7 @@ class BahanKeluarController extends Controller
         $semesterAktif = Semester::where('is_active', true)->first();
 
         if (!$semesterAktif) {
-            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
         }
 
         // Validasi input dari form
@@ -79,6 +79,32 @@ class BahanKeluarController extends Controller
 
         $bahan->save();
 
-        return redirect()->route('data-bahan-keluar.index')->with('success', 'Stok obat berhasil dikurangi.');
+        return redirect()->route('data-bahan-keluar.index')->with('success', 'Stok obat berhasil dikurangi');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'keterangan' => 'required|string|max:255',
+        ]);
+
+        $bahanKeluar = BahanKeluar::findOrFail($id);
+        $bahanKeluar->keterangan = $request->keterangan;
+        $bahanKeluar->save();
+
+        return redirect()->back()->with('success', 'Keterangan berhasil diperbarui');
+    }
+
+    public function updateTanggalKeluar(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_keluar' => 'required|date',
+        ]);
+
+        $bahanKeluar = BahanKeluar::findOrFail($id);
+        $bahanKeluar->tanggal_keluar = $request->tanggal_keluar;
+        $bahanKeluar->save();
+
+        return response()->json(['success' => true, 'message' => 'Tanggal keluar berhasil diperbarui.']);
     }
 }

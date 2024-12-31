@@ -82,7 +82,7 @@ class AlatRusakController extends Controller
 
         $alat->save();
 
-        return redirect()->route('data-alat-rusak.index')->with('success', 'Data barang rusak berhasil ditambahkan.');
+        return redirect()->route('data-alat-rusak.index')->with('success', 'Data barang rusak berhasil ditambahkan');
     }
 
     /**
@@ -104,9 +104,13 @@ class AlatRusakController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AlatRusak $alatRusak)
+    public function updateGantiAlat($id)
     {
-        //
+        // Aktifkan semester yang dipilih
+        $alat_rusak = AlatRusak::findOrFail($id);
+        $alat_rusak->update(['status' => true]);
+
+        return redirect()->back()->with('success', 'Data alat rusak sudah diganti');
     }
 
     /**
@@ -115,5 +119,18 @@ class AlatRusakController extends Controller
     public function destroy(AlatRusak $alatRusak)
     {
         //
+    }
+
+    public function updateTanggalRusak(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_rusak' => 'required|date',
+        ]);
+
+        $alatRusak = AlatRusak::findOrFail($id);
+        $alatRusak->tanggal_rusak = $request->tanggal_rusak;
+        $alatRusak->save();
+
+        return response()->json(['success' => true, 'message' => 'Tanggal rusak berhasil diperbarui.']);
     }
 }

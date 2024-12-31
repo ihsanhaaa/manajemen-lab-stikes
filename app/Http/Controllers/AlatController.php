@@ -66,7 +66,7 @@ class AlatController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required|string|max:255',
-            'ukuran' => 'required|string|max:20',
+            'ukuran' => 'nullable|string|max:20',
             'penyimpanan' => 'required|string|max:50',
             'letak_aset' => 'required|string|max:50',
         ]);

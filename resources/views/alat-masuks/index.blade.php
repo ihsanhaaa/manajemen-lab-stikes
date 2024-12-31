@@ -150,8 +150,21 @@
 
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td>{{ $alat_masuk->tanggal_masuk }}</td>
-                                                        <td>{{ $alat_masuk->alat->nama_barang }}</td>
+                                                        <td>
+                                                            <!-- Teks tanggal dan ikon edit -->
+                                                            <span id="tanggal-text-{{ $alat_masuk->id }}">
+                                                                {{ $alat_masuk->tanggal_masuk ? \Carbon\Carbon::parse($alat_masuk->tanggal_masuk)->format('d-m-Y') : '-' }}
+                                                            </span>
+                                                            <i class="fas fa-edit" style="cursor: pointer;" onclick="editTanggal({{ $alat_masuk->id }})"></i>
+                                                            
+                                                            <!-- Form edit -->
+                                                            <form id="edit-form-{{ $alat_masuk->id }}" class="d-none">
+                                                                <input type="date" id="tanggal-input-{{ $alat_masuk->id }}" value="{{ $alat_masuk->tanggal_masuk }}" class="form-control d-inline w-auto" />
+                                                                <button type="button" onclick="saveTanggal({{ $alat_masuk->id }})" class="btn btn-sm btn-success">Simpan</button>
+                                                                <button type="button" onclick="cancelEdit({{ $alat_masuk->id }})" class="btn btn-sm btn-secondary">Batal</button>
+                                                            </form>
+                                                        </td>
+                                                        <td><a style="color: black" href="{{ route('data-alat.show', $alat_masuk->alat->id) }}">{{ $alat_masuk->alat->nama_barang }}</a></td>
                                                         <td>{{ $alat_masuk->jumlah_masuk }}</td>
                                                         <td>Rp. {{ number_format((float) $alat_masuk->harga_satuan) }}</td>
                                                         <td>Rp. {{ number_format((float) $alat_masuk->total_harga) }}</td>
@@ -196,6 +209,52 @@
     <!-- END layout-wrapper -->
 
     @push('javascript-plugins')
+        <script>
+            function editTanggal(id) {
+                // Sembunyikan teks tanggal dan tampilkan form edit
+                document.getElementById(`tanggal-text-${id}`).style.display = 'none';
+                document.getElementById(`edit-form-${id}`).classList.remove('d-none');
+            }
         
+            function cancelEdit(id) {
+                // Tampilkan teks tanggal dan sembunyikan form edit
+                document.getElementById(`edit-form-${id}`).classList.add('d-none');
+                document.getElementById(`tanggal-text-${id}`).style.display = 'inline';
+            }
+        
+            function saveTanggal(id) {
+                const tanggalMasuk = document.getElementById(`tanggal-input-${id}`).value;
+
+                fetch(`/alat-masuk/${id}/update-tanggal`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({ tanggal_masuk: tanggalMasuk })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Format tanggal ke d-m-Y
+                        const [year, month, day] = tanggalMasuk.split('-');
+                        const formattedDate = `${day}-${month}-${year}`;
+
+                        // Perbarui teks tanggal dengan format d-m-Y
+                        document.getElementById(`tanggal-text-${id}`).textContent = formattedDate;
+
+                        // Sembunyikan form dan tampilkan teks
+                        cancelEdit(id);
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                    console.error(error);
+                });
+            }
+
+        </script>
+    
     @endpush
 @endsection

@@ -116,7 +116,7 @@
                                                     <label for="jenis_bahan" class="form-label">Jenis Bahan <span style="color: red">*</span> </label>
                                                     <select class="form-control @error('jenis_bahan') is-invalid @enderror" id="jenis_bahan" name="jenis_bahan">
                                                         <option value="">-- Pilih Jenis Bahan --</option>
-                                                        <option value="Cair">Cair</option>
+                                                        <option value="Cairan">Cair</option>
                                                         <option value="Padat">Padat</option>
                                                     </select>
                                                 
@@ -218,8 +218,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Kode Bahan</th>
-                                                        <th>Nama Bahan</th>
+                                                        <th>Kode - Nama Bahan</th>
                                                         <th>Jenis</th>
                                                         <th>Bahan Masuk</th>
                                                         <th>Bahan Keluar</th>
@@ -236,8 +235,7 @@
                                                          @if($bahan->jenis_bahan == 'Padat')
                                                             <tr>
                                                                 <th scope="row">{{ $counter++ }}</th>
-                                                                <td> <a href="{{ route('data-bahan.show', $bahan->id) }}"><u>{{ $bahan->kode_bahan }}</u></a> </td>
-                                                                <td>{{ $bahan->nama_bahan }}</td>
+                                                                <td> <a href="{{ route('data-bahan.show', $bahan->id) }}">{{ $bahan->kode_bahan }} - {{ $bahan->nama_bahan }}</a> </td>
                                                                 <td>{{ $bahan->jenis_bahan }}</td>
                                                                 <td>{{ $bahan->bahanMasuks->sum('jumlah_masuk') }}</td>
                                                                 <td>{{ $bahan->bahanKeluars->sum('jumlah_pemakaian') }}</td>
@@ -314,7 +312,7 @@
                                                     @php $counter2 = 1; @endphp
                                                     @foreach($bahans as $bahan)
         
-                                                         @if($bahan->jenis_bahan == 'Cairan')
+                                                         @if($bahan->jenis_bahan != 'Padat')
                                                             <tr>
                                                                 <th scope="row">{{ $counter2++ }}</th>
                                                                 <td> <a href="{{ route('data-bahan.show', $bahan->id) }}"><u>{{ $bahan->kode_bahan }}</u></a> </td>

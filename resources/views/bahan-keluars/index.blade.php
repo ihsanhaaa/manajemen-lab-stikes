@@ -169,8 +169,9 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Kode Bahan</th>
-                                                <th>Nama Bahan</th>
+                                                <th>Tanggal Keluar</th>
+                                                <th>Kode - Nama Bahan</th>
+                                                <th>Jenis Bahan</th>
                                                 <th>Jumlah Pemakaian</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -181,11 +182,25 @@
 
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td>{{ $bahan_keluar->bahan->kode_bahan }}</td>
-                                                        <td>{{ $bahan_keluar->bahan->nama_bahan }}</td>
+                                                        <td>
+                                                            <!-- Teks tanggal dan ikon edit -->
+                                                            <span id="tanggal-text-{{ $bahan_keluar->id }}">
+                                                                {{ $bahan_keluar->tanggal_keluar ? \Carbon\Carbon::parse($bahan_keluar->tanggal_keluar)->format('d-m-Y') : '-' }}
+                                                            </span>
+                                                            <i class="fas fa-edit" style="cursor: pointer;" onclick="editTanggal({{ $bahan_keluar->id }})"></i>
+                                                            
+                                                            <!-- Form edit -->
+                                                            <form id="edit-form-{{ $bahan_keluar->id }}" class="d-none">
+                                                                <input type="date" id="tanggal-input-{{ $bahan_keluar->id }}" value="{{ $bahan_keluar->tanggal_keluar }}" class="form-control d-inline w-auto" />
+                                                                <button type="button" onclick="saveTanggal({{ $bahan_keluar->id }})" class="btn btn-sm btn-success">Simpan</button>
+                                                                <button type="button" onclick="cancelEdit({{ $bahan_keluar->id }})" class="btn btn-sm btn-secondary">Batal</button>
+                                                            </form>
+                                                        </td>
+                                                        <td><a style="color: black" href="{{ route('data-bahan.show', $bahan_keluar->bahan->id) }}">{{ $bahan_keluar->bahan->kode_bahan }} - {{ $bahan_keluar->bahan->nama_bahan }}</a></td>
+                                                        <td>{{ $bahan_keluar->bahan->jenis_bahan }}</td>
                                                         <td>{{ $bahan_keluar->jumlah_pemakaian }}</td>
                                                         <td>
-                                                            <a href="{{ route('data-bahan.show', $bahan->id) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> Lihat Detail</a>
+                                                            <a href="{{ route('data-bahan.show', $bahan_keluar->bahan->id) }}" class="btn btn-success btn-sm" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -247,5 +262,53 @@
                 }
             });
         </script>
+
+        <script>
+            function editTanggal(id) {
+                // Sembunyikan teks tanggal dan tampilkan form edit
+                document.getElementById(`tanggal-text-${id}`).style.display = 'none';
+                document.getElementById(`edit-form-${id}`).classList.remove('d-none');
+            }
+
+            function cancelEdit(id) {
+                // Tampilkan teks tanggal dan sembunyikan form edit
+                document.getElementById(`edit-form-${id}`).classList.add('d-none');
+                document.getElementById(`tanggal-text-${id}`).style.display = 'inline';
+            }
+
+            function saveTanggal(id) {
+                const tanggalKeluar = document.getElementById(`tanggal-input-${id}`).value;
+
+                fetch(`/bahan-keluar/${id}/update-tanggal`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({ tanggal_keluar: tanggalKeluar })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Format tanggal ke d-m-Y
+                        const [year, month, day] = tanggalKeluar.split('-');
+                        const formattedDate = `${day}-${month}-${year}`;
+
+                        // Perbarui teks tanggal dengan format d-m-Y
+                        document.getElementById(`tanggal-text-${id}`).textContent = formattedDate;
+
+                        // Sembunyikan form dan tampilkan teks
+                        cancelEdit(id);
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                    console.error(error);
+                });
+            }
+
+        </script>
+
     @endpush
 @endsection

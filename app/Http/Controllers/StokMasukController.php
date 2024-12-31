@@ -114,32 +114,19 @@ class StokMasukController extends Controller
                     'bentuk_sediaan_id' => $bentuk_sediaan->id ?? null,
                     'exp_obat' => $expDate,
                     'satuan_id' => $satuan->id ?? null,
-                    'stok_awal' => $row[7],
+                    'stok_awal' => $row[7] ?? 0,
                     'stok_obat' => $row[7] + $row[8] - $row[9] ?? 0,
                 ]);
             }
 
             if($row[8] != 0) {
-                $tanggalMasuk = null;
-                if (!empty($row[5])) {
-                    if (is_numeric($row[5])) {
-                        $tanggalMasuk = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5]))->format('Y-m-d');
-                    } else {
-                        try {
-                            $tanggalMasuk = Carbon::createFromFormat('d/m/Y', $row[5])->format('Y-m-d');
-                        } catch (\Exception $e) {
-                            // Handle error jika format tanggal salah
-                            $tanggalMasuk = null;
-                        }
-                    }
-                }
 
                 // Buat entri Stok Masuk
                 $stokMasuk = StokMasuk::create([
                     'semester_id' => $semesterAktif->id,
                     'obat_id' => $obat->id,
                     'jumlah_masuk' => $row[8] ?? 0,
-                    'tanggal_masuk' => $tanggalMasuk ?? now(),
+                    'tanggal_masuk' => now(),
                     'harga_satuan' => $row[11] ?? 0,
                     'total_harga' => $row[8] * $row[11] ?? 0,
                 ]);
@@ -162,7 +149,7 @@ class StokMasukController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Data obat masuk berhasil diimpor.');
+        return redirect()->back()->with('success', 'Data obat masuk berhasil diimpor');
     }
     public function show($id)
     {
@@ -170,5 +157,18 @@ class StokMasukController extends Controller
 
         return view('stok-masuks.show', compact('obat'));
 
+    }
+
+    public function updateTanggalMasuk(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_masuk' => 'required|date',
+        ]);
+
+        $stokMasuk = StokMasuk::findOrFail($id);
+        $stokMasuk->tanggal_masuk = $request->tanggal_masuk;
+        $stokMasuk->save();
+
+        return response()->json(['success' => true, 'message' => 'Tanggal masuk berhasil diperbarui']);
     }
 }

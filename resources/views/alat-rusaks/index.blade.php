@@ -186,10 +186,9 @@
                                                 <th>#</th>
                                                 <th>Tanggal Rusak</th>
                                                 <th>Nama Alat/Barang</th>
-                                                <th>Ukuran</th>
                                                 <th>Jumlah Rusak</th>
                                                 <th>Penyimpanan</th>
-                                                <th>Letak Aset</th>
+                                                <th>Status Ganti</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -198,16 +197,44 @@
                                             @foreach($alat_rusaks as $key => $alat_rusak)
                                                 <tr>
                                                     <th scope="row">{{ $key + 1 }}</th>
-                                                    <td>{{ $alat_rusak->tanggal_rusak }}</td>
-                                                    <td>{{ $alat_rusak->alat->nama_barang ?? '-' }}</td>
-                                                    <td>{{ $alat_rusak->alat->ukuran ?? '-' }}</td>
-                                                    <td>{{ $alat_rusak->jumlah_rusak }}</td>
-                                                    <td>{{ $alat_rusak->alat->penyimpanan ?? '-' }}</td>
-                                                    <td>{{ $alat_rusak->alat->letak_aset ?? '-' }}</td>
                                                     <td>
-                                                        <a href="{{ route('data-alat.show', $alat_rusak->alat->id) }}" class="btn btn-success btn-sm" title="Lihat Detail">
-                                                            <i class="fas fa-eye"></i>
-                                                        </a>
+                                                        <!-- Teks tanggal dan ikon edit -->
+                                                        <span id="tanggal-text-{{ $alat_rusak->id }}">
+                                                            {{ $alat_rusak->tanggal_rusak ? \Carbon\Carbon::parse($alat_rusak->tanggal_rusak)->format('d-m-Y') : '-' }}
+                                                        </span>
+                                                        <i class="fas fa-edit" style="cursor: pointer;" onclick="editTanggal({{ $alat_rusak->id }})"></i>
+                                                        
+                                                        <!-- Form edit -->
+                                                        <form id="edit-form-{{ $alat_rusak->id }}" class="d-none">
+                                                            <input type="date" id="tanggal-input-{{ $alat_rusak->id }}" value="{{ $alat_rusak->tanggal_rusak }}" class="form-control d-inline w-auto" />
+                                                            <button type="button" onclick="saveTanggal({{ $alat_rusak->id }})" class="btn btn-sm btn-success">Simpan</button>
+                                                            <button type="button" onclick="cancelEdit({{ $alat_rusak->id }})" class="btn btn-sm btn-secondary">Batal</button>
+                                                        </form>
+                                                    </td>
+                                                    <td><a style="color: black" href="{{ route('data-alat.show', $alat_rusak->alat->id) }}">{{ $alat_rusak->alat->nama_barang ?? '-' }}</a></td>
+                                                    <td>{{ $alat_rusak->jumlah_rusak }}</td>
+                                                    <td>{{ $alat_rusak->alat->penyimpanan ?? '-' }} - {{ $alat_rusak->alat->letak_aset ?? '-' }}</td>
+                                                    <td>
+                                                        @if($alat_rusak->status == 1)
+                                                            <span class="badge bg-success">Sudah diganti</span>
+                                                        @else
+                                                            <span class="badge bg-danger">Belum diganti</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <a href="{{ route('data-alat.show', $alat_rusak->alat->id) }}" class="btn btn-success btn-sm" title="Lihat Detail">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+    
+                                                            @if ($alat_rusak->status == 0)
+                                                                <form action="{{ route('updateGantiAlat', $alat_rusak->id) }}"
+                                                                    method="POST" onsubmit="return confirm('Apakah anda yakin ingin mengkonfirmasi pergantian alat ini?');">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-primary btn-sm mx-1" title="Update Status Ganti"><i class="fas fa-check-circle"></i></button>
+                                                                </form>
+                                                            @endif
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -269,5 +296,53 @@
                 }
             });
         </script>
+
+        <script>
+            function editTanggal(id) {
+                // Sembunyikan teks tanggal dan tampilkan form edit
+                document.getElementById(`tanggal-text-${id}`).style.display = 'none';
+                document.getElementById(`edit-form-${id}`).classList.remove('d-none');
+            }
+
+            function cancelEdit(id) {
+                // Tampilkan teks tanggal dan sembunyikan form edit
+                document.getElementById(`edit-form-${id}`).classList.add('d-none');
+                document.getElementById(`tanggal-text-${id}`).style.display = 'inline';
+            }
+
+            function saveTanggal(id) {
+                const tanggalRusak = document.getElementById(`tanggal-input-${id}`).value;
+
+                fetch(`/alat-rusak/${id}/update-tanggal`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({ tanggal_rusak: tanggalRusak })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Format tanggal ke d-m-Y
+                        const [year, month, day] = tanggalRusak.split('-');
+                        const formattedDate = `${day}-${month}-${year}`;
+
+                        // Perbarui teks tanggal dengan format d-m-Y
+                        document.getElementById(`tanggal-text-${id}`).textContent = formattedDate;
+
+                        // Sembunyikan form dan tampilkan teks
+                        cancelEdit(id);
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                    console.error(error);
+                });
+            }
+
+        </script>
+
     @endpush
 @endsection

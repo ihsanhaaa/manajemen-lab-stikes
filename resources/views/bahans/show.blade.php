@@ -88,7 +88,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit Data</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Bahan</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -123,24 +123,10 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="jenis_obat" class="form-label">Jenis Bahan <span style="color: red">*</span> </label>
-                                                <select class="form-control @error('jenis_obat') is-invalid @enderror" id="jenis_obat" name="jenis_obat">
-                                                    <option value="Cair" {{ $bahan->jenis_obat == 'Cair' ? 'selected' : '' }}>Cair</option>
-                                                    <option value="Padat" {{ $bahan->jenis_obat == 'Padat' ? 'selected' : '' }}>Padat</option>
-                                                </select>
-                                            
-                                                @error('jenis_obat')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="formula" class="form-label">Kekuatan Bahan</label>
+                                                <label for="formula" class="form-label">Formula <span style="color: red">*</span> </label>
                                                 <input type="text"
                                                     class="form-control @error('formula') is-invalid @enderror" id="formula"
-                                                    name="formula" value="{{ $bahan->formula }}">
+                                                    name="formula" value="{{ $bahan->formula }}" required>
 
                                                 @error('formula')
                                                     <span class="invalid-feedback" role="alert">
@@ -150,12 +136,39 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="exp_obat" class="form-label">Expired Bahan</label>
+                                                <label for="jenis_bahan" class="form-label">Jenis Bahan <span style="color: red">*</span> </label>
+                                                <select class="form-control @error('jenis_bahan') is-invalid @enderror" id="jenis_bahan" name="jenis_bahan">
+                                                    <option value="Cairan" {{ $bahan->jenis_bahan == 'Cairan' ? 'selected' : '' }}>Cairan</option>
+                                                    <option value="Padat" {{ $bahan->jenis_bahan == 'Padat' ? 'selected' : '' }}>Padat</option>
+                                                </select>
+                                            
+                                                @error('jenis_bahan')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="satuan" class="form-label">Satuan <span style="color: red">*</span> </label>
+                                                <input type="text"
+                                                    class="form-control @error('satuan') is-invalid @enderror" id="satuan"
+                                                    name="satuan" value="{{ $bahan->satuan }}" required>
+                                            
+                                                @error('satuan')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="exp_bahan" class="form-label">Expired Bahan</label>
                                                 <input type="date"
-                                                    class="form-control @error('exp_obat') is-invalid @enderror" id="exp_obat"
-                                                    name="exp_obat" value="{{ $bahan->exp_obat }}">
+                                                    class="form-control @error('exp_bahan') is-invalid @enderror" id="exp_bahan"
+                                                    name="exp_bahan" value="{{ $bahan->exp_bahan }}">
 
-                                                @error('exp_obat')
+                                                @error('exp_bahan')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -163,25 +176,12 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="stok_awal" class="form-label">Stok Awal</label>
+                                                <label for="stok_bahan" class="form-label">Sisa Bahan</label>
                                                 <input type="number"
-                                                    class="form-control @error('stok_awal') is-invalid @enderror" id="stok_awal"
-                                                    name="stok_awal" value="{{ $bahan->stok_obat }}" required>
+                                                    class="form-control @error('stok_bahan') is-invalid @enderror" id="stok_bahan"
+                                                    name="stok_bahan" value="{{ $bahan->stok_bahan }}">
 
-                                                @error('stok_awal')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="sisa_obat" class="form-label">Sisa Bahan</label>
-                                                <input type="number"
-                                                    class="form-control @error('sisa_obat') is-invalid @enderror" id="sisa_obat"
-                                                    name="sisa_obat" value="{{ $bahan->sisa_obat }}" required>
-
-                                                @error('sisa_obat')
+                                                @error('stok_bahan')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -190,7 +190,7 @@
 
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Update Data</button>
+                                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                             </div>
 
                                         </form>
@@ -257,6 +257,7 @@
                                                     <th>Jumlah Masuk</th>
                                                     <th>Harga Satuan</th>
                                                     <th>Total Harga</th>
+                                                    <th>Keterangan</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -266,6 +267,7 @@
                                                         <td>{{ $bahanMasuk->jumlah_masuk }}</td>
                                                         <td>Rp. {{ number_format((float) $bahanMasuk->harga_satuan) }}</td>
                                                         <td>Rp. {{ number_format((float) $bahanMasuk->total_harga) }}</td>
+                                                        <td>{{ $bahanMasuk->keterangan }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -278,6 +280,8 @@
                                                 <tr>
                                                     <th>Tanggal Keluar</th>
                                                     <th>Jumlah Pemakaian</th>
+                                                    <th>Keterangan</th>
+                                                    <th>Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -285,6 +289,23 @@
                                                     <tr>
                                                         <td>{{ $bahanKeluar->tanggal_keluar }}</td>
                                                         <td>{{ $bahanKeluar->jumlah_pemakaian }}</td>
+                                                        <td>
+                                                            <!-- Keterangan atau Form Edit -->
+                                                            <span class="keterangan-text">{{ $bahanKeluar->keterangan }}</span>
+                                                            <form action="{{ route('bahan_keluar.update', $bahanKeluar->id) }}" method="POST" class="d-none form-edit-keterangan">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="text" name="keterangan" class="form-control" value="{{ $bahanKeluar->keterangan }}" required>
+                                                                <div class="mt-2">
+                                                                    <button type="submit" class="btn btn-sm btn-success">Simpan</button>
+                                                                    <button type="button" class="btn btn-sm btn-secondary btn-batal">Batal</button>
+                                                                </div>
+                                                            </form>
+                                                        </td>
+                                                        <td>
+                                                            <!-- Tombol Edit -->
+                                                            <button class="btn btn-sm btn-primary btn-edit">Edit</button>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -327,5 +348,37 @@
 
         <!-- Datatable init js -->
         <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const editButtons = document.querySelectorAll('.btn-edit');
+                const cancelButtons = document.querySelectorAll('.btn-batal');
+
+                editButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const row = this.closest('tr');
+                        const keteranganText = row.querySelector('.keterangan-text');
+                        const formEdit = row.querySelector('.form-edit-keterangan');
+
+                        // Tampilkan form dan sembunyikan teks
+                        keteranganText.classList.add('d-none');
+                        formEdit.classList.remove('d-none');
+                    });
+                });
+
+                cancelButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const row = this.closest('tr');
+                        const keteranganText = row.querySelector('.keterangan-text');
+                        const formEdit = row.querySelector('.form-edit-keterangan');
+
+                        // Sembunyikan form dan tampilkan teks
+                        formEdit.classList.add('d-none');
+                        keteranganText.classList.remove('d-none');
+                    });
+                });
+            });
+
+        </script>
     @endpush
 @endsection

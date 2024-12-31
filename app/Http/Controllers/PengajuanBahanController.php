@@ -12,6 +12,7 @@ use App\Models\Semester;
 use App\Models\StokKeluar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PengajuanBahanController extends Controller
 {
@@ -25,10 +26,17 @@ class PengajuanBahanController extends Controller
         $obats = Obat::with('stokKeluars')->get();
         $bahans = Bahan::with('bahanKeluars')->get();
 
-        $pengajuanbahans = PengajuanBahan::all();
+        $pengajuanbahans = PengajuanBahan::where('status', false)
+            ->orderBy('tanggal_pelaksanaan', 'desc')
+            ->get();
+
+        $pengajuanbahanSelesais = PengajuanBahan::where('status', true)
+            ->orderBy('tanggal_pelaksanaan', 'desc')
+            ->get();
+
         $satuans = Satuan::all();
 
-        return view('pengajuan-bahans.index', compact('obats', 'bahans', 'satuans', 'pengajuanbahans', 'semesterAktif'));
+        return view('pengajuan-bahans.index', compact('obats', 'bahans', 'satuans', 'pengajuanbahans', 'semesterAktif', 'pengajuanbahanSelesais'));
     }
 
     /**
@@ -47,7 +55,7 @@ class PengajuanBahanController extends Controller
         $semesterAktif = Semester::where('is_active', true)->first();
 
         if (!$semesterAktif) {
-            return redirect()->back()->with('alert', 'Tidak ada semester yang aktif.');
+            return redirect()->back()->with('alert', 'Tidak ada semester yang aktif');
         }
 
         // dd($request);
@@ -61,17 +69,26 @@ class PengajuanBahanController extends Controller
             'tipe.*' => 'in:bahan,obat',
             'obat_id.*' => 'nullable|exists:obats,id',
             'bahan_id.*' => 'nullable|exists:bahans,id',
-            'jumlah_pemakaian.*' => 'required|integer|min:1',
+            'jumlah_pemakaian.*' => [
+                'required',
+                'numeric',
+                'min:0',
+                'regex:/^\d+(\.\d{1,4})?$/'
+            ],
             'satuan.*' => 'required',
             'jenis_obat.*' => 'nullable|string|in:Cair,Padat',
             'keterangan.*' => 'nullable|string',
-        ]);
+        ]);   
+        
+        $formattedNames = implode(', ', array_map(function ($name) {
+            return ucwords(strtolower(trim($name))); // Format kapital untuk setiap nama
+        }, explode(',', $validatedData['anggota_kelompok'])));
 
         // Simpan data utama ke tabel pengajuan_bahans
         $pengajuanBahan = PengajuanBahan::create([
             'semester_id' => $semesterAktif->id,
             'user_id' => Auth::user()->id,
-            'nama_mahasiswa' => $validatedData['anggota_kelompok'],
+            'nama_mahasiswa' => $formattedNames,
             'kelompok' => $validatedData['nim_kelompok'],
             'kelas' => $validatedData['kelas'],
             'tanggal_pelaksanaan' => $validatedData['tanggal_praktikum'],
@@ -119,7 +136,7 @@ class PengajuanBahanController extends Controller
         }  
         
 
-        return redirect()->back()->with('success', 'Pengajuan bahan berhasil disimpan.');
+        return redirect()->back()->with('success', 'Pengajuan bahan berhasil disimpan');
     }
 
     /**
@@ -129,7 +146,11 @@ class PengajuanBahanController extends Controller
     {
         $pengajuanBahan = PengajuanBahan::with('obatPengajuanBahans')->findOrFail($id);
 
-        return view('pengajuan-bahans.show', compact('pengajuanBahan'));
+        $bahans = Bahan::all();
+
+        $obats = Obat::all();
+
+        return view('pengajuan-bahans.show', compact('pengajuanBahan', 'bahans', 'obats'));
 
     }
 
@@ -173,7 +194,7 @@ class PengajuanBahanController extends Controller
         $semesterAktif = Semester::where('is_active', true)->first();
 
         if (!$semesterAktif) {
-            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
         }
 
         $pengajuanBahan = PengajuanBahan::findOrFail($id);
@@ -188,6 +209,7 @@ class PengajuanBahanController extends Controller
         // dd($obatPengajuanBahans);
 
         foreach ($obatPengajuanBahans as $obatPengajuanBahan) {
+            // dd($obatPengajuanBahan);
             if ($obatPengajuanBahan->tipe === 'obat') {
                 // Menyimpan data ke stok_keluars
                 StokKeluar::create([
@@ -195,6 +217,7 @@ class PengajuanBahanController extends Controller
                     'obat_id' => $obatPengajuanBahan->obat_id,
                     'jumlah_pemakaian' => $obatPengajuanBahan->jumlah_pemakaian,
                     'tanggal_keluar' => now(),
+                    'keterangan' => $pengajuanBahan->nama_mahasiswa,
                 ]);
     
                 // Update stok pada tabel obats
@@ -209,20 +232,86 @@ class PengajuanBahanController extends Controller
                     'bahan_id' => $obatPengajuanBahan->bahan_id,
                     'jumlah_pemakaian' => $obatPengajuanBahan->jumlah_pemakaian,
                     'tanggal_keluar' => now(),
+                    'keterangan' => $pengajuanBahan->nama_mahasiswa,
                 ]);
     
                 // Update stok pada tabel obats
-                $bahan = Bahan::find($obatPengajuanBahan->obat_id);
+                $bahan = Bahan::find($obatPengajuanBahan->bahan_id);
                 if ($bahan) {
                     $bahan->stok_bahan -= $obatPengajuanBahan->jumlah_pemakaian;
                     $bahan->save();
                 }
             }
         }
-
-        return redirect()->route('pengajuan-bahan.index')
-            ->with('success', 'Pengajuan Bahan Sudah di ACC');
+        
+        return redirect()->back()->with('success', 'Pengajuan Bahan Sudah di ACC');
     }
+
+    public function updateDetail(Request $request, $id)
+    {
+        // dd($request);
+        $validatedData = $request->validate([
+            'nama_mahasiswa' => 'required|string',
+            'kelompok' => 'required|string',
+            'kelas' => 'required|string',
+            'tanggal_pelaksanaan' => 'required|date',
+            'nama_praktikum' => 'required|string',
+            'obatPengajuanBahans.*.tipe' => 'required|in:bahan,obat',
+            'obatPengajuanBahans.*.obat_bahan_id' => 'required',
+            'obatPengajuanBahans.*.jumlah_pemakaian' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,4})?$/',
+            'obatPengajuanBahans.*.satuan' => 'required|string',
+            'obatPengajuanBahans.*.jenis_obat' => 'nullable|string|in:Cair,Padat',
+            'obatPengajuanBahans.*.keterangan' => 'nullable|string',
+        ]);
+        
+    
+        DB::beginTransaction();
+    
+        try {
+            // Update informasi utama pada PengajuanBahan
+            $pengajuanBahan = PengajuanBahan::findOrFail($id);
+            // dd($pengajuanBahan->obatPengajuanBahans);
+
+            $pengajuanBahan->update([
+                'nama_mahasiswa' => $validatedData['nama_mahasiswa'],
+                'kelompok' => $validatedData['kelompok'],
+                'kelas' => $validatedData['kelas'],
+                'tanggal_pelaksanaan' => $validatedData['tanggal_pelaksanaan'],
+                'nama_praktikum' => $validatedData['nama_praktikum'],
+            ]);
+
+            // dd($request->obatPengajuanBahans);
+    
+            // Loop untuk update atau create pada obatPengajuanBahan
+            foreach ($request->obatPengajuanBahans as $item) {
+                // Ambil data berdasarkan pengajuan_bahan_id dan tipe
+                $obatPengajuanBahan = ObatPengajuanBahan::find($item['id']);
+
+                // dd($obatPengajuanBahan);
+
+                if ($obatPengajuanBahan) {
+                    
+                    $obatPengajuanBahan->update([
+                        'jumlah_pemakaian' => $item['jumlah_pemakaian'],
+                        'satuan' => $item['satuan'],
+                        'jenis_obat' => $item['jenis_obat'],
+                        'tipe' => $item['tipe'],
+                        'keterangan' => $item['keterangan'],
+                        'bahan_id' => $item['tipe'] === 'bahan' ? $item['obat_bahan_id'] : null,
+                        'obat_id' => $item['tipe'] === 'obat' ? $item['obat_bahan_id'] : null,
+                    ]);
+                } 
+            }
+    
+            DB::commit();
+    
+            return redirect()->back()->with('success', 'Data berhasil diperbarui');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
 
 
     /**
@@ -230,9 +319,31 @@ class PengajuanBahanController extends Controller
      */
     public function destroy($id)
     {
-        PengajuanBahan::find($id)->delete();
+        // PengajuanBahan::find($id)->delete();
+        $pengajuanBahan = PengajuanBahan::findOrFail($id);
+
+        ObatPengajuanBahan::where('pengajuan_bahan_id', $pengajuanBahan->id)->delete();
+
+        $pengajuanBahan->delete();
 
         return redirect()->route('pengajuan-bahan.index')
             ->with('success', 'Data Pengajuan Bahan Berhasil dihapus');
+    }
+
+    public function destroyPengajuanObatBahan($id)
+    {
+        $pengajuaBahan = ObatPengajuanBahan::find($id);
+
+        $cekPengajuanBahan = PengajuanBahan::find($pengajuaBahan->pengajuan_bahan_id);
+
+        // dd($cekPengajuanBahan);
+
+        if($cekPengajuanBahan->status == 0) {
+            ObatPengajuanBahan::find($id)->delete();
+        } else {
+            return redirect()->back()->with('error', 'Data Sudah di ACC, tidak bisa dihapus');
+        }
+
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
     }
 }

@@ -163,7 +163,7 @@
 
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Update Data</button>
+                                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                             </div>
 
                                         </form>
@@ -247,7 +247,8 @@
                                                 <tr>
                                                     <th>Tanggal Rusak</th>
                                                     <th>Jumlah Rusak</th>
-                                                    <th>Nama Rusak</th>
+                                                    <th>Keterangan</th>
+                                                    <th>Status</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -256,6 +257,13 @@
                                                         <td>{{ $alatKeluar->tanggal_rusak }}</td>
                                                         <td>{{ $alatKeluar->jumlah_rusak }}</td>
                                                         <td>{{ $alatKeluar->nama_perusak }}</td>
+                                                        <td>
+                                                            @if($alatKeluar->status == 1)
+                                                                <span class="badge bg-success">Sudah diganti</span>
+                                                            @else
+                                                                <span class="badge bg-danger">Belum diganti</span>
+                                                            @endif
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

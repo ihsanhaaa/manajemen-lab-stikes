@@ -29,10 +29,11 @@ class BahanController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         $request->validate([
             'kode_bahan' => 'required|string|max:50',
             'nama_bahan' => 'required|string|max:255',
-            'formula' => 'string|max:15',
+            'formula' => 'nullable|string|max:15',
             'exp_bahan' => 'nullable|date',
             'jenis_bahan' => 'required|string|max:10',
             'foto_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:3048',
@@ -108,34 +109,27 @@ class BahanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'kode_bahan' => 'required|string|max:255',
             'nama_bahan' => 'required|string|max:255',
-            'formula' => 'nullable|string',
-            'exp_bahan' => 'nullable|string',
-            'jenis_bahan' => 'nullable|integer',
-            'bentuk_sediaan' => 'nullable|integer',
-            'exp_obat' => 'nullable|date',
-            'satuan' => 'nullable|integer',
-            'stok_bahan' => 'nullable|integer|min:0',
-            'sisa_obat' => 'nullable|integer|min:0',
+            'formula' => 'required|string|max:255',
+            'jenis_bahan' => 'required|in:Cairan,Padat',
+            'satuan' => 'required|string|max:255',
+            'exp_bahan' => 'nullable|date',
+            'stok_bahan' => 'nullable|min:0',
         ]);
 
-        // Temukan data bahan berdasarkan ID
         $bahan = Bahan::findOrFail($id);
 
-        // Update data bahan
+        // Update data
         $bahan->update([
-            'kode_bahan' => $request->kode_bahan,
-            'nama_bahan' => $request->nama_bahan,
-            'formula' => $request->formula,
-            'exp_bahan' => $request->exp_bahan,
-            'jenis_bahan' => $request->jenis_bahan,
-            'bentuk_sediaan' => $request->bentuk_sediaan,
-            'exp_obat' => $request->exp_obat,
-            'satuan' => $request->satuan,
-            'stok_bahan' => $request->stok_bahan,
-            'sisa_obat' => $request->sisa_obat,
+            'kode_bahan' => $validated['kode_bahan'],
+            'nama_bahan' => $validated['nama_bahan'],
+            'formula' => $validated['formula'],
+            'jenis_bahan' => $validated['jenis_bahan'],
+            'satuan' => $validated['satuan'],
+            'exp_bahan' => $validated['exp_bahan'],
+            'stok_bahan' => $validated['stok_bahan'],
         ]);
 
         return redirect()->route('data-bahan.show', $bahan->id)->with('success', 'Data bahan berhasil diperbarui');

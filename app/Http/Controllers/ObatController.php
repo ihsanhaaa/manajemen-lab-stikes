@@ -128,34 +128,28 @@ class ObatController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'kode_obat' => 'required|string|max:255',
             'nama_obat' => 'required|string|max:255',
-            'jenis_obat' => 'nullable|string',
-            'kekuatan_obat' => 'nullable|string',
-            'kemasan_obat' => 'nullable|integer',
-            'bentuk_sediaan' => 'nullable|integer',
+            'kekuatan_obat' => 'nullable|string|max:255',
+            'kemasan_obat' => 'nullable|exists:kemasans,id',
+            'bentuk_sediaan' => 'nullable|exists:bentuk_sediaans,id',
+            'satuan' => 'nullable|exists:satuans,id',
             'exp_obat' => 'nullable|date',
-            'satuan' => 'nullable|integer',
-            'stok_awal' => 'nullable|integer|min:0',
-            'sisa_obat' => 'nullable|integer|min:0',
+            'stok_obat' => 'required|integer|min:0',
         ]);
-
-        // Temukan data obat berdasarkan ID
+    
         $obat = Obat::findOrFail($id);
-
-        // Update data obat
         $obat->update([
-            'kode_obat' => $request->kode_obat,
-            'nama_obat' => $request->nama_obat,
-            'jenis_obat' => $request->jenis_obat,
-            'kekuatan_obat' => $request->kekuatan_obat,
-            'kemasan_obat' => $request->kemasan_obat,
-            'bentuk_sediaan' => $request->bentuk_sediaan,
-            'exp_obat' => $request->exp_obat,
-            'satuan' => $request->satuan,
-            'stok_awal' => $request->stok_awal,
-            'sisa_obat' => $request->sisa_obat,
+            'kode_obat' => $validated['kode_obat'],
+            'nama_obat' => $validated['nama_obat'],
+            'jenis_obat' => $validated['jenis_obat'],
+            'kekuatan_obat' => $validated['kekuatan_obat'],
+            'kemasan_id' => $validated['kemasan_obat'],
+            'bentuk_sediaan_id' => $validated['bentuk_sediaan'],
+            'satuan_id' => $validated['satuan'],
+            'exp_obat' => $validated['exp_obat'],
+            'stok_obat' => $validated['stok_obat'],
         ]);
 
         return redirect()->route('data-obat.show', $obat->id)->with('success', 'Data obat berhasil diperbarui');

@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('nama_perusak')->nullable();
             $table->integer('jumlah_rusak');
             $table->date('tanggal_rusak');
-            $table->string('keterangan')->nullable();
+            $table->text('keterangan')->nullable();
+            $table->enum('status', ['Sudah Ganti', 'Belum Ganti'])->default('Belum Ganti');
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('obat_id')->constrained('obats')->onDelete('cascade');
             $table->integer('jumlah_pemakaian');
             $table->date('tanggal_keluar');
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
     }
