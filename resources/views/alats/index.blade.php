@@ -65,14 +65,25 @@
                     <div class="row">
                         <div class="col-lg-12">
 
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="fas fa-plus"></i> Tambah Data Alat
-                            </button>
+                            <div class="d-flex">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="fas fa-plus"></i> Tambah Data Alat
+                                </button>
 
-                            <a href="{{ route('laporan.alat.exportPDF') }}" class="btn btn-info btn-sm mb-3 mx-1">
-                                <i class="fas fa-download"></i> Download Laporan PDF
-                            </a>
+                                {{-- <a href="{{ route('laporan.alat.exportPDF') }}" class="btn btn-info btn-sm mb-3 mx-1">
+                                    <i class="fas fa-download"></i> Download Laporan PDF
+                                </a> --}}
+
+                                <div class="btn-group mb-3 mx-2">
+                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-cog"></i> Aksi <i class="mdi mdi-chevron-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="{{ route('export.stok.alat') }}">Download Laporan Stok Alat</a>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

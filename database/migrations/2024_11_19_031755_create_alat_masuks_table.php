@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('tanggal_masuk');
             $table->bigInteger('harga_satuan')->default(0);
             $table->bigInteger('total_harga')->default(0);
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
     }

@@ -74,16 +74,16 @@
                                 {{-- <a href="{{ route('laporan.bahan.exportPDF') }}" class="btn btn-info btn-sm mb-3 mx-1">
                                     <i class="fas fa-download"></i> Download Laporan PDF
                                 </a> --}}
-                            
-                                <!-- Form Download Laporan -->
-                                <form action="/download-laporan-bahan" method="GET" class="d-inline">
-                                    <div class="input-group">
-                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
-                                        <button type="submit" class="btn btn-info btn-sm">
-                                            <i class="fas fa-download"></i> Download Laporan
-                                        </button>
+
+                                <div class="btn-group">
+                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-cog"></i> Aksi <i class="mdi mdi-chevron-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="{{ route('export.stok.bahan-padat') }}">Download Laporan Stok Bahan Padat</a>
+                                        <a class="dropdown-item" href="{{ route('export.stok.bahan-cair') }}">Download Laporan Stok Bahan Cair</a>
                                     </div>
-                                </form>
+                                </div>
                             </div>
 
                             <!-- Modal -->

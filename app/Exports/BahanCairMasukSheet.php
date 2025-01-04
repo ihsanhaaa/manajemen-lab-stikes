@@ -6,7 +6,7 @@ use App\Models\BahanMasuk;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
-class BahanMasukSheet implements FromCollection
+class BahanCairMasukSheet implements FromCollection
 {
     protected $bulan;
     protected $tahun;
@@ -22,12 +22,12 @@ class BahanMasukSheet implements FromCollection
         // Format nama bulan
         $namaBulan = Carbon::create()->month($this->bulan)->translatedFormat('F');
 
-        // Ambil data bahan masuk dengan relasi bahan dan filter jenis_bahan == 'Padat'
+        // Ambil data bahan masuk dengan relasi bahan, filter bahan yang jenis_bahan != 'Padat'
         $data = BahanMasuk::with('bahan')
             ->whereMonth('tanggal_masuk', $this->bulan)
             ->whereYear('tanggal_masuk', $this->tahun)
             ->whereHas('bahan', function($query) {
-                $query->where('jenis_bahan', 'Padat');  // Filter hanya bahan dengan jenis_bahan 'Padat'
+                $query->where('jenis_bahan', '!=', 'Padat');  // Filter bahan dengan jenis_bahan yang tidak sama dengan 'Padat'
             })
             ->get()
             ->map(function ($item) {
@@ -51,5 +51,4 @@ class BahanMasukSheet implements FromCollection
 
         return collect(array_merge($judul, $data->toArray()));
     }
-
 }

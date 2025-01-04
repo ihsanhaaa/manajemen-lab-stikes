@@ -65,10 +65,26 @@
                     <div class="row">
                         <div class="col-lg-12">
 
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#importModal">
-                                <i class="fas fa-plus"></i> Import Data Obat Masuk
-                            </button>
+                            <div class="d-flex">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="fas fa-plus"></i> Import Data Obat Masuk
+                                </button>
+
+                                <button type="button" class="btn btn-primary btn-sm mx-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="fas fa-plus"></i> Tambah Data Obat Masuk Manual
+                                </button>
+
+                                <!-- Form Download Laporan -->
+                                <form action="/download-laporan-obat" method="GET" class="d-inline">
+                                    <div class="input-group">
+                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
+                                        <button type="submit" class="btn btn-info btn-sm">
+                                            <i class="fas fa-download"></i> Download Laporan Obat Masuk & Keluar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
 
                             <!-- Modal -->
                             <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
@@ -122,6 +138,86 @@
                                                 <button type="submit" class="btn btn-primary">Import</button>
                                             </div>
                                         </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Tambah Data Obat Masuk</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <form action="{{ route('data-obat-manual.store') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+
+                                                <div class="mb-3">
+                                                    <label for="obat_id" class="form-label">Nama Obat<span style="color: red">*</span> </label>
+                                                    <select class="form-control @error('obat_id') is-invalid @enderror" id="obat_id" name="obat_id" required>
+                                                        <option value="">-- Pilih --</option>
+                                                        @foreach($obats as $obat)
+                                                        <option value="{{ $obat->id }}">{{ $obat->kode_obat }} - {{ $obat->nama_obat }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                
+                                                    @error('obat_id')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="jumlah_masuk" class="form-label">Jumlah Masuk<span style="color: red">*</span> </label>
+                                                    <input type="number"
+                                                        class="form-control @error('jumlah_masuk') is-invalid @enderror" id="jumlah_masuk"
+                                                        name="jumlah_masuk" value="{{ old('jumlah_masuk') }}" required>
+
+                                                    @error('jumlah_masuk')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="tanggal_masuk" class="form-label">Tanggal Masuk<span style="color: red">*</span></label>
+                                                    <input type="date"
+                                                        class="form-control @error('tanggal_masuk') is-invalid @enderror" id="tanggal_masuk"
+                                                        name="tanggal_masuk" value="{{ old('tanggal_masuk') }}" required>
+
+                                                    @error('tanggal_masuk')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="harga_satuan" class="form-label">Harga Satuan</label>
+                                                    <input type="number"
+                                                        class="form-control @error('harga_satuan') is-invalid @enderror" id="harga_satuan"
+                                                        name="harga_satuan">
+
+                                                    @error('harga_satuan')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan Data</button>
+                                                </div>
+
+                                            </form>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>

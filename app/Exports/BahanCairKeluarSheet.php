@@ -4,10 +4,9 @@ namespace App\Exports;
 
 use App\Models\BahanKeluar;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
-class BahanKeluarSheet implements FromCollection
+class BahanCairKeluarSheet implements FromCollection
 {
     protected $bulan;
     protected $tahun;
@@ -23,12 +22,12 @@ class BahanKeluarSheet implements FromCollection
         // Format nama bulan
         $namaBulan = Carbon::create()->month($this->bulan)->translatedFormat('F');
 
-        // Ambil data bahan keluar dengan relasi bahan, filter berdasarkan jenis_bahan dan kelompokkan berdasarkan tanggal dan nama bahan
+        // Ambil data bahan keluar dengan relasi bahan, filter bahan yang jenis_bahan != 'Padat' dan kelompokkan berdasarkan tanggal dan nama bahan
         $data = BahanKeluar::with('bahan')
             ->whereMonth('tanggal_keluar', $this->bulan)
             ->whereYear('tanggal_keluar', $this->tahun)
             ->whereHas('bahan', function($query) {
-                $query->where('jenis_bahan', 'Padat');  // Filter hanya bahan dengan jenis_bahan 'Padat'
+                $query->where('jenis_bahan', '!=', 'Padat');  // Filter bahan dengan jenis_bahan yang tidak sama dengan 'Padat'
             })
             ->get()
             ->groupBy(function ($item) {
@@ -56,5 +55,4 @@ class BahanKeluarSheet implements FromCollection
 
         return collect(array_merge($judul, $data->toArray()));
     }
-
 }

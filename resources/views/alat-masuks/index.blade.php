@@ -65,14 +65,26 @@
                     <div class="row">
                         <div class="col-lg-12">
 
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#importModal">
-                                <i class="fas fa-plus"></i> Import Data Alat Masuk
-                            </button>
+                            <div class="d-flex">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="fas fa-plus"></i> Import Data Alat Masuk
+                                </button>
 
-                            <button type="button" class="btn btn-primary btn-sm me-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="fas fa-plus"></i> Tambah Data Alat Masuk Manual
-                            </button>
+                                <button type="button" class="btn btn-primary btn-sm mx-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="fas fa-plus"></i> Tambah Data Alat Masuk Manual
+                                </button>
+
+                                <!-- Form Download Laporan -->
+                                <form action="/download-laporan" method="GET" class="d-inline">
+                                    <div class="input-group">
+                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
+                                        <button type="submit" class="btn btn-info btn-sm me-1">
+                                            <i class="fas fa-download"></i> Download Laporan Alat Masuk & Keluar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
 
                             <!-- Modal -->
                             <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">

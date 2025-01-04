@@ -1,8 +1,13 @@
 <?php
 
 use App\Exports\AlatLaporanExport;
+use App\Exports\BahanCairLaporanExport;
 use App\Exports\BahanLaporanExport;
 use App\Exports\ObatLaporanExport;
+use App\Exports\RekapAlatExport;
+use App\Exports\RekapBahanCairExport;
+use App\Exports\RekapBahanPadatExport;
+use App\Exports\RekapObatExport;
 use App\Http\Controllers\AlatController;
 use App\Http\Controllers\AlatMasukController;
 use App\Http\Controllers\AlatRusakController;
@@ -212,7 +217,17 @@ Route::group(['middleware' => ['auth']], function () {
             list($tahun, $bulan) = explode('-', $bulan_tahun);
         }
         
-        return Excel::download(new BahanLaporanExport($bulan, $tahun), "laporan_bahan_{$bulan}_{$tahun}.xlsx");
+        return Excel::download(new BahanLaporanExport($bulan, $tahun), "laporan_bahan_padat_{$bulan}_{$tahun}.xlsx");
+    });
+
+    Route::get('/download-laporan-bahan-cair', function () {
+        $bulan_tahun = request('bulan_tahun');
+        
+        if ($bulan_tahun) {
+            list($tahun, $bulan) = explode('-', $bulan_tahun);
+        }
+        
+        return Excel::download(new BahanCairLaporanExport($bulan, $tahun), "laporan_bahan_cair_{$bulan}_{$tahun}.xlsx");
     });
 
     Route::get('/download-laporan-obat', function () {
@@ -243,6 +258,23 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/data-alat-manual/store', [AlatMasukController::class, 'storeAlatMasukManual'])->name('data-alat-manual.store');
 
+    Route::post('/data-obat-manual/store', [StokMasukController::class, 'storeObatMasukManual'])->name('data-obat-manual.store');
+
+    Route::get('/export-stok-alat', function () {
+        return Excel::download(new RekapAlatExport, 'Rekap_Asset_Lab.xlsx');
+    })->name('export.stok.alat');
+
+    Route::get('/export-stok-bahan-padat', function () {
+        return Excel::download(new RekapBahanPadatExport, 'Laporan_Stok_Bahan_Padat.xlsx');
+    })->name('export.stok.bahan-padat');
+
+    Route::get('/export-stok-bahan-cair', function () {
+        return Excel::download(new RekapBahanCairExport, 'Laporan_Stok_Bahan_Cair.xlsx');
+    })->name('export.stok.bahan-cair');
+
+    Route::get('/export-stok-obat', function () {
+        return Excel::download(new RekapObatExport, 'Laporan_Stok_Obat.xlsx');
+    })->name('export.stok.obat');
 
 });
 

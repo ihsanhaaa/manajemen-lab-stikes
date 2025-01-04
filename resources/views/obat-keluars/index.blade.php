@@ -85,7 +85,7 @@
                                                 <div class="mb-3">
                                                     <label for="obat_id" class="form-label">Nama Obat <span style="color: red">*</span> </label>
                                                     <select class="form-control @error('obat_id') is-invalid @enderror" id="obat_id" name="obat_id" required>
-                                                        <option value="">-- Pilih Obat --</option>
+                                                        <option value="">-- Pilih --</option>
                                                         @foreach($obats as $obat)
                                                             <option value="{{ $obat->id }}">{{ $obat->kode_obat }} - {{ $obat->nama_obat }}</option>
                                                         @endforeach

@@ -65,14 +65,16 @@
                     <div class="row">
                         <div class="col-lg-12">
 
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#importModal">
-                                <i class="fas fa-plus"></i> Import Data Bahan Masuk
-                            </button>
+                            <div class="d-flex">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="fas fa-plus"></i> Import Data Bahan Masuk
+                                </button>
 
-                            <button type="button" class="btn btn-primary btn-sm me-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="fas fa-plus"></i> Tambah Data Bahan Masuk Manual
-                            </button>
+                                <button type="button" class="btn btn-primary btn-sm mx-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="fas fa-plus"></i> Tambah Data Bahan Masuk Manual
+                                </button>
+                            </div>
 
                             <!-- Modal -->
                             <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
@@ -231,6 +233,18 @@
                                     <div class="tab-content p-3 text-muted">
                                         <div class="tab-pane active" id="bahanPadat" role="tabpanel">
 
+                                            <div class="d-flex mb-3">
+                                                <!-- Form Download Laporan -->
+                                                <form action="/download-laporan-bahan" method="GET" class="d-inline">
+                                                    <div class="input-group">
+                                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
+                                                        <button type="submit" class="btn btn-info btn-sm">
+                                                            <i class="fas fa-download"></i> Download Laporan Bahan Masuk & Keluar
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
                                             <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                                 <thead>
                                                     <tr>
@@ -303,6 +317,18 @@
                                             
                                         </div>
                                         <div class="tab-pane" id="bahanCair" role="tabpanel">
+
+                                            <div class="d-flex mb-3">
+                                                <!-- Form Download Laporan -->
+                                                <form action="/download-laporan-bahan-cair" method="GET" class="d-inline">
+                                                    <div class="input-group">
+                                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
+                                                        <button type="submit" class="btn btn-info btn-sm">
+                                                            <i class="fas fa-download"></i> Download Laporan Bahan Masuk & Keluar
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
 
                                             <table id="datatable2" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                                 <thead>

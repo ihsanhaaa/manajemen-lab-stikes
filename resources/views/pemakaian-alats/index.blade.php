@@ -86,15 +86,7 @@
                                     <i class="fas fa-plus"></i> Tambah Pengajuan Alat
                                 </button>
                             
-                                <!-- Form Download Laporan -->
-                                <form action="/download-laporan" method="GET" class="d-inline">
-                                    <div class="input-group">
-                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
-                                        <button type="submit" class="btn btn-info btn-sm">
-                                            <i class="fas fa-download"></i> Download Laporan
-                                        </button>
-                                    </div>
-                                </form>
+                                
                             </div>                            
 
                             <!-- Modal -->

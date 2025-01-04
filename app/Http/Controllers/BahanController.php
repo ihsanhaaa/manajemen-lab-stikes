@@ -60,7 +60,7 @@ class BahanController extends Controller
         $bahan->stok_bahan = $request->stok_bahan;
         $bahan->save();
     
-        return redirect()->route('data-bahan.index')->with('success', 'Data Bahan berhasil disimpan.');
+        return redirect()->route('data-bahan.index')->with('success', 'Data Bahan berhasil disimpan');
     }
     
 

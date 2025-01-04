@@ -22,7 +22,7 @@ class StokKeluarController extends Controller
         $kemasans = Kemasan::all();
         $satuans = Satuan::all();
         $bentukSediaans = BentukSediaan::all();
-        $obats = Obat::all();
+        $obats = Obat::orderBy('nama_obat', 'asc')->get();
 
         return view('obat-keluars.index', compact('obat_keluars', 'kemasans', 'satuans', 'bentukSediaans', 'obats'));
     }
