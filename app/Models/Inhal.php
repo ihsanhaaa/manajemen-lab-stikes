@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class KonfirmasiPembayaran extends Model
+class Inhal extends Model
 {
     use HasFactory;
 
-    protected $table = 'konfirmasi_pembayarans';
+    protected $table = 'inhals';
     protected $guarded = ['id'];
 
     public function user()

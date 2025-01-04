@@ -15,9 +15,11 @@ class BahanMasukController extends Controller
 {
     public function index()
     {
-        $bahan_masuks = BahanMasuk::all();
+        $bahan_masuks = BahanMasuk::orderBy('tanggal_masuk', 'desc')->get();
 
-        return view('bahan-masuks.index', compact('bahan_masuks'));
+        $bahans = Bahan::orderBy('nama_bahan', 'asc')->get();
+
+        return view('bahan-masuks.index', compact('bahan_masuks', 'bahans'));
     }
     
     public function store(Request $request)
@@ -140,5 +142,50 @@ class BahanMasukController extends Controller
         $bahanMasuk->save();
 
         return response()->json(['success' => true, 'message' => 'Tanggal masuk berhasil diperbarui']);
+    }
+
+    public function destroy($id)
+    {
+        // Cari data pemakaian_alats berdasarkan ID
+        $bahanMasuk = BahanMasuk::findOrFail($id);
+
+        // Hapus data utama di tabel pemakaian_alats
+        $bahanMasuk->delete();
+
+        // Redirect atau kembali dengan pesan sukses
+        return redirect()->route('data-bahan-masuk.index')
+            ->with('success', 'Data bahan masuk berhasil dihapus');
+    }
+
+    public function storeBahanMasukManual(Request $request)
+    {
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
+        }
+        // Validasi data
+        $validated = $request->validate([
+            'bahan_id' => 'required|exists:bahans,id',
+            'jumlah_masuk' => 'required|integer|min:1',
+            'tanggal_masuk' => 'required|date',
+            'harga_satuan' => 'nullable|integer|min:0',
+        ]);
+
+        // Hitung total harga
+        $totalHarga = $request->jumlah_masuk * $request->harga_satuan;
+
+        // Simpan data ke tabel bahan_masuks
+        BahanMasuk::create([
+            'semester_id' => $semesterAktif->id,
+            'bahan_id' => $validated['bahan_id'],
+            'jumlah_masuk' => $validated['jumlah_masuk'],
+            'tanggal_masuk' => $validated['tanggal_masuk'],
+            'harga_satuan' => $validated['harga_satuan'] ?? 0,
+            'total_harga' => $totalHarga,
+        ]);
+
+        // Redirect atau response
+        return redirect()->route('data-bahan-masuk.index')->with('success', 'Data bahan masuk berhasil disimpan');
     }
 }

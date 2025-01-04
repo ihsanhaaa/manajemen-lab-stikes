@@ -18,7 +18,7 @@ class CreateAdminUserSeeder extends Seeder
     public function run()
     {
 
-        $user = User::create([
+        $laboran = User::create([
             'name' => 'Admin LAB STIKes', 
             'email' => 'admin@gmail.com',
             'password' => bcrypt('1234567890')
@@ -30,7 +30,21 @@ class CreateAdminUserSeeder extends Seeder
    
         $role->syncPermissions($permissions);
      
-        $user->assignRole([$role->id]);
+        $laboran->assignRole([$role->id]);
+
+        $keuangan = User::create([
+            'name' => 'Keuangan STIKes Sambas', 
+            'email' => 'adminkeuangan@gmail.com',
+            'password' => bcrypt('1234567890')
+        ]);
+
+        $role = Role::create(['name' => 'Admin Keuangan']);
+
+        $permissions = Permission::pluck('id','id')->all();
+   
+        $role->syncPermissions($permissions);
+     
+        $keuangan->assignRole([$role->id]);
         
 
         // ketua stikes
@@ -49,7 +63,7 @@ class CreateAdminUserSeeder extends Seeder
         $ketua->assignRole([$role->id]);
 
         // ketua stikes
-        $ketua = User::create([
+        $akademik = User::create([
             'name' => 'Administrasi STIKes Sambas', 
             'email' => 'administrasi@gmail.com',
             'password' => bcrypt('1234567890')
@@ -61,7 +75,7 @@ class CreateAdminUserSeeder extends Seeder
    
         $role->syncPermissions($permissions);
      
-        $ketua->assignRole([$role->id]);
+        $akademik->assignRole([$role->id]);
 
 
         // mahasiswa

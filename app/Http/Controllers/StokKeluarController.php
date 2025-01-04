@@ -18,7 +18,7 @@ class StokKeluarController extends Controller
      */
     public function index()
     {
-        $obat_keluars = StokKeluar::all();
+        $obat_keluars = StokKeluar::orderBy('tanggal_keluar', 'desc')->get();
         $kemasans = Kemasan::all();
         $satuans = Satuan::all();
         $bentukSediaans = BentukSediaan::all();

@@ -208,7 +208,7 @@
 
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td> <a href="{{ route('data-alat.show', $alat->id) }}"><u>{{ $alat->nama_barang }}</u></a> </td>
+                                                        <td> <a style="color: black" href="{{ route('data-alat.show', $alat->id) }}">{{ $alat->nama_barang }}</a> </td>
                                                         <td>{{ $alat->ukuran ?? '-' }}</td>
                                                         <td>{{ $alat->alatMasuks->sum('jumlah_masuk') }}</td>
                                                         <td>{{ $alat->alatRusaks->sum('jumlah_rusak') }}</td>

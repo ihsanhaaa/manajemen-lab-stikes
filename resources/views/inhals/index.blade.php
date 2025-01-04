@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Data Konfirmasi Pembayaran
+    Data Inhal
 @endsection
 
 @section('content')
@@ -25,12 +25,12 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0">Data Konfirmasi Pembayaran</h4>
+                                <h4 class="mb-sm-0">Data Inhal</h4>
 
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
                                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
-                                        <li class="breadcrumb-item active"><a href="javascript: void(0);">Data Konfirmasi Pembayaran</a></li>
+                                        <li class="breadcrumb-item active"><a href="javascript: void(0);">Data Inhal</a></li>
                                     </ol>
                                 </div>
 
@@ -66,7 +66,7 @@
 
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-success btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="fas fa-plus"></i> Tambah Data Konfirmasi Pembayaran
+                                <i class="fas fa-plus"></i> Tambah Data Inhal
                             </button>
 
                             <!-- Modal -->
@@ -74,12 +74,12 @@
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Tambah Data Konfirmasi Pembayaran</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Tambah Data Inhal</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
 
-                                            <form action="{{ route('konfirmasi-pembayaran.store') }}" method="POST" enctype="multipart/form-data">
+                                            <form action="{{ route('data-inhal.store') }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="mb-3">
                                                     <label for="nama_mahasiswa" class="form-label">Nama Mahasiswa<span style="color: red">*</span></label>
@@ -106,7 +106,37 @@
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <label for="tanggal" class="form-label">Tanggal Bayar<span style="color: red">*</span> </label>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <label for="nama_praktikum" class="form-label">Nama Praktikum<span style="color: red">*</span> </label>
+                                                            <input type="text"
+                                                                class="form-control @error('nama_praktikum') is-invalid @enderror" id="nama_praktikum"
+                                                                name="nama_praktikum" value="{{ old('nama_praktikum') }}" required>
+
+                                                            @error('nama_praktikum')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+
+                                                        <div class="col">
+                                                            <label for="percobaan" class="form-label">Percobaan<span style="color: red">*</span> </label>
+                                                            <input type="text"
+                                                                class="form-control @error('percobaan') is-invalid @enderror" id="percobaan"
+                                                                name="percobaan" value="{{ old('percobaan') }}" placeholder="contoh: Percobaan ke-1" required>
+
+                                                            @error('percobaan')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="tanggal" class="form-label">Tanggal<span style="color: red">*</span> </label>
                                                     <input type="date"
                                                         class="form-control @error('tanggal') is-invalid @enderror" id="tanggal"
                                                         name="tanggal" value="{{ old('tanggal') }}" required>
@@ -119,7 +149,7 @@
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <label for="bukti_bayar" class="form-label">Bukti Bayar<span style="color: red">*</span> (Foto atau file pdf maks 2 MB) </label>
+                                                    <label for="bukti_bayar" class="form-label">Bukti Bayar<span style="color: red">*</span> </label>
                                                     <input type="file"
                                                         class="form-control @error('bukti_bayar') is-invalid @enderror" id="bukti_bayar"
                                                         name="bukti_bayar" value="{{ old('bukti_bayar') }}" required>
@@ -151,36 +181,38 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Nama Mahasiswa - NIM</th>
-                                                <th>Tanggal Bayar</th>
-                                                <th>Bukti Bayar</th>
+                                                <th>Nama Praktikum - Percobaan ke</th>
+                                                <th>Tanggal</th>
+                                                <th>Bukti Pembayaran</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         
                                         <tbody>
-                                                @foreach($buktiPembayarans as $key => $buktiPembayaran)
+                                                @foreach($inhals as $key => $inhal)
 
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td>{{ $buktiPembayaran->user->name }} - {{ $buktiPembayaran->user->nim }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($buktiPembayaran->tanggal)->format('d-m-Y') }}</td>
+                                                        <td>{{ $inhal->user->name }} - {{ $inhal->user->nim }}</td>
+                                                        <td>{{ $inhal->nama_praktikum }} - {{ $inhal->percobaan }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($inhal->tanggal)->format('d-m-Y') }}</td>
                                                         <td>
-                                                            <a href="{{ asset($buktiPembayaran->bukti_bayar) }}" target="_blank">
+                                                            <a href="{{ asset($inhal->bukti_bayar) }}" target="_blank">
                                                                 <i class="fas fa-file"></i>
                                                             </a>
                                                         </td>
                                                         <td>
-                                                            @if($buktiPembayaran->status == 1)
+                                                            @if($inhal->status == 1)
                                                                 <span class="badge bg-success">Sudah ACC</span>
                                                             @else
                                                                 <span class="badge bg-danger">Belum ACC</span>
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if ($buktiPembayaran->status == 0)
-                                                                <form action="{{ route('updateStatusKonfirmasiBayar', $buktiPembayaran->id) }}"
-                                                                    method="POST" onsubmit="return confirm('Apakah anda yakin ingin mengkonfirmasi data pembayaran ini?');">
+                                                            @if ($inhal->status == 0)
+                                                                <form action="{{ route('updateStatus', $inhal->id) }}"
+                                                                    method="POST" onsubmit="return confirm('Apakah anda yakin ingin mengkonfirmasi data inhal ini?');">
                                                                     @csrf
                                                                     <button type="submit" class="btn btn-primary btn-sm mx-1" title="ACC"><i class="fas fa-check-circle"></i></button>
                                                                 </form>

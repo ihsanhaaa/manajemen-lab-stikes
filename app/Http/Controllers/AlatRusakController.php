@@ -14,7 +14,7 @@ class AlatRusakController extends Controller
      */
     public function index()
     {
-        $alat_rusaks = AlatRusak::all();
+        $alat_rusaks = AlatRusak::orderBy('tanggal_rusak', 'desc')->get();
         $alats = Alat::all();
 
         return view('alat-rusaks.index', compact('alat_rusaks', 'alats'));

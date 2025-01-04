@@ -1,6 +1,8 @@
 <?php
 
 use App\Exports\AlatLaporanExport;
+use App\Exports\BahanLaporanExport;
+use App\Exports\ObatLaporanExport;
 use App\Http\Controllers\AlatController;
 use App\Http\Controllers\AlatMasukController;
 use App\Http\Controllers\AlatRusakController;
@@ -9,6 +11,7 @@ use App\Http\Controllers\BahanKeluarController;
 use App\Http\Controllers\BahanMasukController;
 use App\Http\Controllers\BentukSediaanController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InhalController;
 use App\Http\Controllers\KemasanController;
 use App\Http\Controllers\KonfirmasiPembayaranController;
 use App\Http\Controllers\ObatController;
@@ -115,11 +118,15 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('/data-kemasan', KemasanController::class);
 
+    Route::resource('/data-inhal', InhalController::class);
+
     Route::resource('/data-bentuk-sediaan', BentukSediaanController::class);
 
     Route::resource('/data-satuan', SatuanController::class);
 
     Route::resource('/data-alat', AlatController::class);
+
+    Route::resource('/konfirmasi-pembayaran', KonfirmasiPembayaranController::class);
 
     Route::post('pengajuan-bahan/konfirmasi/{id}', [PengajuanBahanController::class, 'update'])
         ->name('pengajuan-bahan.konfirmasi.update');
@@ -172,6 +179,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('ganti-alat-rusak/{id}', [AlatRusakController::class, 'updateGantiAlat'])->name('updateGantiAlat');
 
+    Route::post('acc-inhal/{id}', [InhalController::class, 'updateStatus'])->name('updateStatus');
+
+    Route::post('acc-konfirmasi-pembayaran/{id}', [KonfirmasiPembayaranController::class, 'updateStatus'])->name('updateStatusKonfirmasiBayar');
+
     Route::get('/autocomplete-bahan', [PengajuanBahanController::class, 'autocompleteBahan'])->name('autocomplete.bahan');
 
     Route::post('/surat-masuk/update/{id}', [SuratController::class, 'update']);
@@ -192,7 +203,27 @@ Route::group(['middleware' => ['auth']], function () {
         }
         
         return Excel::download(new AlatLaporanExport($bulan, $tahun), "laporan_alat_{$bulan}_{$tahun}.xlsx");
-    });    
+    });
+    
+    Route::get('/download-laporan-bahan', function () {
+        $bulan_tahun = request('bulan_tahun');
+        
+        if ($bulan_tahun) {
+            list($tahun, $bulan) = explode('-', $bulan_tahun);
+        }
+        
+        return Excel::download(new BahanLaporanExport($bulan, $tahun), "laporan_bahan_{$bulan}_{$tahun}.xlsx");
+    });
+
+    Route::get('/download-laporan-obat', function () {
+        $bulan_tahun = request('bulan_tahun');
+        
+        if ($bulan_tahun) {
+            list($tahun, $bulan) = explode('-', $bulan_tahun);
+        }
+        
+        return Excel::download(new ObatLaporanExport($bulan, $tahun), "laporan_obat_{$bulan}_{$tahun}.xlsx");
+    });
 
     Route::post('/bahan-masuk/{id}/update-tanggal', [BahanMasukController::class, 'updateTanggalMasuk'])->name('bahan-masuk.update-tanggal');
 
@@ -205,6 +236,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/stok-keluar/{id}/update-tanggal', [StokKeluarController::class, 'updateTanggalKeluar'])->name('stok-keluar.update-tanggal');
 
     Route::post('/bahan-keluar/{id}/update-tanggal', [BahanKeluarController::class, 'updateTanggalKeluar'])->name('bahan-keluar.update-tanggal');
+
+    Route::post('/pemakaian-alat/{id}/update-detail', [PemakaianAlatController::class, 'AddUpdateDetail'])->name('pemakaian-alat.updateDetail');
+
+    Route::post('/data-bahan-manual/store', [BahanMasukController::class, 'storeBahanMasukManual'])->name('data-bahan-manual.store');
+
+    Route::post('/data-alat-manual/store', [AlatMasukController::class, 'storeAlatMasukManual'])->name('data-alat-manual.store');
 
 
 });

@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('konfirmasi_pembayarans', function (Blueprint $table) {
+        Schema::create('inhals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('semester_id')->onDelete('cascade');
+            $table->string('nama_praktikum');
+            $table->string('percobaan');
             $table->date('tanggal');
             $table->string('bukti_bayar'); // path foto atau file pdf
-            $table->string('keterangan')->nullable();
             $table->boolean('status')->default(false);
             $table->timestamps();
         });
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('konfirmasi_pembayarans');
+        Schema::dropIfExists('inhals');
     }
 };

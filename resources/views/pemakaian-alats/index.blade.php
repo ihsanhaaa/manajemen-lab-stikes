@@ -265,7 +265,7 @@
                                                         @foreach($pemakaianAlats as $key => $pemakaianAlat)
                                                                 <tr>
                                                                     <th scope="row">{{ ++$start }}</th>
-                                                                    <td> <a href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
+                                                                    <td> <a style="color: black" href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
                                                                     <td>
                                                                         <span style="cursor: pointer" title="{{ $pemakaianAlat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($pemakaianAlat->nama_mahasiswa, 30) }}</span>
                                                                     </td>
@@ -318,7 +318,7 @@
                                                         @foreach($pemakaianAlatSelesais as $key => $pemakaianAlat)
                                                                 <tr>
                                                                     <th scope="row">{{ ++$start }}</th>
-                                                                    <td> <a href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
+                                                                    <td> <a style="color: black" href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
                                                                     <td>
                                                                         <span style="cursor: pointer" title="{{ $pemakaianAlat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($pemakaianAlat->nama_mahasiswa, 30) }}</span>
                                                                     </td>
@@ -405,7 +405,7 @@
                                                         @foreach($pemakaianAlats as $key => $pemakaianAlat)
                                                                 <tr>
                                                                     <th scope="row">{{ ++$start }}</th>
-                                                                    <td> <a href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
+                                                                    <td> <a style="color: black" href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
                                                                     <td>
                                                                         <span style="cursor: pointer" title="{{ $pemakaianAlat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($pemakaianAlat->nama_mahasiswa, 30) }}</span>
                                                                     </td>
@@ -467,7 +467,7 @@
                                                         @foreach($pemakaianAlatSelesais as $key => $pemakaianAlat)
                                                                 <tr>
                                                                     <th scope="row">{{ ++$start }}</th>
-                                                                    <td> <a href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
+                                                                    <td> <a style="color: black" href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
                                                                     <td>
                                                                         <span style="cursor: pointer" title="{{ $pemakaianAlat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($pemakaianAlat->nama_mahasiswa, 30) }}</span>
                                                                     </td>
@@ -537,7 +537,7 @@
                                                     @if ($pemakaianAlat->user_id == Auth::user()->id)
                                                         <tr>
                                                             <th scope="row">{{ ++$start }}</th>
-                                                            <td> <a href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
+                                                            <td> <a style="color: black" href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
                                                             <td>
                                                                 <span style="cursor: pointer" title="{{ $pemakaianAlat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($pemakaianAlat->nama_mahasiswa, 30) }}</span>
                                                             </td>

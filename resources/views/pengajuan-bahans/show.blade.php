@@ -288,8 +288,8 @@
                                                 @foreach($pengajuanBahan->obatPengajuanBahans as $obatPengajuanBahan)
                                                     @if($obatPengajuanBahan->tipe == 'bahan')
                                                         <tr>
-                                                            <td><a href="{{ route('data-bahan.show', $obatPengajuanBahan->bahan->id) }}">{{ $obatPengajuanBahan->bahan->kode_bahan ?? 'N/A' }}</a></td>
-                                                            <td>{{ $obatPengajuanBahan->bahan->nama_bahan ?? 'N/A' }} ({{ $obatPengajuanBahan->bahan->formula }})</td>
+                                                            <td><a style="color: black" href="{{ route('data-bahan.show', $obatPengajuanBahan->bahan->id) }}">{{ $obatPengajuanBahan->bahan->kode_bahan ?? 'N/A' }}</a></td>
+                                                            <td><a style="color: black" href="{{ route('data-bahan.show', $obatPengajuanBahan->bahan->id) }}">{{ $obatPengajuanBahan->bahan->nama_bahan ?? 'N/A' }} ({{ $obatPengajuanBahan->bahan->formula }})</a></td>
                                                             <td>{{ $obatPengajuanBahan->tipe ?? 'N/A' }} - {{ $obatPengajuanBahan->bahan->jenis_bahan ?? 'N/A' }}</td>
                                                             <td>{{ $obatPengajuanBahan->jumlah_pemakaian }}</td>
                                                             <td>{{ $obatPengajuanBahan->satuan ?? 'N/A' }}</td>
@@ -310,8 +310,8 @@
                                                         </tr>
                                                     @elseif($obatPengajuanBahan->tipe == 'obat')
                                                         <tr>
-                                                            <td><a href="{{ route('data-obat.show', $obatPengajuanBahan->obat->id) }}">{{ $obatPengajuanBahan->obat->kode_obat ?? 'N/A' }}</a></td>
-                                                            <td>{{ $obatPengajuanBahan->obat->nama_obat ?? 'N/A' }}</td>
+                                                            <td><a style="color: black" href="{{ route('data-obat.show', $obatPengajuanBahan->obat->id) }}">{{ $obatPengajuanBahan->obat->kode_obat ?? 'N/A' }}</a></td>
+                                                            <td><a style="color: black" href="{{ route('data-obat.show', $obatPengajuanBahan->obat->id) }}">{{ $obatPengajuanBahan->obat->nama_obat ?? 'N/A' }}</a></td>
                                                             <td>{{ $obatPengajuanBahan->tipe ?? 'N/A' }}</td>
                                                             <td>{{ $obatPengajuanBahan->jumlah_pemakaian }}</td>
                                                             <td>{{ $obatPengajuanBahan->satuan ?? 'N/A' }}</td>

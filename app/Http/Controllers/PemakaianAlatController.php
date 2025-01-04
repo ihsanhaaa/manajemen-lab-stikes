@@ -167,6 +167,7 @@ class PemakaianAlatController extends Controller
                 'alat_id' => $alatId,
                 'ukuran' => $request->ukuran[$index],
                 'jumlah' => $request->jumlah[$index],
+                'jumlah_rusak' => $request->jumlah_rusak[$index],
                 'kondisi_pinjam' => $request->kondisi_pinjam[$index],
                 'kondisi_kembali' => $request->kondisi_kembali[$index],
                 'keterangan' => $request->keterangan[$index] ?? null,
@@ -211,4 +212,36 @@ class PemakaianAlatController extends Controller
 
         return redirect()->back()->with('success', 'Data berhasil dihapus');
     }
+
+    public function AddUpdateDetail(Request $request, $pemakaianAlatId)
+    {
+        $request->validate([
+            'nama_barang' => 'required|exists:alats,id',
+            'ukuran' => 'required|string|max:255',
+            'kondisi_pinjam' => 'required|in:Baik,Pecah',
+            'jumlah' => 'required|integer|min:1',
+            'kondisi_kembali' => 'required|in:Baik,Pecah',
+            'jumlah_rusak' => 'required|integer|min:0',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        try {
+            FormPemakaianAlat::create([
+                'user_id' => auth()->id(),
+                'alat_id' => $request->nama_barang,
+                'pemakaian_alat_id' => $pemakaianAlatId,
+                'ukuran' => $request->ukuran,
+                'jumlah' => $request->jumlah,
+                'jumlah_rusak' => $request->jumlah_rusak,
+                'kondisi_pinjam' => $request->kondisi_pinjam,
+                'kondisi_kembali' => $request->kondisi_kembali,
+                'keterangan' => $request->keterangan,
+            ]);
+
+            return back()->with('success', 'Data pemakaian alat berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
 }

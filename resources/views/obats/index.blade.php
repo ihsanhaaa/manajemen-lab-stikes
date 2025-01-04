@@ -66,13 +66,25 @@
                         <div class="col-lg-12">
 
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="fas fa-plus"></i> Tambah Data Obat
-                            </button>
-
-                            <a href="{{ route('laporan.obat.exportPDF') }}" class="btn btn-info btn-sm mb-3 mx-1">
-                                <i class="fas fa-download"></i> Download Laporan PDF
-                            </a>
+                            <div class="d-flex align-items-center mb-3">
+                                <button type="button" class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="fas fa-plus"></i> Tambah Data Obat
+                                </button>
+    
+                                {{-- <a href="{{ route('laporan.obat.exportPDF') }}" class="btn btn-info btn-sm mb-3 mx-1">
+                                    <i class="fas fa-download"></i> Download Laporan PDF
+                                </a> --}}
+                            
+                                <!-- Form Download Laporan -->
+                                <form action="/download-laporan-obat" method="GET" class="d-inline">
+                                    <div class="input-group">
+                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
+                                        <button type="submit" class="btn btn-info btn-sm">
+                                            <i class="fas fa-download"></i> Download Laporan
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
 
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -247,9 +259,7 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Kode Obat</th>
-                                                <th>Nama obat</th>
-                                                <th>Kekuatan Obat</th>
+                                                <th>Kode - Nama obat</th>
                                                 <th>Barang Masuk</th>
                                                 <th>Barang Keluar</th>
                                                 <th>Stok Akhir</th>
@@ -263,9 +273,7 @@
 
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td> <a href="{{ route('data-obat.show', $obat->id) }}"><u>{{ $obat->kode_obat }}</u></a> </td>
-                                                        <td>{{ $obat->nama_obat }}</td>
-                                                        <td>{{ $obat->kekuatan_obat }}</td>
+                                                        <td><a style="color: black" href="{{ route('data-obat.show', $obat->id) }}">{{ $obat->kode_obat }} - {{ $obat->nama_obat }}</a></td>
                                                         <td>{{ $obat->stokMasuks->sum('jumlah_masuk') }}</td>
                                                         <td>{{ $obat->stokKeluars->sum('jumlah_pemakaian') }}</td>
                                                         <td>

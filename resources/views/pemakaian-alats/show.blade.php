@@ -123,9 +123,13 @@
                                                 <button class="btn btn-success btn-sm" disabled><i class="fas fa-check-circle"></i> Sudah ACC</button>
                                             @endif
 
-                                            @role('Ketua STIKes')
+                                            @role('Admin Lab')
                                                 @if ($pemakaianAlat->status == 0)
-                                                    <button type="button" class="btn btn-primary btn-sm mx-1" data-bs-toggle="modal" data-bs-target="#editModal">
+                                                    <button type="button" class="btn btn-secondary btn-sm mx-1" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                                                        <i class="fas fa-plus"></i> Tambah Data
+                                                    </button>
+                                                    
+                                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">
                                                         <i class="fas fa-edit"></i> Edit Data
                                                     </button>
                                                 @else
@@ -135,7 +139,7 @@
                                         </div>
                                         
                                         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg">
+                                            <div class="modal-dialog modal-xl">
                                                 <form action="{{ route('pemakaian-alat.updateDetail', $pemakaianAlat->id) }}" method="POST" enctype="multipart/form-data">
                                                     @csrf
                                                     @method('PUT')
@@ -185,10 +189,7 @@
                                                                         <label for="ukuran[]" class="form-label">Ukuran</label>
                                                                         <input type="text" class="form-control" name="ukuran[]" value="{{ $formPemakaianAlat->ukuran }}" required>
                                                                     </div>
-                                                                    <div class="col-md-2">
-                                                                        <label for="jumlah[]" class="form-label">Jumlah</label>
-                                                                        <input type="number" class="form-control" name="jumlah[]" value="{{ $formPemakaianAlat->jumlah }}" required>
-                                                                    </div>
+
                                                                     <div class="col-md-2">
                                                                         <label for="kondisi_pinjam[]" class="form-label">Kondisi Pinjam</label>
                                                                         <select class="form-control" name="kondisi_pinjam[]">
@@ -196,12 +197,21 @@
                                                                             <option value="Pecah" {{ $formPemakaianAlat->kondisi_pinjam == 'Pecah' ? 'selected' : '' }}>Pecah</option>
                                                                         </select>
                                                                     </div>
+                                                                    <div class="col-md-1">
+                                                                        <label for="jumlah[]" class="form-label">Jumlah Pinjam</label>
+                                                                        <input type="number" class="form-control" name="jumlah[]" value="{{ $formPemakaianAlat->jumlah }}" required>
+                                                                    </div>
+                                                                    
                                                                     <div class="col-md-2">
                                                                         <label for="kondisi_kembali[]" class="form-label">Kondisi Kembali</label>
                                                                         <select class="form-control" name="kondisi_kembali[]">
                                                                             <option value="Baik" {{ $formPemakaianAlat->kondisi_kembali == 'Baik' ? 'selected' : '' }}>Baik</option>
                                                                             <option value="Pecah" {{ $formPemakaianAlat->kondisi_kembali == 'Pecah' ? 'selected' : '' }}>Pecah</option>
                                                                         </select>
+                                                                    </div>
+                                                                    <div class="col-md-1">
+                                                                        <label for="jumlah_rusak[]" class="form-label">Jumlah Rusak</label>
+                                                                        <input type="number" class="form-control" name="jumlah_rusak[]" value="{{ $formPemakaianAlat->jumlah_rusak }}" required>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <label for="keterangan[]" class="form-label">Keterangan</label>
@@ -219,6 +229,75 @@
                                                 </form>
                                             </div>
                                         </div>  
+
+                                        <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-xl">
+                                                <form action="{{ route('pemakaian-alat.updateDetail', $pemakaianAlat->id) }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="editModalLabel">Tambah Data Pemakaian Alat</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="hidden" value="{{ $pemakaianAlat->id }}">
+
+                                                            <div class="mb-3">
+                                                                <label for="nama_barang" class="form-label">Nama Alat<span style="color: red;">*</span></label>
+                                                                <select class="form-control" name="nama_barang" required>
+                                                                        <option value="">-- Pilih Alat --</option>
+                                                                        @foreach($alats as $alat)
+                                                                            <option value="{{ $alat->id }}">{{ $alat->nama_barang }}</option>
+                                                                        @endforeach
+                                                                </select>
+                                                            </div>
+                                        
+                                                            <div class="mb-3">
+                                                                <label for="ukuran" class="form-label">Ukuran<span style="color: red;">*</span></label>
+                                                                <input type="text" class="form-control" name="ukuran" required>
+                                                            </div>
+                                        
+                                                            <div class="mb-3">
+                                                                <label for="kondisi_pinjam" class="form-label">Kondisi Pinjam<span style="color: red;">*</span></label>
+                                                                <select class="form-control" name="kondisi_pinjam" required>
+                                                                    <option value="">--Pilih--</option>
+                                                                    <option value="Baik">Baik</option>
+                                                                    <option value="Pecah">Pecah</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="jumlah" class="form-label">Jumlah Pinjam<span style="color: red;">*</span></label>
+                                                                <input type="number" class="form-control" name="jumlah" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="kondisi_kembali" class="form-label">Kondisi Kembali<span style="color: red;">*</span></label>
+                                                                <select class="form-control" name="kondisi_kembali" required>
+                                                                    <option value="">--Pilih--</option>
+                                                                    <option value="Baik">Baik</option>
+                                                                    <option value="Pecah">Pecah</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="jumlah_rusak" class="form-label">Jumlah Rusak<span style="color: red;">*</span></label>
+                                                                <input type="number" class="form-control" name="jumlah_rusak" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="keterangan" class="form-label">Keterangan</label>
+                                                                <input type="text" class="form-control" name="keterangan">
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                         
                                         @if ($pemakaianAlat->status != 0)
                                             <div class="alert alert-primary mt-3" role="alert">
@@ -228,7 +307,7 @@
 
                                         <hr>
 
-                                        <h3>Pemakaian Bahan</h3>
+                                        <h3>Pemakaian Alat</h3>
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -247,7 +326,7 @@
                                                     <tr>
                                                         <td>
                                                             @if ($formPemakaianAlat->alat)
-                                                                <a href="{{ route('data-alat.show', $formPemakaianAlat->alat->id ) }}">{{ $formPemakaianAlat->alat->nama_barang ?? 'N/A' }}</a>
+                                                                <a style="color: black" href="{{ route('data-alat.show', $formPemakaianAlat->alat->id ) }}">{{ $formPemakaianAlat->alat->nama_barang ?? 'N/A' }}</a>
                                                             @else
                                                                 {{ $formPemakaianAlat->alat->nama_barang ?? 'N/A' }}
                                                             @endif

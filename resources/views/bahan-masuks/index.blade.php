@@ -70,6 +70,10 @@
                                 <i class="fas fa-plus"></i> Import Data Bahan Masuk
                             </button>
 
+                            <button type="button" class="btn btn-primary btn-sm me-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="fas fa-plus"></i> Tambah Data Bahan Masuk Manual
+                            </button>
+
                             <!-- Modal -->
                             <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -121,6 +125,86 @@
                                                 <button type="submit" class="btn btn-primary">Import</button>
                                             </div>
                                         </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Tambah Data Bahan Masuk</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <form action="{{ route('data-bahan-manual.store') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+
+                                                <div class="mb-3">
+                                                    <label for="bahan_id" class="form-label">Nama Bahan<span style="color: red">*</span> </label>
+                                                    <select class="form-control @error('bahan_id') is-invalid @enderror" id="bahan_id" name="bahan_id" required>
+                                                        <option value="">-- Pilih --</option>
+                                                        @foreach($bahans as $bahan)
+                                                        <option value="{{ $bahan->id }}">{{ $bahan->kode_bahan }} - {{ $bahan->nama_bahan }} ({{ $bahan->formula }}) - {{ $bahan->jenis_bahan }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                
+                                                    @error('bahan_id')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="jumlah_masuk" class="form-label">Jumlah Masuk<span style="color: red">*</span> </label>
+                                                    <input type="number"
+                                                        class="form-control @error('jumlah_masuk') is-invalid @enderror" id="jumlah_masuk"
+                                                        name="jumlah_masuk" value="{{ old('jumlah_masuk') }}" required>
+
+                                                    @error('jumlah_masuk')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="tanggal_masuk" class="form-label">Tanggal Masuk<span style="color: red">*</span></label>
+                                                    <input type="date"
+                                                        class="form-control @error('tanggal_masuk') is-invalid @enderror" id="tanggal_masuk"
+                                                        name="tanggal_masuk" value="{{ old('tanggal_masuk') }}" required>
+
+                                                    @error('tanggal_masuk')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="harga_satuan" class="form-label">Harga Satuan</label>
+                                                    <input type="number"
+                                                        class="form-control @error('harga_satuan') is-invalid @enderror" id="harga_satuan"
+                                                        name="harga_satuan">
+
+                                                    @error('harga_satuan')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan Data</button>
+                                                </div>
+
+                                            </form>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -188,16 +272,27 @@
                                                                 <td>Rp. {{ number_format((float) $bahan_masuk->harga_satuan) }}</td>
                                                                 <td>Rp. {{ number_format((float) $bahan_masuk->total_harga) }}</td>
                                                                 <td>
-                                                                    <a href="{{ route('data-bahan.show', $bahan_masuk->bahan->id) }}" class="btn btn-success btn-sm" title="Lihat Detail"><i class="fas fa-eye"></i> </a>
+                                                                    <div class="d-flex">
+                                                                        <a href="{{ route('data-bahan.show', $bahan_masuk->bahan->id) }}" class="btn btn-success btn-sm" title="Lihat Detail"><i class="fas fa-eye"></i> </a>
 
-                                                                    @if ($bahan_masuk->fotoBahanMasuks->count() > 0)
-                                                                        @foreach ($bahan_masuk->fotoBahanMasuks as $foto)
-                                                                            <a href="{{ asset($foto->foto_path) }}" class="btn btn-info btn-sm" target="_blank" title="Lihat Bukti Transaksi"> <i class="fas fa-file-invoice-dollar"></i> </a>
-                                                                            <br>
-                                                                        @endforeach
-                                                                    @else
-                                                                        <span>-</span>
-                                                                    @endif
+                                                                        <form id="input"
+                                                                            action="{{ route('data-bahan-masuk.destroy', $bahan_masuk->id) }}"
+                                                                                method="POST"
+                                                                                onsubmit="return confirm('Apakah anda yakin ingin menghapus data bahan masuk ini?');">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit" class="btn btn-danger btn-sm mx-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>
+                                                                        </form>
+
+                                                                        @if ($bahan_masuk->fotoBahanMasuks->count() > 0)
+                                                                            @foreach ($bahan_masuk->fotoBahanMasuks as $foto)
+                                                                                <a href="{{ asset($foto->foto_path) }}" class="btn btn-info btn-sm" target="_blank" title="Lihat Bukti Transaksi"> <i class="fas fa-file-invoice-dollar"></i> </a>
+                                                                                <br>
+                                                                            @endforeach
+                                                                        @else
+                                                                            <span>-</span>
+                                                                        @endif
+                                                                    </div>
                                                                 </td>
                                                             </tr>
                                                         @endif
@@ -250,16 +345,27 @@
                                                                 <td>Rp. {{ number_format((float) $bahan_masuk->harga_satuan) }}</td>
                                                                 <td>Rp. {{ number_format((float) $bahan_masuk->total_harga) }}</td>
                                                                 <td>
-                                                                    <a href="{{ route('data-bahan.show', $bahan_masuk->bahan->id) }}" class="btn btn-success btn-sm" title="Lihat Detail"><i class="fas fa-eye"></i> </a>
+                                                                    <div class="d-flex">
+                                                                        <a href="{{ route('data-bahan.show', $bahan_masuk->bahan->id) }}" class="btn btn-success btn-sm" title="Lihat Detail"><i class="fas fa-eye"></i> </a>
 
-                                                                    @if ($bahan_masuk->fotoBahanMasuks->count() > 0)
-                                                                        @foreach ($bahan_masuk->fotoBahanMasuks as $foto)
-                                                                            <a href="{{ asset($foto->foto_path) }}" class="btn btn-info btn-sm" target="_blank" title="Lihat Bukti Transaksi"> <i class="fas fa-file-invoice-dollar"></i> </a>
-                                                                            <br>
-                                                                        @endforeach
-                                                                    @else
-                                                                        <span>-</span>
-                                                                    @endif
+                                                                        <form id="input"
+                                                                                action="{{ route('data-bahan-masuk.destroy', $bahan_masuk->id) }}"
+                                                                                    method="POST"
+                                                                                    onsubmit="return confirm('Apakah anda yakin ingin menghapus data bahan masuk ini?');">
+                                                                                @csrf
+                                                                                @method('DELETE')
+                                                                                <button type="submit" class="btn btn-danger btn-sm mx-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>
+                                                                            </form>
+
+                                                                        @if ($bahan_masuk->fotoBahanMasuks->count() > 0)
+                                                                            @foreach ($bahan_masuk->fotoBahanMasuks as $foto)
+                                                                                <a href="{{ asset($foto->foto_path) }}" class="btn btn-info btn-sm" target="_blank" title="Lihat Bukti Transaksi"> <i class="fas fa-file-invoice-dollar"></i> </a>
+                                                                                <br>
+                                                                            @endforeach
+                                                                        @else
+                                                                            <span>-</span>
+                                                                        @endif
+                                                                    </div>
                                                                 </td>
                                                             </tr>
                                                         @endif

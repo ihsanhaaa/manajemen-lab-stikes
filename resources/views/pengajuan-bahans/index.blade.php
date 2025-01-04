@@ -288,7 +288,7 @@
                                                     @foreach($pengajuanbahans as $key => $obat)
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td> <a href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
+                                                        <td> <a style="color: black" href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
                                                         <td>
                                                             <span style="cursor: pointer" title="{{ $obat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($obat->nama_mahasiswa, 30) }}</span>
                                                         </td>
@@ -340,7 +340,7 @@
                                                     @foreach($pengajuanbahanSelesais as $key => $obat)
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td> <a href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
+                                                        <td> <a style="color: black" href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
                                                         <td>
                                                             <span style="cursor: pointer" title="{{ $obat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($obat->nama_mahasiswa, 30) }}</span>
                                                         </td>
@@ -426,7 +426,7 @@
                                                     @foreach($pengajuanbahans as $key => $obat)
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td> <a href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
+                                                        <td> <a style="color: black" href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
                                                         <td>
                                                             <span style="cursor: pointer" title="{{ $obat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($obat->nama_mahasiswa, 30) }}</span>
                                                         </td>
@@ -478,7 +478,7 @@
                                                     @foreach($pengajuanbahanSelesais as $key => $obat)
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td> <a href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
+                                                        <td> <a style="color: black" href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
                                                         <td>
                                                             <span style="cursor: pointer" title="{{ $obat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($obat->nama_mahasiswa, 30) }}</span>
                                                         </td>
@@ -547,7 +547,7 @@
                                                     @if ($obat->user_id == Auth::user()->id)
                                                         <tr>
                                                             <th scope="row">{{ ++$key }}</th>
-                                                            <td> <a href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
+                                                            <td> <a style="color: black" href="{{ route('pengajuan-bahan.show', $obat->id) }}">{{ $obat->nama_praktikum }}</a> </td>
                                                             <td>
                                                                 <span style="cursor: pointer" title="{{ $obat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($obat->nama_mahasiswa, 30) }}</span>
                                                             </td>

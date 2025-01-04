@@ -239,6 +239,23 @@
                                 @endif
                             </a>
                         </li>
+
+                        <li>
+                            <a href="{{ route('data-inhal.index') }}" class="waves-effect">
+                                <i class="ri-book-mark-line"></i>
+                                <span>Inhal</span>
+                                @if($countInhal > 0)
+                                    <span class="badge bg-secondary">{{ $countInhal }}</span>
+                                @endif
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('konfirmasi-pembayaran.index') }}" class=" waves-effect">
+                                <i class="ri-book-2-line"></i>
+                                <span>Konfirmasi Pembayaran</span>
+                            </a>
+                        </li>
                         
                     @endrole
 
@@ -267,6 +284,23 @@
                         
                     @endrole
 
+                    @role('Admin Keuangan')
+                        <li>
+                            <a href="{{ route('home') }}" class="waves-effect">
+                                <i class="ri-home-line"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('konfirmasi-pembayaran.index') }}" class=" waves-effect">
+                                <i class="ri-book-2-line"></i>
+                                <span>Konfirmasi Pembayaran</span>
+                            </a>
+                        </li>
+                        
+                    @endrole
+
                     @role('Mahasiswa')
                         <li>
                             <a href="{{ route('home') }}" class="waves-effect">
@@ -289,12 +323,19 @@
                             </a>
                         </li>
 
-                        {{-- <li>
+                        <li>
                             <a href="{{ route('konfirmasi-pembayaran.index') }}" class=" waves-effect">
                                 <i class="ri-book-2-line"></i>
                                 <span>Konfirmasi Pembayaran</span>
                             </a>
-                        </li> --}}
+                        </li>
+
+                        <li>
+                            <a href="{{ route('data-inhal.index') }}" class="waves-effect">
+                                <i class="ri-book-mark-line"></i>
+                                <span>Inhal</span>
+                            </a>
+                        </li>
                     @endrole
                     
                 @endguest

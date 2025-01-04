@@ -70,9 +70,9 @@
                                 <i class="fas fa-plus"></i> Import Data Alat Masuk
                             </button>
 
-                            <a href="{{ asset('excel/template-data-alat.xlsx') }}" class="btn btn-info btn-sm mb-3 mx-1">
-                                <i class="fas fa-download"></i> Download Template Excel
-                            </a>
+                            <button type="button" class="btn btn-primary btn-sm me-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="fas fa-plus"></i> Tambah Data Alat Masuk Manual
+                            </button>
 
                             <!-- Modal -->
                             <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
@@ -124,6 +124,86 @@
                                                 <button type="submit" class="btn btn-primary">Import</button>
                                             </div>
                                         </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Tambah Data Alat Masuk</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <form action="{{ route('data-alat-manual.store') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+
+                                                <div class="mb-3">
+                                                    <label for="alat_id" class="form-label">Nama Alat/Aset<span style="color: red">*</span> </label>
+                                                    <select class="form-control @error('alat_id') is-invalid @enderror" id="alat_id" name="alat_id" required>
+                                                        <option value="">-- Pilih --</option>
+                                                        @foreach($alats as $alat)
+                                                        <option value="{{ $alat->id }}">{{ $alat->nama_barang }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                
+                                                    @error('bahan_id')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="jumlah_masuk" class="form-label">Jumlah Masuk<span style="color: red">*</span> </label>
+                                                    <input type="number"
+                                                        class="form-control @error('jumlah_masuk') is-invalid @enderror" id="jumlah_masuk"
+                                                        name="jumlah_masuk" value="{{ old('jumlah_masuk') }}" required>
+
+                                                    @error('jumlah_masuk')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="tanggal_masuk" class="form-label">Tanggal Masuk<span style="color: red">*</span></label>
+                                                    <input type="date"
+                                                        class="form-control @error('tanggal_masuk') is-invalid @enderror" id="tanggal_masuk"
+                                                        name="tanggal_masuk" value="{{ old('tanggal_masuk') }}" required>
+
+                                                    @error('tanggal_masuk')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="harga_satuan" class="form-label">Harga Satuan</label>
+                                                    <input type="number"
+                                                        class="form-control @error('harga_satuan') is-invalid @enderror" id="harga_satuan"
+                                                        name="harga_satuan">
+
+                                                    @error('harga_satuan')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan Data</button>
+                                                </div>
+
+                                            </form>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>

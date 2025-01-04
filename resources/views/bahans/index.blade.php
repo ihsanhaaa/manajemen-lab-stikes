@@ -66,13 +66,25 @@
                         <div class="col-lg-12">
 
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success btn-sm mb-3 mx-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="fas fa-plus"></i> Tambah Data Bahan
-                            </button>
-
-                            <a href="{{ route('laporan.bahan.exportPDF') }}" class="btn btn-info btn-sm mb-3 mx-1">
-                                <i class="fas fa-download"></i> Download Laporan PDF
-                            </a>
+                            <div class="d-flex align-items-center mb-3">
+                                <button type="button" class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="fas fa-plus"></i> Tambah Data Bahan
+                                </button>
+    
+                                {{-- <a href="{{ route('laporan.bahan.exportPDF') }}" class="btn btn-info btn-sm mb-3 mx-1">
+                                    <i class="fas fa-download"></i> Download Laporan PDF
+                                </a> --}}
+                            
+                                <!-- Form Download Laporan -->
+                                <form action="/download-laporan-bahan" method="GET" class="d-inline">
+                                    <div class="input-group">
+                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
+                                        <button type="submit" class="btn btn-info btn-sm">
+                                            <i class="fas fa-download"></i> Download Laporan
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
 
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -235,7 +247,7 @@
                                                          @if($bahan->jenis_bahan == 'Padat')
                                                             <tr>
                                                                 <th scope="row">{{ $counter++ }}</th>
-                                                                <td> <a href="{{ route('data-bahan.show', $bahan->id) }}">{{ $bahan->kode_bahan }} - {{ $bahan->nama_bahan }}</a> </td>
+                                                                <td> <a style="color: black" href="{{ route('data-bahan.show', $bahan->id) }}">{{ $bahan->kode_bahan }} - {{ $bahan->nama_bahan }}</a> </td>
                                                                 <td>{{ $bahan->jenis_bahan }}</td>
                                                                 <td>{{ $bahan->bahanMasuks->sum('jumlah_masuk') }}</td>
                                                                 <td>{{ $bahan->bahanKeluars->sum('jumlah_pemakaian') }}</td>
@@ -297,8 +309,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Kode Bahan</th>
-                                                        <th>Nama Bahan</th>
+                                                        <th>Kode - Nama Bahan</th>
                                                         <th>Jenis</th>
                                                         <th>Bahan Masuk</th>
                                                         <th>Bahan Keluar</th>
@@ -315,8 +326,7 @@
                                                          @if($bahan->jenis_bahan != 'Padat')
                                                             <tr>
                                                                 <th scope="row">{{ $counter2++ }}</th>
-                                                                <td> <a href="{{ route('data-bahan.show', $bahan->id) }}"><u>{{ $bahan->kode_bahan }}</u></a> </td>
-                                                                <td>{{ $bahan->nama_bahan }}</td>
+                                                                <td> <a style="color: black" href="{{ route('data-bahan.show', $bahan->id) }}">{{ $bahan->kode_bahan }} - {{ $bahan->nama_bahan }}</a> </td>
                                                                 <td>{{ $bahan->jenis_bahan }}</td>
                                                                 <td>{{ $bahan->bahanMasuks->sum('jumlah_masuk') }}</td>
                                                                 <td>{{ $bahan->bahanKeluars->sum('jumlah_pemakaian') }}</td>

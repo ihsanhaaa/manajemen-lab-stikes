@@ -20,12 +20,14 @@ class StokMasukController extends Controller
 {
     public function index()
     {
-        $stokMasuks = StokMasuk::all();
+        $stokMasuks = StokMasuk::orderBy('tanggal_masuk', 'desc')->get();
         $kemasans = Kemasan::all();
         $satuans = Satuan::all();
         $bentukSediaans = BentukSediaan::all();
 
-        return view('stok-masuks.index', compact('stokMasuks', 'kemasans', 'satuans', 'bentukSediaans'));
+        $obats = Obat::orderBy('nama_obat', 'asc')->get();
+
+        return view('stok-masuks.index', compact('stokMasuks', 'kemasans', 'satuans', 'bentukSediaans', 'obats'));
     }
 
     public function store(Request $request)
@@ -170,5 +172,37 @@ class StokMasukController extends Controller
         $stokMasuk->save();
 
         return response()->json(['success' => true, 'message' => 'Tanggal masuk berhasil diperbarui']);
+    }
+
+    public function storeObatMasukManual(Request $request)
+    {
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
+        }
+        // Validasi data
+        $validated = $request->validate([
+            'obat_id' => 'required|exists:alats,id',
+            'jumlah_masuk' => 'required|integer|min:1',
+            'tanggal_masuk' => 'required|date',
+            'harga_satuan' => 'nullable|integer|min:0',
+        ]);
+
+        // Hitung total harga
+        $totalHarga = $request->jumlah_masuk * $request->harga_satuan;
+
+        // Simpan data ke tabel bahan_masuks
+        StokMasuk::create([
+            'semester_id' => $semesterAktif->id,
+            'obat_id' => $validated['obat_id'],
+            'jumlah_masuk' => $validated['jumlah_masuk'],
+            'tanggal_masuk' => $validated['tanggal_masuk'],
+            'harga_satuan' => $validated['harga_satuan'] ?? 0,
+            'total_harga' => $totalHarga,
+        ]);
+
+        // Redirect atau response
+        return redirect()->route('data-obat-masuk.index')->with('success', 'Data obat masuk berhasil disimpan');
     }
 }

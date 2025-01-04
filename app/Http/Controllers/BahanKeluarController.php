@@ -11,7 +11,7 @@ class BahanKeluarController extends Controller
 {
     public function index()
     {
-        $bahan_keluars = BahanKeluar::all();
+        $bahan_keluars = BahanKeluar::orderBy('tanggal_keluar', 'desc')->get();
 
         $bahans = Bahan::all();
 

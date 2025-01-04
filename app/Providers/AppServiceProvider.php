@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Inhal;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\PemakaianAlat;
@@ -33,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('*', function ($view) {
             $countPemakaianBahan = PengajuanBahan::where('status', 'false')->count();
             $view->with('countPemakaianBahan', $countPemakaianBahan);
+        });
+
+        view()->composer('*', function ($view) {
+            $countInhal = Inhal::where('status', 'false')->count();
+            $view->with('countInhal', $countInhal);
         });
 
     }

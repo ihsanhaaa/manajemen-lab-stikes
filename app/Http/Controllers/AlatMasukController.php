@@ -15,9 +15,11 @@ class AlatMasukController extends Controller
 {
     public function index()
     {
-        $alat_masuks = AlatMasuk::all();
+        $alat_masuks = AlatMasuk::orderBy('tanggal_masuk', 'desc')->get();
 
-        return view('alat-masuks.index', compact('alat_masuks'));
+        $alats = Alat::orderBy('nama_barang', 'asc')->get();
+
+        return view('alat-masuks.index', compact('alat_masuks', 'alats'));
     }
 
     public function store(Request $request)
@@ -160,5 +162,37 @@ class AlatMasukController extends Controller
         $alatMasuk->save();
 
         return response()->json(['success' => true, 'message' => 'Tanggal masuk berhasil diperbarui']);
+    }
+
+    public function storeAlatMasukManual(Request $request)
+    {
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
+        }
+        // Validasi data
+        $validated = $request->validate([
+            'alat_id' => 'required|exists:alats,id',
+            'jumlah_masuk' => 'required|integer|min:1',
+            'tanggal_masuk' => 'required|date',
+            'harga_satuan' => 'nullable|integer|min:0',
+        ]);
+
+        // Hitung total harga
+        $totalHarga = $request->jumlah_masuk * $request->harga_satuan;
+
+        // Simpan data ke tabel bahan_masuks
+        AlatMasuk::create([
+            'semester_id' => $semesterAktif->id,
+            'alat_id' => $validated['alat_id'],
+            'jumlah_masuk' => $validated['jumlah_masuk'],
+            'tanggal_masuk' => $validated['tanggal_masuk'],
+            'harga_satuan' => $validated['harga_satuan'] ?? 0,
+            'total_harga' => $totalHarga,
+        ]);
+
+        // Redirect atau response
+        return redirect()->route('data-alat-masuk.index')->with('success', 'Data alat masuk berhasil disimpan');
     }
 }
