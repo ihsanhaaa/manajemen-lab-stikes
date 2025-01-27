@@ -176,33 +176,53 @@ class StokMasukController extends Controller
 
     public function storeObatMasukManual(Request $request)
     {
+        // Mendapatkan semester aktif
         $semesterAktif = Semester::where('is_active', true)->first();
 
         if (!$semesterAktif) {
             return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
         }
-        // Validasi data
+
+        // Validasi data input
         $validated = $request->validate([
-            'obat_id' => 'required|exists:alats,id',
+            'obat_id' => 'required|exists:obats,id', // Pastikan obat_id ada di tabel obats
             'jumlah_masuk' => 'required|integer|min:1',
             'tanggal_masuk' => 'required|date',
             'harga_satuan' => 'nullable|integer|min:0',
+            'exp_bahan' => 'nullable|date', // Tanggal expired bersifat opsional
         ]);
 
         // Hitung total harga
-        $totalHarga = $request->jumlah_masuk * $request->harga_satuan;
+        $totalHarga = $request->jumlah_masuk * ($request->harga_satuan ?? 0);
 
-        // Simpan data ke tabel bahan_masuks
+        // Simpan data ke tabel stok_masuks
         StokMasuk::create([
             'semester_id' => $semesterAktif->id,
             'obat_id' => $validated['obat_id'],
             'jumlah_masuk' => $validated['jumlah_masuk'],
             'tanggal_masuk' => $validated['tanggal_masuk'],
-            'harga_satuan' => $validated['harga_satuan'] ?? 0,
+            'harga_satuan' => $request->harga_satuan ?? 0,
             'total_harga' => $totalHarga,
+            'keterangan' => $request->keterangan ?? null,
         ]);
 
-        // Redirect atau response
-        return redirect()->route('data-obat-masuk.index')->with('success', 'Data obat masuk berhasil disimpan');
+        // Update stok_obat dan exp_obat pada tabel obats
+        $obat = Obat::find($validated['obat_id']);
+        if ($obat) {
+            // Tambahkan jumlah masuk ke stok_obat
+            $obat->stok_obat += $validated['jumlah_masuk'];
+
+            // Perbarui exp_obat jika tanggal expired diinput
+            if ($request->filled('exp_bahan')) {
+                $obat->exp_obat = $request->exp_bahan;
+            }
+
+            // Simpan perubahan pada tabel obats
+            $obat->save();
+        }
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('data-obat-masuk.index')->with('success', 'Data obat masuk berhasil disimpan dan stok diperbarui');
     }
+
 }

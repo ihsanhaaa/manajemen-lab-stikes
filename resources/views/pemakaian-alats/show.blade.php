@@ -328,7 +328,7 @@
                                                             @if ($formPemakaianAlat->alat)
                                                                 <a style="color: black" href="{{ route('data-alat.show', $formPemakaianAlat->alat->id ) }}">{{ $formPemakaianAlat->alat->nama_barang ?? 'N/A' }}</a>
                                                             @else
-                                                                {{ $formPemakaianAlat->alat->nama_barang ?? 'N/A' }}
+                                                                {{ $formPemakaianAlat->alat->nama_barang ?? 'N/A' }} {{ $formPemakaianAlat->alat->ukuran ?? 'N/A' }}
                                                             @endif
                                                         </td>
                                                         <td>{{ $formPemakaianAlat->ukuran ?? 'N/A' }}</td>

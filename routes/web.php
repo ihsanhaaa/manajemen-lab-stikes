@@ -208,7 +208,7 @@ Route::group(['middleware' => ['auth']], function () {
         }
         
         return Excel::download(new AlatLaporanExport($bulan, $tahun), "laporan_alat_{$bulan}_{$tahun}.xlsx");
-    });
+    })->name('download-laporan');
     
     Route::get('/download-laporan-bahan', function () {
         $bulan_tahun = request('bulan_tahun');
@@ -218,7 +218,7 @@ Route::group(['middleware' => ['auth']], function () {
         }
         
         return Excel::download(new BahanLaporanExport($bulan, $tahun), "laporan_bahan_padat_{$bulan}_{$tahun}.xlsx");
-    });
+    })->name('download-laporan-bahan');
 
     Route::get('/download-laporan-bahan-cair', function () {
         $bulan_tahun = request('bulan_tahun');
@@ -228,7 +228,7 @@ Route::group(['middleware' => ['auth']], function () {
         }
         
         return Excel::download(new BahanCairLaporanExport($bulan, $tahun), "laporan_bahan_cair_{$bulan}_{$tahun}.xlsx");
-    });
+    })->name('download-laporan-bahan-cair');
 
     Route::get('/download-laporan-obat', function () {
         $bulan_tahun = request('bulan_tahun');
@@ -238,7 +238,7 @@ Route::group(['middleware' => ['auth']], function () {
         }
         
         return Excel::download(new ObatLaporanExport($bulan, $tahun), "laporan_obat_{$bulan}_{$tahun}.xlsx");
-    });
+    })->name('download-laporan-obat');
 
     Route::post('/bahan-masuk/{id}/update-tanggal', [BahanMasukController::class, 'updateTanggalMasuk'])->name('bahan-masuk.update-tanggal');
 

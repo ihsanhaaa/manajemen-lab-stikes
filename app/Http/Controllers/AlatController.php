@@ -67,6 +67,7 @@ class AlatController extends Controller
         $request->validate([
             'nama_barang' => 'required|string|max:255',
             'ukuran' => 'nullable|string|max:20',
+            'stok' => 'nullable|string',
             'penyimpanan' => 'required|string|max:50',
             'letak_aset' => 'required|string|max:50',
         ]);
@@ -78,6 +79,7 @@ class AlatController extends Controller
         $alat->update([
             'nama_barang' => $request->nama_barang,
             'ukuran' => $request->ukuran,
+            'stok' => $request->stok,
             'penyimpanan' => $request->penyimpanan,
             'letak_aset' => $request->letak_aset,
         ]);

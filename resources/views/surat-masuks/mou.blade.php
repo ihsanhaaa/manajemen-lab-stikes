@@ -87,7 +87,7 @@
 
                                                     <tr>
                                                         <th scope="row">{{ ++$key }}</th>
-                                                        <td>{{ $surat_mou->nama_berkas }}</td>
+                                                        <td style="white-space: normal; word-wrap: break-word; max-width: 200px;">{{ $surat_mou->nama_berkas }}</td>
                                                         <td>{{ $surat_mou->nomor_berkas }}</td>
                                                         <td>{{ $surat_mou->kategori_berkas }}</td>
                                                         <td>
@@ -203,6 +203,13 @@
                                                                     <a class="dropdown-item" href="javascript:void(0);" onclick="changeCategory('{{ $surat_mou->id }}', 'Surat SK')">Pindahkan ke Surat SK</a>
                                                                     <a class="dropdown-item" href="javascript:void(0);" onclick="changeCategory('{{ $surat_mou->id }}', 'Surat MOU')">Pindahkan ke Surat MOU</a>
                                                                 </div>
+
+                                                                <form action="" method="POST"
+                                                                    onsubmit="return confirm('Apakah anda yakin ingin menghapus obat ini?');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                        <button type="submit" style="border: none;" class="btn btn-danger btn-sm mx-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>
+                                                                </form>
                                                             </div>
                                                         </td>
                                                     </tr>

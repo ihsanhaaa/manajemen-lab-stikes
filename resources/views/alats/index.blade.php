@@ -76,13 +76,48 @@
                                 </a> --}}
 
                                 <div class="btn-group mb-3 mx-2">
-                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-cog"></i> Aksi <i class="mdi mdi-chevron-down"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{ route('export.stok.alat') }}">Download Laporan Stok Alat</a>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="showReportModal('{{ route('download-laporan') }}')">Download Laporan Stok Alat</a>
                                     </div>
                                 </div>
+
+                                <!-- Modal Form -->
+                                <div class="modal fade" id="downloadReportModal" tabindex="-1" aria-labelledby="downloadReportModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="downloadReportModalLabel">Pilih Bulan dan Tahun</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="reportForm" action="" method="GET">
+                                                    @csrf
+                                                    <div class="mb-3">
+                                                        <label for="bulan_tahun" class="form-label">Bulan dan Tahun <span style="color: red">*</span></label>
+                                                        <input 
+                                                            type="month" 
+                                                            class="form-control" 
+                                                            id="bulan_tahun" 
+                                                            name="bulan_tahun" 
+                                                            required>
+                                                        <div id="bulanTahunError" class="invalid-feedback" style="display: none;">
+                                                            Silakan pilih bulan dan tahun.
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="button" class="btn btn-primary" onclick="validateAndSubmit()"><i class="fas fa-download"></i> Unduh</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
                             </div>
 
                             <!-- Modal -->
@@ -108,7 +143,18 @@
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="ukuran" class="form-label">Ukuran (opsional) </label>
+                                                    <input type="text"
+                                                        class="form-control @error('ukuran') is-invalid @enderror" id="ukuran"
+                                                        name="ukuran" value="{{ old('ukuran') }}" placeholder="contoh: 1 cc/ml">
 
+                                                    @error('ukuran')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="stok" class="form-label">Stok <span style="color: red">*</span> </label>
@@ -131,19 +177,6 @@
                                                         name="foto_path">
 
                                                     @error('foto_path')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="ukuran" class="form-label">Ukuran (opsional) </label>
-                                                    <input type="text"
-                                                        class="form-control @error('ukuran') is-invalid @enderror" id="ukuran"
-                                                        name="ukuran" value="{{ old('ukuran') }}" placeholder="contoh: 1 cc/ml">
-
-                                                    @error('ukuran')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -268,6 +301,37 @@
     <!-- END layout-wrapper -->
 
     @push('javascript-plugins')
-        
+    <script>
+        function showReportModal(url) {
+            // Set the form's action URL
+            document.getElementById('reportForm').action = url;
+
+            // Reset error state
+            document.getElementById('bulanTahunError').style.display = 'none';
+
+            // Tampilkan modal
+            let modal = new bootstrap.Modal(document.getElementById('downloadReportModal'));
+            modal.show();
+        }
+
+        function validateAndSubmit() {
+            const bulanTahunInput = document.getElementById('bulan_tahun');
+            const errorElement = document.getElementById('bulanTahunError');
+
+            if (!bulanTahunInput.value) {
+                // Tampilkan pesan error jika input kosong
+                errorElement.style.display = 'block';
+                bulanTahunInput.classList.add('is-invalid');
+                return false;
+            }
+
+            // Hapus error state jika input sudah diisi
+            errorElement.style.display = 'none';
+            bulanTahunInput.classList.remove('is-invalid');
+
+            // Submit form
+            document.getElementById('reportForm').submit();
+        }
+    </script>
     @endpush
 @endsection

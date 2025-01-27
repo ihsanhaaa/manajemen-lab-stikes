@@ -74,16 +74,6 @@
                                 <button type="button" class="btn btn-primary btn-sm mx-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     <i class="fas fa-plus"></i> Tambah Data Obat Masuk Manual
                                 </button>
-
-                                <!-- Form Download Laporan -->
-                                <form action="/download-laporan-obat" method="GET" class="d-inline">
-                                    <div class="input-group">
-                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
-                                        <button type="submit" class="btn btn-info btn-sm">
-                                            <i class="fas fa-download"></i> Download Laporan Obat Masuk & Keluar
-                                        </button>
-                                    </div>
-                                </form>
                             </div>
 
                             <!-- Modal -->
@@ -198,6 +188,19 @@
                                                 </div>
 
                                                 <div class="mb-3">
+                                                    <label for="exp_obat" class="form-label">Expired Obat</label>
+                                                    <input type="date"
+                                                        class="form-control @error('exp_obat') is-invalid @enderror" id="exp_obat"
+                                                        name="exp_obat" value="{{ old('exp_obat') }}">
+
+                                                    @error('exp_obat')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
                                                     <label for="harga_satuan" class="form-label">Harga Satuan</label>
                                                     <input type="number"
                                                         class="form-control @error('harga_satuan') is-invalid @enderror" id="harga_satuan"
@@ -216,6 +219,8 @@
                                                 </div>
 
                                             </form>
+
+                                            <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
 
                                         </div>
                                     </div>

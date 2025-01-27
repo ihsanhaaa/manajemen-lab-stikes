@@ -20,6 +20,7 @@ class AlatLaporanExport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
+            new AlatSummarySheet($this->bulan, $this->tahun),
             new AlatMasukSheet($this->bulan, $this->tahun),
             new AlatRusakSheet($this->bulan, $this->tahun),
         ];

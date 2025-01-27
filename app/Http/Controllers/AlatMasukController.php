@@ -31,6 +31,8 @@ class AlatMasukController extends Controller
             return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
         }
 
+        // dd($request);
+
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls',
             'foto_path' => 'required|file|mimes:jpg,jpeg,png|max:2048', // Foto wajib
@@ -53,31 +55,27 @@ class AlatMasukController extends Controller
 
         // Load Excel and skip the first 6 rows (header + empty rows)
         $importedData = Excel::toArray([], $file)[0]; // Ambil sheet pertama
-        $importedData = array_slice($importedData, 4); // Skip baris 1-6, mulai dari baris ke-7
+        $importedData = array_slice($importedData, 3); // Skip baris 1-6, mulai dari baris ke-7
+
+        // dd($importedData);
 
         foreach ($importedData as $row) {
             // dd($row);
 
             // Bersihkan nama barang dan cari alat
             $namaBarang = ucwords(strtolower(trim($row[0]))); // Mengubah format menjadi kapital di awal
-            $alat = Alat::where('nama_barang', $namaBarang)->first();
+            // $alat = Alat::where('nama_barang', $namaBarang)->first();
         
             $stokMasuk = is_numeric($row[3]) ? (int)$row[3] : 0; // Konversi ke integer jika valid
 
-            if ($alat) {
-                $alat->update([
-                    'stok' => $alat->stok + $stokMasuk,
-                ]);
-            } else {
-                $alat = Alat::create([
-                    'nama_barang' => $namaBarang,
-                    'stok_awal' => $row[1] ?? 0,
-                    'stok' => $row[1] + $row[3] ?? 0,
-                    'ukuran' => $row[2] ?? null,
-                    'penyimpanan' => $row[6] ?? null,
-                    'letak_aset' => $row[7] ?? null,
-                ]);
-            }
+            $alat = Alat::create([
+                'nama_barang' => $namaBarang,
+                'stok_awal' => $row[1] ?? 0,
+                'stok' => $row[1] + $row[3] ?? 0,
+                'ukuran' => $row[2] ?? null,
+                'penyimpanan' => $row[6] ?? null,
+                'letak_aset' => $row[7] ?? null,
+            ]);
         
             if($row[3] != 0) {
                 // Buat catatan alat masuk
@@ -98,7 +96,7 @@ class AlatMasukController extends Controller
                     'semester_id' => $semesterAktif->id,
                     'alat_id' => $alat->id,
                     'jumlah_masuk' => $stokMasuk,
-                    'tanggal_masuk' => $tanggalMasuk ?? now(),
+                    'tanggal_masuk' => $tanggalMasuk ?? null,
                     'harga_satuan' => $hargaSatuan,
                     'total_harga' => $totalHarga,
                 ]);
@@ -171,6 +169,7 @@ class AlatMasukController extends Controller
         if (!$semesterAktif) {
             return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
         }
+
         // Validasi data
         $validated = $request->validate([
             'alat_id' => 'required|exists:alats,id',
@@ -182,8 +181,8 @@ class AlatMasukController extends Controller
         // Hitung total harga
         $totalHarga = $request->jumlah_masuk * $request->harga_satuan;
 
-        // Simpan data ke tabel bahan_masuks
-        AlatMasuk::create([
+        // Simpan data ke tabel alat_masuks
+        $alatMasuk = AlatMasuk::create([
             'semester_id' => $semesterAktif->id,
             'alat_id' => $validated['alat_id'],
             'jumlah_masuk' => $validated['jumlah_masuk'],
@@ -192,7 +191,15 @@ class AlatMasukController extends Controller
             'total_harga' => $totalHarga,
         ]);
 
+        // Update stok pada tabel alats
+        $alat = Alat::find($validated['alat_id']);
+        if ($alat) {
+            $alat->stok += $validated['jumlah_masuk'];  // Menambahkan jumlah yang masuk
+            $alat->save();
+        }
+
         // Redirect atau response
-        return redirect()->route('data-alat-masuk.index')->with('success', 'Data alat masuk berhasil disimpan');
+        return redirect()->route('data-alat-masuk.index')->with('success', 'Data alat masuk berhasil disimpan dan stok diperbarui');
     }
+
 }

@@ -5,8 +5,12 @@ namespace App\Exports;
 use App\Models\BahanMasuk;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Events\AfterSheet;
 
-class BahanCairMasukSheet implements FromCollection
+class BahanCairMasukSheet implements FromCollection, WithHeadings, WithEvents, WithCustomStartCell
 {
     protected $bulan;
     protected $tahun;
@@ -19,15 +23,12 @@ class BahanCairMasukSheet implements FromCollection
 
     public function collection()
     {
-        // Format nama bulan
-        $namaBulan = Carbon::create()->month($this->bulan)->translatedFormat('F');
-
-        // Ambil data bahan masuk dengan relasi bahan, filter bahan yang jenis_bahan != 'Padat'
+        // Ambil data bahan masuk dengan filter bahan yang jenis_bahan != 'Padat'
         $data = BahanMasuk::with('bahan')
             ->whereMonth('tanggal_masuk', $this->bulan)
             ->whereYear('tanggal_masuk', $this->tahun)
-            ->whereHas('bahan', function($query) {
-                $query->where('jenis_bahan', '!=', 'Padat');  // Filter bahan dengan jenis_bahan yang tidak sama dengan 'Padat'
+            ->whereHas('bahan', function ($query) {
+                $query->where('jenis_bahan', '!=', 'Padat');  // Filter bahan yang jenis_bahan tidak 'Padat'
             })
             ->get()
             ->map(function ($item) {
@@ -42,13 +43,58 @@ class BahanCairMasukSheet implements FromCollection
                 ];
             });
 
-        // Sisipkan judul dan baris kosong
-        $judul = [
-            ["Laporan Bahan Masuk Bulan {$namaBulan} Tahun {$this->tahun}"],
-            ["", "", "", "", "", "", ""],
-            ['Tanggal Masuk', 'Nama Bahan', 'Kode Bahan', 'Jenis Bahan', 'Jumlah Masuk', 'Harga Satuan', 'Total Harga'],
-        ];
+        return $data;
+    }
 
-        return collect(array_merge($judul, $data->toArray()));
+    public function headings(): array
+    {
+        return [
+            'Tanggal Masuk',
+            'Nama Bahan',
+            'Kode Bahan',
+            'Jenis Bahan',
+            'Jumlah Masuk',
+            'Harga Satuan',
+            'Total Harga',
+        ];
+    }
+
+    public function startCell(): string
+    {
+        // Data tabel dimulai dari A4
+        return 'A3';
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                // Format nama bulan dan tahun
+                $namaBulan = Carbon::create()
+                    ->month($this->bulan)
+                    ->locale('id')
+                    ->translatedFormat('F');
+
+                // Tambahkan judul di A1
+                $judul = "Laporan Bahan Masuk {$namaBulan} {$this->tahun}";
+                $event->sheet->setCellValue('A1', $judul);
+
+                // Merge dan format judul
+                $event->sheet->getDelegate()->mergeCells('A1:G1');
+                $event->sheet->getDelegate()->getStyle('A1')->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                        'size' => 14,
+                    ],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                ]);
+
+                // Tambahkan baris kosong di A2 untuk spasi
+                $event->sheet->setCellValue('A2', '');
+            },
+        ];
     }
 }

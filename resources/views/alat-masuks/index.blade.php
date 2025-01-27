@@ -74,16 +74,6 @@
                                 <button type="button" class="btn btn-primary btn-sm mx-2 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     <i class="fas fa-plus"></i> Tambah Data Alat Masuk Manual
                                 </button>
-
-                                <!-- Form Download Laporan -->
-                                <form action="/download-laporan" method="GET" class="d-inline">
-                                    <div class="input-group">
-                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
-                                        <button type="submit" class="btn btn-info btn-sm me-1">
-                                            <i class="fas fa-download"></i> Download Laporan Alat Masuk & Keluar
-                                        </button>
-                                    </div>
-                                </form>
                             </div>
 
                             <!-- Modal -->
@@ -158,7 +148,7 @@
                                                     <select class="form-control @error('alat_id') is-invalid @enderror" id="alat_id" name="alat_id" required>
                                                         <option value="">-- Pilih --</option>
                                                         @foreach($alats as $alat)
-                                                        <option value="{{ $alat->id }}">{{ $alat->nama_barang }}</option>
+                                                        <option value="{{ $alat->id }}">{{ $alat->nama_barang }} {{ $alat->ukuran }}</option>
                                                         @endforeach
                                                     </select>
                                                 
@@ -256,7 +246,7 @@
                                                                 <button type="button" onclick="cancelEdit({{ $alat_masuk->id }})" class="btn btn-sm btn-secondary">Batal</button>
                                                             </form>
                                                         </td>
-                                                        <td><a style="color: black" href="{{ route('data-alat.show', $alat_masuk->alat->id) }}">{{ $alat_masuk->alat->nama_barang }}</a></td>
+                                                        <td><a style="color: black" href="{{ route('data-alat.show', $alat_masuk->alat->id) }}">{{ $alat_masuk->alat->nama_barang }} {{ $alat->ukuran }}</a></td>
                                                         <td>{{ $alat_masuk->jumlah_masuk }}</td>
                                                         <td>Rp. {{ number_format((float) $alat_masuk->harga_satuan) }}</td>
                                                         <td>Rp. {{ number_format((float) $alat_masuk->total_harga) }}</td>

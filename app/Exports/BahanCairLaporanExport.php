@@ -18,6 +18,7 @@ class BahanCairLaporanExport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
+            new BahanCairSummarySheet($this->bulan, $this->tahun),
             new BahanCairMasukSheet($this->bulan, $this->tahun),
             new BahanCairKeluarSheet($this->bulan, $this->tahun),
         ];

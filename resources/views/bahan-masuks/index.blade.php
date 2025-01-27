@@ -187,6 +187,19 @@
                                                 </div>
 
                                                 <div class="mb-3">
+                                                    <label for="exp_bahan" class="form-label">Expired Bahan</label>
+                                                    <input type="date"
+                                                        class="form-control @error('exp_bahan') is-invalid @enderror" id="exp_bahan"
+                                                        name="exp_bahan" value="{{ old('exp_bahan') }}">
+
+                                                    @error('exp_bahan')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="mb-3">
                                                     <label for="harga_satuan" class="form-label">Harga Satuan</label>
                                                     <input type="number"
                                                         class="form-control @error('harga_satuan') is-invalid @enderror" id="harga_satuan"
@@ -206,7 +219,10 @@
 
                                             </form>
 
+                                            <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
+
                                         </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -232,18 +248,6 @@
                                     <!-- Tab panes -->
                                     <div class="tab-content p-3 text-muted">
                                         <div class="tab-pane active" id="bahanPadat" role="tabpanel">
-
-                                            <div class="d-flex mb-3">
-                                                <!-- Form Download Laporan -->
-                                                <form action="/download-laporan-bahan" method="GET" class="d-inline">
-                                                    <div class="input-group">
-                                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
-                                                        <button type="submit" class="btn btn-info btn-sm">
-                                                            <i class="fas fa-download"></i> Download Laporan Bahan Masuk & Keluar
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
 
                                             <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                                 <thead>
@@ -317,18 +321,6 @@
                                             
                                         </div>
                                         <div class="tab-pane" id="bahanCair" role="tabpanel">
-
-                                            <div class="d-flex mb-3">
-                                                <!-- Form Download Laporan -->
-                                                <form action="/download-laporan-bahan-cair" method="GET" class="d-inline">
-                                                    <div class="input-group">
-                                                        <input type="month" name="bulan_tahun" class="form-control form-control-sm" required>
-                                                        <button type="submit" class="btn btn-info btn-sm">
-                                                            <i class="fas fa-download"></i> Download Laporan Bahan Masuk & Keluar
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
 
                                             <table id="datatable2" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                                 <thead>

@@ -164,16 +164,18 @@ class BahanMasukController extends Controller
         if (!$semesterAktif) {
             return redirect()->back()->with('error', 'Semester aktif tidak ditemukan');
         }
+
         // Validasi data
         $validated = $request->validate([
             'bahan_id' => 'required|exists:bahans,id',
             'jumlah_masuk' => 'required|integer|min:1',
             'tanggal_masuk' => 'required|date',
+            'exp_bahan' => 'nullable|date',
             'harga_satuan' => 'nullable|integer|min:0',
         ]);
 
         // Hitung total harga
-        $totalHarga = $request->jumlah_masuk * $request->harga_satuan;
+        $totalHarga = $request->jumlah_masuk * ($request->harga_satuan ?? 0);
 
         // Simpan data ke tabel bahan_masuks
         BahanMasuk::create([
@@ -185,7 +187,16 @@ class BahanMasukController extends Controller
             'total_harga' => $totalHarga,
         ]);
 
+        // Update `exp_bahan` dan `stok_bahan` di tabel `bahans`
+        $bahan = Bahan::find($validated['bahan_id']);
+        if ($bahan) {
+            $bahan->stok_bahan += $validated['jumlah_masuk']; // Tambahkan jumlah stok
+            $bahan->exp_bahan = $validated['exp_bahan'] ?? $bahan->exp_bahan; // Update exp_bahan jika diberikan
+            $bahan->save(); // Simpan perubahan
+        }
+
         // Redirect atau response
-        return redirect()->route('data-bahan-masuk.index')->with('success', 'Data bahan masuk berhasil disimpan');
+        return redirect()->route('data-bahan-masuk.index')->with('success', 'Data bahan masuk berhasil disimpan dan stok diperbarui');
     }
+
 }

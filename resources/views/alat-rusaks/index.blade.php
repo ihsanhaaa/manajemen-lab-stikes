@@ -88,7 +88,7 @@
                                                         <option value="">-- Pilih Alat --</option>
                                                         @foreach($alats as $alat)
                                                             <option value="{{ $alat->id }}" {{ old('alat_id') == $alat->id ? 'selected' : '' }}>
-                                                                {{ $alat->nama_barang }} - Ukuran: {{ $alat->ukuran }}
+                                                                {{ $alat->nama_barang }} {{ $alat->ukuran }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -211,7 +211,7 @@
                                                             <button type="button" onclick="cancelEdit({{ $alat_rusak->id }})" class="btn btn-sm btn-secondary">Batal</button>
                                                         </form>
                                                     </td>
-                                                    <td><a style="color: black" href="{{ route('data-alat.show', $alat_rusak->alat->id) }}">{{ $alat_rusak->alat->nama_barang ?? '-' }}</a></td>
+                                                    <td><a style="color: black" href="{{ route('data-alat.show', $alat_rusak->alat->id) }}">{{ $alat_rusak->alat->nama_barang ?? '-' }} {{ $alat_rusak->alat->ukuran }}</a></td>
                                                     <td>{{ $alat_rusak->jumlah_rusak }}</td>
                                                     <td>{{ $alat_rusak->alat->penyimpanan ?? '-' }} - {{ $alat_rusak->alat->letak_aset ?? '-' }}</td>
                                                     <td>

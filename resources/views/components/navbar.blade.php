@@ -170,6 +170,23 @@
                                 @endif
                             </a>
                         </li>
+
+                        <li>
+                            <a href="{{ route('data-inhal.index') }}" class="waves-effect">
+                                <i class="ri-book-mark-line"></i>
+                                <span>Inhal <span class="badge bg-success">Baru</span></span>
+                                @if($countInhal > 0)
+                                    <span class="badge bg-secondary">{{ $countInhal }}</span>
+                                @endif
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('konfirmasi-pembayaran.index') }}" class=" waves-effect">
+                                <i class="ri-book-2-line"></i>
+                                <span>Konfirmasi Pembayaran <span class="badge bg-success">Baru</span></span>
+                            </a>
+                        </li>
                         
                     @endrole
 
@@ -243,7 +260,7 @@
                         <li>
                             <a href="{{ route('data-inhal.index') }}" class="waves-effect">
                                 <i class="ri-book-mark-line"></i>
-                                <span>Inhal</span>
+                                <span>Inhal <span class="badge bg-success">Baru</span></span>
                                 @if($countInhal > 0)
                                     <span class="badge bg-secondary">{{ $countInhal }}</span>
                                 @endif
@@ -253,7 +270,7 @@
                         <li>
                             <a href="{{ route('konfirmasi-pembayaran.index') }}" class=" waves-effect">
                                 <i class="ri-book-2-line"></i>
-                                <span>Konfirmasi Pembayaran</span>
+                                <span>Konfirmasi Pembayaran <span class="badge bg-success">Baru</span></span>
                             </a>
                         </li>
                         
@@ -326,14 +343,14 @@
                         <li>
                             <a href="{{ route('konfirmasi-pembayaran.index') }}" class=" waves-effect">
                                 <i class="ri-book-2-line"></i>
-                                <span>Konfirmasi Pembayaran</span>
+                                <span>Konfirmasi Pembayaran <span class="badge bg-success">Baru</span></span>
                             </a>
                         </li>
 
                         <li>
                             <a href="{{ route('data-inhal.index') }}" class="waves-effect">
                                 <i class="ri-book-mark-line"></i>
-                                <span>Inhal</span>
+                                <span>Inhal <span class="badge bg-success">Baru</span></span>
                             </a>
                         </li>
                     @endrole

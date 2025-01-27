@@ -18,6 +18,7 @@ class ObatLaporanExport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
+            new ObatSummarySheet($this->bulan, $this->tahun),
             new ObatMasukSheet($this->bulan, $this->tahun),
             new ObatKeluarSheet($this->bulan, $this->tahun),
         ];

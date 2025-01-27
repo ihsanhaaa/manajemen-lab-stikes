@@ -158,7 +158,7 @@
                                                                     <select class="form-control" name="alat[]" required>
                                                                         <option value="">-- Pilih Alat --</option>
                                                                         @foreach($alats as $alat)
-                                                                            <option value="{{ $alat->id }}">{{ $alat->nama_barang }}</option>
+                                                                            <option value="{{ $alat->id }}">{{ $alat->nama_barang }} {{ $alat->ukuran }}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </td>

@@ -96,16 +96,17 @@
                                         <form action="{{ route('data-alat.update', $alat->id) }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
+                                            
                                             <div class="mb-3">
-                                                <label for="nama_barang" class="form-label">Nama Barang/Alat <span style="color: red">*</span> </label>
+                                                <label for="nama_barang" class="form-label">Nama Barang/Alat<span style="color: red">*</span></label>
                                                 <input 
                                                     type="text"
                                                     class="form-control @error('nama_barang') is-invalid @enderror" 
                                                     id="nama_barang"
                                                     name="nama_barang" 
                                                     value="{{ old('nama_barang', $alat->nama_barang) }}" 
+                                                    placeholder="Masukkan nama barang/alat"
                                                     required>
-                                            
                                                 @error('nama_barang')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -120,53 +121,71 @@
                                                     class="form-control @error('ukuran') is-invalid @enderror" 
                                                     id="ukuran"
                                                     name="ukuran" 
-                                                    value="{{ old('ukuran', $alat->ukuran) }}">
-                                            
+                                                    value="{{ old('ukuran', $alat->ukuran) }}"
+                                                    placeholder="Masukkan ukuran barang">
                                                 @error('ukuran')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>                                            
-
+                                            </div>   
+                                            
                                             <div class="mb-3">
-                                                <label for="penyimpanan" class="form-label">Penyimpanan</label>
+                                                <label for="stok" class="form-label">Stok<span style="color: red">*</span></label>
+                                                <input 
+                                                    type="number"
+                                                    class="form-control @error('stok') is-invalid @enderror" 
+                                                    id="stok" 
+                                                    name="stok" 
+                                                    value="{{ old('stok', $alat->stok) }}"
+                                                    placeholder="Masukkan jumlah stok" required>
+                                                @error('stok')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        
+                                            <div class="mb-3">
+                                                <label for="penyimpanan" class="form-label">Penyimpanan<span style="color: red">*</span></label>
                                                 <input 
                                                     type="text"
                                                     class="form-control @error('penyimpanan') is-invalid @enderror" 
                                                     id="penyimpanan" 
                                                     name="penyimpanan" 
-                                                    value="{{ old('penyimpanan', $alat->penyimpanan) }}">
-                                            
+                                                    value="{{ old('penyimpanan', $alat->penyimpanan) }}"
+                                                    placeholder="Masukkan lokasi penyimpanan" required>
                                                 @error('penyimpanan')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>                                            
-
+                                            </div>
+                                        
                                             <div class="mb-3">
-                                                <label for="letak_aset" class="form-label">Letak Aset</label>
-                                                <input 
-                                                    type="text"
-                                                    class="form-control @error('letak_aset') is-invalid @enderror" 
+                                                <label for="letak_aset" class="form-label">Letak Aset<span style="color: red">*</span></label>
+                                                <select class="form-control @error('letak_aset') is-invalid @enderror" 
                                                     id="letak_aset" 
                                                     name="letak_aset" 
-                                                    value="{{ old('letak_aset', $alat->letak_aset) }}">
-                                            
+                                                    required>
+                                                    <option value="">-- Pilih --</option>
+                                                    <option value="Lab Bawah" {{ old('letak_aset', $alat->letak_aset) == 'Lab Bawah' ? 'selected' : '' }}>Lab Bawah</option>
+                                                    <option value="Lab Atas" {{ old('letak_aset', $alat->letak_aset) == 'Lab Atas' ? 'selected' : '' }}>Lab Atas</option>
+                                                </select>
                                                 @error('letak_aset')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>                                            
-
+                                            </div>                                          
+                                        
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                             </div>
-
                                         </form>
+                                        
+                                        <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
 
                                     </div>
                                 </div>
