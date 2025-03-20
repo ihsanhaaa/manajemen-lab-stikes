@@ -19,6 +19,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'mahasiswa_id',
         'gauth_id',
         'gauth_type',
         'name',
@@ -46,4 +47,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function mahasiswa(){ 
+        return $this->belongsTo(Mahasiswa::class); 
+    }
 }

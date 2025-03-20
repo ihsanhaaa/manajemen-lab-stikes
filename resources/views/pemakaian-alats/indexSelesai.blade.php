@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Pemakaian Alat Baru
+    Pemakaian Alat Selesai
 @endsection
 
 @section('content')
@@ -31,11 +31,11 @@
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                                 @role('Ketua STIKes')
-                                    <h4 class="mb-sm-0">Data Pemakaian Alat Baru ({{ $pemakaianAlats->count() }})</h4>
+                                    <h4 class="mb-sm-0">Data Pemakaian Alat Selesai ({{ $pemakaianAlatSelesais->count() }})</h4>
                                 @endrole
 
                                 @role('Admin Lab')
-                                    <h4 class="mb-sm-0">Data Pemakaian Alat Baru ({{ $pemakaianAlats->count() }})</h4>
+                                    <h4 class="mb-sm-0">Data Pemakaian Alat Selesai ({{ $pemakaianAlatSelesais->count() }})</h4>
                                 @endrole
 
                                 @role('Mahasiswa')
@@ -79,11 +79,15 @@
                     <div class="row">
                         <div class="col-lg-12">
 
+                            <!-- Button trigger modal -->
                             <div class="d-flex align-items-center mb-3">
-                                <a href="{{ route('pemakaian-alat.create') }}" class="btn btn-success btn-sm me-2">
+                                <!-- Tombol Tambah Pengajuan Alat -->
+                                <button type="button" class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#importModal">
                                     <i class="fas fa-plus"></i> Tambah Pengajuan Alat
-                                </a>
-                            </div>                                                     
+                                </button>
+                            
+                                
+                            </div>                            
 
                             <!-- Modal -->
                             <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
@@ -250,7 +254,7 @@
                                                     </thead>
                                                     <tbody>
                                                         @php $start = 0; @endphp
-                                                        @foreach($pemakaianAlats as $key => $pemakaianAlat)
+                                                        @foreach($pemakaianAlatSelesais as $key => $pemakaianAlat)
                                                                 <tr>
                                                                     <th scope="row">{{ ++$start }}</th>
                                                                     <td> <a style="color: black" href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
@@ -360,13 +364,14 @@
 
                                         <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
                                             <li class="nav-item">
-                                                <a class="nav-link active" data-bs-toggle="tab" href="#pengajuanMahasiswa" role="tab">
+                                                <a class="nav-link" href="{{ route('pengajuan-alat.index') }}">
                                                     <span class="d-block d-sm-none"><i class="fas fa-tint"></i></span>
                                                     <span class="d-none d-sm-block">Pengajuan Baru</span> 
                                                 </a>
                                             </li>
+
                                             <li class="nav-item">
-                                                <a class="nav-link" href="{{ route('pengajuan-alat-selesai.index') }}">
+                                                <a class="nav-link active" data-bs-toggle="tab" href="#pengajuanMahasiswaSelesai" role="tab">
                                                     <span class="d-block d-sm-none"><i class="fas fa-window-maximize"></i></span>
                                                     <span class="d-none d-sm-block">Pengajuan Selesai</span> 
                                                 </a>
@@ -390,7 +395,7 @@
                                                     </thead>
                                                     <tbody>
                                                         @php $start = 0; @endphp
-                                                        @foreach($pemakaianAlats as $key => $pemakaianAlat)
+                                                        @foreach($pemakaianAlatSelesais as $key => $pemakaianAlat)
                                                                 <tr>
                                                                     <th scope="row">{{ ++$start }}</th>
                                                                     <td> <a style="color: black" href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
@@ -436,7 +441,67 @@
 
                                             </div>
 
-                                            
+                                            <div class="tab-pane" id="pengajuanMahasiswaSelesai" role="tabpanel">
+
+                                                <table id="datatable2" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Nama Praktikum</th>
+                                                        <th>Anggota Kelompok</th>
+                                                        <th>Semester</th>
+                                                        <th>Tanggal Pelaksanaan</th>
+                                                        <th>Status</th>
+                                                        <th>Aksi</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php $start = 0; @endphp
+                                                        @foreach($pemakaianAlatSelesais as $key => $pemakaianAlat)
+                                                                <tr>
+                                                                    <th scope="row">{{ ++$start }}</th>
+                                                                    <td> <a style="color: black" href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}">{{ $pemakaianAlat->nama_praktikum }}</a> </td>
+                                                                    <td>
+                                                                        <span style="cursor: pointer" title="{{ $pemakaianAlat->nama_mahasiswa }}">{{ \Illuminate\Support\Str::limit($pemakaianAlat->nama_mahasiswa, 30) }}</span>
+                                                                    </td>
+                                                                    <td>{{ $pemakaianAlat->kelas }}</td>
+                                                                    <td>{{ \Carbon\Carbon::parse($pemakaianAlat->tanggal_pelaksanaan)->format('d/m/Y - H:i') }}</td>
+                                                                    <td>
+                                                                        @if ($pemakaianAlat->status == 0)
+                                                                        <span class="badge bg-warning btn-sm">Belum di ACC</span>
+                                                                        @else
+                                                                        <span class="badge bg-success btn-sm">Sudah di ACC</span>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                        {{-- @role('Admin Lab')
+                                                                            @if ($pemakaianAlat->status == 0)
+                                                                                <form action="{{ route('pengajuan-bahan.konfirmasi.update', $pemakaianAlat->id) }}" method="post"
+                                                                                    onclick="return confirm('Apakah anda yakin ingin mengkonfirmasi ini?')">
+                                                                                    @csrf
+                                                                                    <button class="btn btn-success btn-sm"><i class="fas fa-edit"></i> ACC Sekarang</button>
+                                                                                </form>
+                                                                            @endif
+                                                                        @endrole --}}
+                                                                        <div class="d-flex">
+                                                                            <a href="{{ route('pemakaian-alat.show', $pemakaianAlat->id) }}" class="btn btn-success btn-sm" title="Lihat Detail"><i class="fas fa-eye"></i> </a>
+                
+                                                                            <form id="input"
+                                                                                action="{{ route('pemakaian-alat.destroy', $pemakaianAlat->id) }}"
+                                                                                method="POST"
+                                                                                onsubmit="return confirm('Apakah anda yakin ingin menghapus pemakaian alat ini?');">
+                                                                                @csrf
+                                                                                @method('DELETE')
+                                                                                <button type="submit" class="btn btn-danger btn-sm mx-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
                                         </div>
 
                                     </div>
@@ -461,7 +526,7 @@
                                             </thead>
                                             <tbody>
                                                 @php $start = 0; @endphp
-                                                @foreach($pemakaianAlats as $key => $pemakaianAlat)
+                                                @foreach($pemakaianAlatSelesais as $key => $pemakaianAlat)
                                                     @if ($pemakaianAlat->user_id == Auth::user()->id)
                                                         <tr>
                                                             <th scope="row">{{ ++$start }}</th>
@@ -514,19 +579,6 @@
                     </div>
                     <!-- end row -->
 
-                    <div id="feedback-container" style="position: fixed; bottom: 20px; right: 20px; width: 300px; z-index: 9999;">
-                        <button id="toggle-feedback" style="background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
-                            Saran
-                        </button>
-                    
-                        <div id="feedback-form" style="display: none; background: white; padding: 15px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); margin-top: 10px;">
-                            <textarea id="feedback-text" placeholder="Masukkan saran Anda..." rows="4" style="width: 100%; padding: 5px;"></textarea>
-                            <button id="send-feedback" style="margin-top: 10px; background: #28a745; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px;">
-                                Kirim
-                            </button>
-                        </div>
-                    </div>
-
                 </div>
                 
             </div>
@@ -542,52 +594,6 @@
     <!-- END layout-wrapper -->
 
     @push('javascript-plugins')
-    <script>
-        document.getElementById('toggle-feedback').addEventListener('click', function() {
-            var form = document.getElementById('feedback-form');
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        });
-        
-        document.getElementById('send-feedback').addEventListener('click', function() {
-            var feedback = document.getElementById('feedback-text').value;
-            var sendButton = document.getElementById('send-feedback');
-        
-            if (feedback.trim() === '') {
-                alert('Silakan masukkan saran Anda.');
-                return;
-            }
-        
-            // Ubah tombol menjadi loading
-            sendButton.innerHTML = 'Mengirim...';
-            sendButton.disabled = true;
-        
-            fetch("{{ route('feedback.store') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({ feedback: feedback })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                document.getElementById('feedback-text').value = '';
-        
-                // Kembalikan tombol ke normal
-                sendButton.innerHTML = 'Kirim';
-                sendButton.disabled = false;
-            })
-            .catch(error => {
-                alert('Terjadi kesalahan, coba lagi.');
-        
-                // Kembalikan tombol ke normal
-                sendButton.innerHTML = 'Kirim';
-                sendButton.disabled = false;
-            });
-        });
-        </script>
-        
         
     <script>
         document.addEventListener('DOMContentLoaded', function () {

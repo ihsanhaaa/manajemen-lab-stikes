@@ -868,24 +868,72 @@
                         @endrole
 
                         @role('Mahasiswa')
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="d-flex">
-                                                <div class="flex-grow-1">
-                                                    <p class="text-truncate font-size-17 mb-2">Selamat Datang {{ Auth::user()->name }}</p>
-                                                    <p class="text-truncate font-size-14 mb-2">Anda masuk sebagai: {{ Auth::user()->getRoleNames()->first() }}</p>
 
-                                                    <a href="{{ route('pengajuan-bahan.index') }}"><h4 class="mb-2">{{ $dataPengajuanBahanUser->count() }}</h4></a>
-                                                    <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"></span>Pengajuan Bahan Saya</p>
+                            @if (Auth::user()->mahasiswa_id)
+                                
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="d-flex flex-wrap">
+                                                    <div class="flex-grow-1">
+                                                        <p class="font-size-17 mb-2" style="word-break: break-word;">
+                                                            <strong>Selamat Datang, {{ Auth::user()->mahasiswa->nama_mahasiswa }}</strong>
+                                                        </p>
+                                                        <p class="font-size-14 mb-2">Email: {{ Auth::user()->email }}</p>
+                                                        <p class="font-size-14 mb-2">NIM: {{ Auth::user()->mahasiswa->nim }}</p>
+                                                        <p class="font-size-14 mb-2">Semester: {{ Auth::user()->mahasiswa->semester }}</p>
+                                                        <p class="font-size-14 mb-2">Tahun Masuk: {{ Auth::user()->mahasiswa->tahun_masuk }}</p>
+                                                        <p class="text-truncate font-size-14 mb-2">Anda masuk sebagai: {{ Auth::user()->getRoleNames()->first() }}</p>
+
+                                                        <a href="{{ route('pengajuan-bahan.index') }}"><h4 class="mb-2">{{ $dataPengajuanBahanUser->count() }}</h4></a>
+                                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"></span>Pengajuan Bahan Saya</p>
+                                                    </div>
                                                 </div>
-                                            </div>                                            
-                                        </div><!-- end cardbody -->
-                                    </div> <!-- end card -->
-                                </div><!-- end col-->
-                            </div>
-                            <!-- end row-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            @else
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                    <strong>Info!</strong> Harap isikan NIM anda untuk melakukan verifikasi data mahasiswa.
+                                </div>
+
+                                <form action="{{ route('validate-nim') }}" method="POST">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nama Mahasiswa</label>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                            id="name" name="name" value="{{ old('name', Auth::user()->name) }}"
+                                            disabled required>
+
+                                        @error('name')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="nim" class="form-label">NIM <span
+                                                style="color: red">*</span></label>
+                                        <input type="number" class="form-control @error('nim') is-invalid @enderror"
+                                            id="nim" name="nim" value="{{ old('nim') }}" required>
+
+                                        @error('nim')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <p>Keterangan: <span style="color: red">*</span>) wajib diisi</p>
+
+                                    <button type="submit" class="btn btn-primary">Verifikasi Data</button>
+                                </form>
+                            @endif
                         @endrole
                         
                     </div> <!-- container-fluid -->

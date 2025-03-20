@@ -202,50 +202,48 @@
 
                         <div class="row">
 
-                            <div class="col-4">
-                                <div class="card">
-                                    <div class="card-body">
-    
-                                        <form action="{{ route('data-bahan.uploadFoto', $bahan->id) }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <label for="photo" class="form-label">Update Foto</label>
-                                                <input class="form-control" type="file" name="photo" id="photo" accept="image/*" multiple required>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary mb-3 btn-sm">Update Foto</button>
-                                        </form>
-                                        
-                                        <div class="zoom-gallery">
-    
-                                            @if ($bahan->foto_path)
-                                                <img src="{{ asset($bahan->foto_path) }}" class="img-fluid" alt="">
-
-                                                <form action="{{ route('data-bahan.deleteFoto', $bahan->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus foto ini?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm my-3"><i class="fas fa-trash-alt"></i>  Hapus Foto</button>
-                                                </form>                                                
-                                            @else
-                                                <div class="alert alert-warning" role="alert">
-                                                    Belum ada foto
-                                                </div>
-                                            @endif
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-8">
+                            <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <h2 class="mb-3"><i class="fas fa-seedling"></i> {{ $bahan->kode_bahan }} ◦ {{ $bahan->nama_bahan }}</h2>
-                                        <p><strong>Formula:</strong> {{ $bahan->formula }}</p>
-                                        <p><strong>Expired:</strong> {{ $bahan->exp_bahan ?? 'N/A' }}</p>
-                                        <p><strong>Jenis Bahan:</strong> {{ $bahan->jenis_bahan ?? 'N/A' }}</p>
-                                        <p><strong>Satuan:</strong> {{ $bahan->satuan ?? 'N/A' }}</p>
-                                        <p><strong>Stok Awal:</strong> {{ $bahan->stok_awal ?? 'N/A' }}</p>
-                                        <p><strong>Sisa Bahan:</strong> {{ $bahan->stok_bahan ?? 'N/A' }}</p>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p><strong>Formula:</strong> {{ $bahan->formula }}</p>
+                                                <p><strong>Expired:</strong> {{ $bahan->exp_bahan ?? 'N/A' }}</p>
+                                                <p><strong>Jenis Bahan:</strong> {{ $bahan->jenis_bahan ?? 'N/A' }}</p>
+                                                <p><strong>Satuan:</strong> {{ $bahan->satuan ?? 'N/A' }}</p>
+                                                <p><strong>Stok Awal:</strong> {{ $bahan->stok_awal ?? 'N/A' }}</p>
+                                                <p><strong>Sisa Bahan:</strong> {{ $bahan->stok_bahan ?? 'N/A' }}</p>
+                                            </div>
+    
+                                            <div class="col">
+                                                <form action="{{ route('data-bahan.uploadFoto', $bahan->id) }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="mb-3">
+                                                        <label for="photo" class="form-label">Update Foto</label>
+                                                        <input class="form-control" type="file" name="photo" id="photo" accept="image/*" multiple required>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary mb-3 btn-sm">Update Foto</button>
+                                                </form>
+                                                
+                                                <div class="zoom-gallery">
+            
+                                                    @if ($bahan->foto_path)
+                                                        <img src="{{ asset($bahan->foto_path) }}" class="img-fluid" alt="">
+        
+                                                        <form action="" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus foto ini?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm my-3"><i class="fas fa-trash-alt"></i>  Hapus Foto</button>
+                                                        </form>                                                
+                                                    @else
+                                                        <div class="alert alert-warning" role="alert">
+                                                            Belum ada foto
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <hr>
 

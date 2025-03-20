@@ -119,17 +119,36 @@
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <label for="bukti_bayar" class="form-label">Bukti Bayar<span style="color: red">*</span> (Foto atau file pdf maks 2 MB) </label>
-                                                    <input type="file"
-                                                        class="form-control @error('bukti_bayar') is-invalid @enderror" id="bukti_bayar"
-                                                        name="bukti_bayar" value="{{ old('bukti_bayar') }}" required>
-
-                                                    @error('bukti_bayar')
+                                                    <label for="jenis_pembayaran" class="form-label">Jenis Pembayaran<span style="color: red">*</span> </label>
+                                                    <select class="form-control @error('jenis_pembayaran') is-invalid @enderror" id="jenis_pembayaran" name="jenis_pembayaran" required>
+                                                        <option value="">-- Pilih --</option>
+                                                        <option value="Gedung">Gedung</option>
+                                                        <option value="SPP">SPP</option>
+                                                        <option value="Jas Lab">Jas Lab</option>
+                                                        <option value="Skripsi">Skripsi</option>
+                                                        <option value="PKL">PKL</option>
+                                                        <option value="Wisuda">Wisuda</option>
+                                                    </select>
+                                                
+                                                    @error('jenis_pembayaran')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
                                                 </div>
+
+                                                <div class="mb-3">
+                                                    <label for="bukti_bayar" class="form-label">Bukti Bayar<span style="color: red">*</span> (Foto atau file PDF maks 2 MB) </label>
+                                                    <input type="file"
+                                                        class="form-control @error('bukti_bayar') is-invalid @enderror" id="bukti_bayar"
+                                                        name="bukti_bayar[]" multiple required>
+                                                
+                                                    @error('bukti_bayar')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>                                                
 
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -153,42 +172,52 @@
                                                 <th>Nama Mahasiswa - NIM</th>
                                                 <th>Tanggal Bayar</th>
                                                 <th>Bukti Bayar</th>
+                                                <th>Jenis Pembayaran</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         
                                         <tbody>
-                                                @foreach($buktiPembayarans as $key => $buktiPembayaran)
-
-                                                    <tr>
-                                                        <th scope="row">{{ ++$key }}</th>
-                                                        <td>{{ $buktiPembayaran->user->name }} - {{ $buktiPembayaran->user->nim }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($buktiPembayaran->tanggal)->format('d-m-Y') }}</td>
-                                                        <td>
-                                                            <a href="{{ asset($buktiPembayaran->bukti_bayar) }}" target="_blank">
-                                                                <i class="fas fa-file"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td>
-                                                            @if($buktiPembayaran->status == 1)
-                                                                <span class="badge bg-success">Sudah ACC</span>
-                                                            @else
-                                                                <span class="badge bg-danger">Belum ACC</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @if ($buktiPembayaran->status == 0)
-                                                                <form action="{{ route('updateStatusKonfirmasiBayar', $buktiPembayaran->id) }}"
-                                                                    method="POST" onsubmit="return confirm('Apakah anda yakin ingin mengkonfirmasi data pembayaran ini?');">
-                                                                    @csrf
-                                                                    <button type="submit" class="btn btn-primary btn-sm mx-1" title="ACC"><i class="fas fa-check-circle"></i></button>
-                                                                </form>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
+                                            @foreach($buktiPembayarans as $key => $buktiPembayaran)
+                                                <tr>
+                                                    <th scope="row">{{ ++$key }}</th>
+                                                    <td>{{ $buktiPembayaran->user->name }} - {{ $buktiPembayaran->user->nim }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($buktiPembayaran->tanggal)->format('d-m-Y') }}</td>
+                                                    <td>
+                                                        @if($buktiPembayaran->fotoBuktiBayars->isNotEmpty())
+                                                            @foreach($buktiPembayaran->fotoBuktiBayars as $foto)
+                                                                <a href="{{ asset($foto->foto_path) }}" target="_blank">
+                                                                    <img src="{{ asset($foto->foto_path) }}" alt="Bukti Bayar" class="img-thumbnail" style="max-width: 30px;">
+                                                                </a>
+                                                            @endforeach
+                                                        @else
+                                                            <span>Tidak ada bukti bayar</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $buktiPembayaran->jenis_pembayaran }}</td>
+                                                    <td>
+                                                        @if($buktiPembayaran->status == 1)
+                                                            <span class="badge bg-success">Sudah ACC</span>
+                                                        @else
+                                                            <span class="badge bg-danger">Belum ACC</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($buktiPembayaran->status == 0)
+                                                            <form action="{{ route('updateStatusKonfirmasiBayar', $buktiPembayaran->id) }}" method="POST" 
+                                                                onsubmit="return confirm('Apakah anda yakin ingin mengkonfirmasi data pembayaran ini?');">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-primary btn-sm mx-1" title="ACC">
+                                                                    <i class="fas fa-check-circle"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
                                         </tbody>
+                                        
                                     </table>
 
                                 </div>

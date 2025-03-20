@@ -91,8 +91,8 @@
                                             <div class="col">
                                                 <p><strong>Tanggal Pelaksanaan:</strong> {{ $pengajuanBahan->tanggal_pelaksanaan }}</p>
                                                 <p><strong>Nama Anggota Kelompok:</strong> {{ $pengajuanBahan->nama_mahasiswa }}</p>
-                                                <p><strong>NIM Ketua Kelompok:</strong> {{ $pengajuanBahan->kelompok ?? 'N/A' }}</p>
-                                                <p><strong>Kelas:</strong> {{ $pengajuanBahan->kelas ?? 'N/A' }}</p>
+                                                <p><strong>NIM Ketua Kelompok:</strong> {{ $pengajuanBahan->kelompok ?? '-' }}</p>
+                                                <p><strong>Kelas:</strong> {{ $pengajuanBahan->kelas ?? '-' }}</p>
                                             </div>
 
                                             <div class="col">
@@ -181,7 +181,6 @@
                                                                             <th>Nama Bahan/Obat</th>
                                                                             <th>Jumlah Pemakaian</th>
                                                                             <th>Satuan</th>
-                                                                            <th>Jenis Bahan/Obat</th>
                                                                             <th>Keterangan</th>
                                                                         </tr>
                                                                     </thead>
@@ -236,13 +235,6 @@
                                                                                     </select>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <select class="form-control" name="obatPengajuanBahans[{{ $key }}][jenis_obat]" required>
-                                                                                        <option value="">-- Pilih Jenis Obat --</option>
-                                                                                        <option value="Cair" {{ $obatPengajuanBahan->jenis_obat == 'Cair' ? 'selected' : '' }}>Cair</option>
-                                                                                        <option value="Padat" {{ $obatPengajuanBahan->jenis_obat == 'Padat' ? 'selected' : '' }}>Padat</option>
-                                                                                    </select>
-                                                                                </td>
-                                                                                <td>
                                                                                     <input type="text" class="form-control" name="obatPengajuanBahans[{{ $key }}][keterangan]" value="{{ $obatPengajuanBahan->keterangan }}">
                                                                                 </td>
                                                                                 <input type="hidden" name="obatPengajuanBahans[{{ $key }}][id]" value="{{ $obatPengajuanBahan->id }}">
@@ -279,7 +271,6 @@
                                                     <th>Tipe</th>
                                                     <th>Jumlah Pemakaian</th>
                                                     <th>Satuan</th>
-                                                    <th>Jenis</th>
                                                     <th>Keterangan</th>
                                                     <th>Aksi</th>
                                                 </tr>
@@ -288,12 +279,11 @@
                                                 @foreach($pengajuanBahan->obatPengajuanBahans as $obatPengajuanBahan)
                                                     @if($obatPengajuanBahan->tipe == 'bahan')
                                                         <tr>
-                                                            <td><a style="color: black" href="{{ route('data-bahan.show', $obatPengajuanBahan->bahan->id) }}">{{ $obatPengajuanBahan->bahan->kode_bahan ?? 'N/A' }}</a></td>
-                                                            <td><a style="color: black" href="{{ route('data-bahan.show', $obatPengajuanBahan->bahan->id) }}">{{ $obatPengajuanBahan->bahan->nama_bahan ?? 'N/A' }} ({{ $obatPengajuanBahan->bahan->formula }})</a></td>
-                                                            <td>{{ $obatPengajuanBahan->tipe ?? 'N/A' }} - {{ $obatPengajuanBahan->bahan->jenis_bahan ?? 'N/A' }}</td>
+                                                            <td><a style="color: black" href="{{ route('data-bahan.show', $obatPengajuanBahan->bahan->id) }}">{{ $obatPengajuanBahan->bahan->kode_bahan ?? '-' }}</a></td>
+                                                            <td><a style="color: black" href="{{ route('data-bahan.show', $obatPengajuanBahan->bahan->id) }}">{{ $obatPengajuanBahan->bahan->nama_bahan ?? '-' }} ({{ $obatPengajuanBahan->bahan->formula }})</a></td>
+                                                            <td>{{ $obatPengajuanBahan->tipe ?? '-' }} - {{ $obatPengajuanBahan->bahan->jenis_bahan ?? '-' }}</td>
                                                             <td>{{ $obatPengajuanBahan->jumlah_pemakaian }}</td>
-                                                            <td>{{ $obatPengajuanBahan->satuan ?? 'N/A' }}</td>
-                                                            <td>{{ $obatPengajuanBahan->jenis_obat }}</td>
+                                                            <td>{{ $obatPengajuanBahan->satuan ?? '-' }}</td>
                                                             <td>{{ $obatPengajuanBahan->keterangan }}</td>
                                                             <td>
                                                                 @if ($pengajuanBahan->status == 0)
@@ -310,12 +300,11 @@
                                                         </tr>
                                                     @elseif($obatPengajuanBahan->tipe == 'obat')
                                                         <tr>
-                                                            <td><a style="color: black" href="{{ route('data-obat.show', $obatPengajuanBahan->obat->id) }}">{{ $obatPengajuanBahan->obat->kode_obat ?? 'N/A' }}</a></td>
-                                                            <td><a style="color: black" href="{{ route('data-obat.show', $obatPengajuanBahan->obat->id) }}">{{ $obatPengajuanBahan->obat->nama_obat ?? 'N/A' }}</a></td>
-                                                            <td>{{ $obatPengajuanBahan->tipe ?? 'N/A' }}</td>
+                                                            <td><a style="color: black" href="{{ route('data-obat.show', $obatPengajuanBahan->obat->id) }}">{{ $obatPengajuanBahan->obat->kode_obat ?? '-' }}</a></td>
+                                                            <td><a style="color: black" href="{{ route('data-obat.show', $obatPengajuanBahan->obat->id) }}">{{ $obatPengajuanBahan->obat->nama_obat ?? '-' }}</a></td>
+                                                            <td>{{ $obatPengajuanBahan->tipe ?? '-' }}</td>
                                                             <td>{{ $obatPengajuanBahan->jumlah_pemakaian }}</td>
-                                                            <td>{{ $obatPengajuanBahan->satuan ?? 'N/A' }}</td>
-                                                            <td>{{ $obatPengajuanBahan->jenis_obat }}</td>
+                                                            <td>{{ $obatPengajuanBahan->satuan ?? '-' }}</td>
                                                             <td>{{ $obatPengajuanBahan->keterangan }}</td>
                                                             <td>
                                                                 @if ($pengajuanBahan->status == 0)

@@ -109,7 +109,7 @@ class ObatController extends Controller
         } elseif ($status === 'expired') {
             $obats = Obat::where('exp_obat', '<', $currentDate)->get();
         } else {
-            abort(404); // Jika status tidak valid, kembalikan halaman 404
+            abort(404);
         }
 
         return view('obats.status', compact('obats', 'status'));
@@ -130,29 +130,30 @@ class ObatController extends Controller
     {
         $validated = $request->validate([
             'kode_obat' => 'required|string|max:255',
+            'jenis_obat' => 'nullable',
             'nama_obat' => 'required|string|max:255',
             'kekuatan_obat' => 'nullable|string|max:255',
-            'kemasan_obat' => 'nullable|exists:kemasans,id',
-            'bentuk_sediaan' => 'nullable|exists:bentuk_sediaans,id',
-            'satuan' => 'nullable|exists:satuans,id',
+            'kemasan_id' => 'nullable|exists:kemasans,id',
+            'bentuk_sediaan_id' => 'nullable|exists:bentuk_sediaans,id',
+            'satuan_id' => 'nullable|exists:satuans,id',
             'exp_obat' => 'nullable|date',
             'stok_obat' => 'required|integer|min:0',
         ]);
-    
+        
         $obat = Obat::findOrFail($id);
         $obat->update([
             'kode_obat' => $validated['kode_obat'],
             'nama_obat' => $validated['nama_obat'],
             'jenis_obat' => $validated['jenis_obat'],
             'kekuatan_obat' => $validated['kekuatan_obat'],
-            'kemasan_id' => $validated['kemasan_obat'],
-            'bentuk_sediaan_id' => $validated['bentuk_sediaan'],
-            'satuan_id' => $validated['satuan'],
+            'kemasan_id' => $validated['kemasan_id'],
+            'bentuk_sediaan_id' => $validated['bentuk_sediaan_id'],
+            'satuan_id' => $validated['satuan_id'],
             'exp_obat' => $validated['exp_obat'],
             'stok_obat' => $validated['stok_obat'],
         ]);
-
-        return redirect()->route('data-obat.show', $obat->id)->with('success', 'Data obat berhasil diperbarui');
+        
+        return redirect()->route('data-obat.show', $obat->id)->with('success', 'Data obat berhasil diperbarui');        
     }
 
 

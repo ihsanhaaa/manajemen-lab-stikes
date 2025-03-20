@@ -91,8 +91,8 @@
                                             <div class="col">
                                                 <p><strong>Waktu Praktikum:</strong> {{ \Carbon\Carbon::parse($pemakaianAlat->tanggal_pelaksanaan)->format('d/m/Y - H:i') }}</p>
                                                 <p><strong>Nama Anggota Kelompok:</strong> {{ $pemakaianAlat->nama_mahasiswa }}</p>
-                                                <p><strong>NIM Ketua Kelompok:</strong> {{ $pemakaianAlat->nim_kelompok ?? 'N/A' }}</p>
-                                                <p><strong>Semester:</strong> {{ $pemakaianAlat->kelas ?? 'N/A' }}</p>
+                                                <p><strong>NIM Ketua Kelompok:</strong> {{ $pemakaianAlat->nim_kelompok ?? '-' }}</p>
+                                                <p><strong>Semester:</strong> {{ $pemakaianAlat->kelas ?? '-' }}</p>
                                             </div>
 
                                             <div class="col">
@@ -176,48 +176,36 @@
                                                             <h5 class="mb-3 mt-3">Data Alat</h5>
                                                             <div id="dynamic-form-container">
                                                                 @foreach($pemakaianAlat->formPemakaianAlats as $index => $formPemakaianAlat)
-                                                                <div class="row dynamic-form mb-3">
-                                                                    <div class="col-md-2">
-                                                                        <label for="alat[]" class="form-label">Nama Barang</label>
-                                                                        <select class="form-control" name="alat[]">
-                                                                            @foreach($alats as $alat)
-                                                                                <option value="{{ $alat->id }}" {{ $formPemakaianAlat->alat_id == $alat->id ? 'selected' : '' }}>{{ $alat->nama_barang }}</option>
-                                                                            @endforeach
-                                                                        </select>
+                                                                    <div class="row dynamic-form mb-3">
+                                                                        <div class="col-md-4">
+                                                                            <label for="alat[]" class="form-label">Nama Barang</label>
+                                                                            <select class="form-control" name="alat[]">
+                                                                                @foreach($alats as $alat)
+                                                                                    <option value="{{ $alat->id }}" {{ $formPemakaianAlat->alat_id == $alat->id ? 'selected' : '' }}>{{ $alat->nama_barang }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <label for="jumlah[]" class="form-label">Jumlah Pinjam</label>
+                                                                            <input type="number" class="form-control" name="jumlah[]" value="{{ $formPemakaianAlat->jumlah }}" required>
+                                                                        </div>
+                                                                        
+                                                                        <div class="col-md-2">
+                                                                            <label for="kondisi_kembali[]" class="form-label">Kondisi Kembali</label>
+                                                                            <select class="form-control" name="kondisi_kembali[]">
+                                                                                <option value="Baik" {{ $formPemakaianAlat->kondisi_kembali == 'Baik' ? 'selected' : '' }}>Baik</option>
+                                                                                <option value="Pecah" {{ $formPemakaianAlat->kondisi_kembali == 'Pecah' ? 'selected' : '' }}>Pecah</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <label for="jumlah_rusak[]" class="form-label">Jumlah Rusak</label>
+                                                                            <input type="number" class="form-control" name="jumlah_rusak[]" value="{{ $formPemakaianAlat->jumlah_rusak }}" required>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <label for="keterangan[]" class="form-label">Keterangan</label>
+                                                                            <input type="text" class="form-control" name="keterangan[]" value="{{ $formPemakaianAlat->keterangan }}">
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="col-md-2">
-                                                                        <label for="ukuran[]" class="form-label">Ukuran</label>
-                                                                        <input type="text" class="form-control" name="ukuran[]" value="{{ $formPemakaianAlat->ukuran }}" required>
-                                                                    </div>
-
-                                                                    <div class="col-md-2">
-                                                                        <label for="kondisi_pinjam[]" class="form-label">Kondisi Pinjam</label>
-                                                                        <select class="form-control" name="kondisi_pinjam[]">
-                                                                            <option value="Baik" {{ $formPemakaianAlat->kondisi_pinjam == 'Baik' ? 'selected' : '' }}>Baik</option>
-                                                                            <option value="Pecah" {{ $formPemakaianAlat->kondisi_pinjam == 'Pecah' ? 'selected' : '' }}>Pecah</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-1">
-                                                                        <label for="jumlah[]" class="form-label">Jumlah Pinjam</label>
-                                                                        <input type="number" class="form-control" name="jumlah[]" value="{{ $formPemakaianAlat->jumlah }}" required>
-                                                                    </div>
-                                                                    
-                                                                    <div class="col-md-2">
-                                                                        <label for="kondisi_kembali[]" class="form-label">Kondisi Kembali</label>
-                                                                        <select class="form-control" name="kondisi_kembali[]">
-                                                                            <option value="Baik" {{ $formPemakaianAlat->kondisi_kembali == 'Baik' ? 'selected' : '' }}>Baik</option>
-                                                                            <option value="Pecah" {{ $formPemakaianAlat->kondisi_kembali == 'Pecah' ? 'selected' : '' }}>Pecah</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-1">
-                                                                        <label for="jumlah_rusak[]" class="form-label">Jumlah Rusak</label>
-                                                                        <input type="number" class="form-control" name="jumlah_rusak[]" value="{{ $formPemakaianAlat->jumlah_rusak }}" required>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label for="keterangan[]" class="form-label">Keterangan</label>
-                                                                        <input type="text" class="form-control" name="keterangan[]" value="{{ $formPemakaianAlat->keterangan }}">
-                                                                    </div>
-                                                                </div>
                                                                 @endforeach
                                                             </div>
                                                         </div>
@@ -232,7 +220,7 @@
 
                                         <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-xl">
-                                                <form action="{{ route('pemakaian-alat.updateDetail', $pemakaianAlat->id) }}" method="POST" enctype="multipart/form-data">
+                                                <form action="{{ route('pemakaian-alat.AddUpdateDetail', $pemakaianAlat->id) }}" method="POST" enctype="multipart/form-data">
                                                     @csrf
                                                     <div class="modal-content">
                                                         <div class="modal-header">
@@ -249,20 +237,6 @@
                                                                         @foreach($alats as $alat)
                                                                             <option value="{{ $alat->id }}">{{ $alat->nama_barang }}</option>
                                                                         @endforeach
-                                                                </select>
-                                                            </div>
-                                        
-                                                            <div class="mb-3">
-                                                                <label for="ukuran" class="form-label">Ukuran<span style="color: red;">*</span></label>
-                                                                <input type="text" class="form-control" name="ukuran" required>
-                                                            </div>
-                                        
-                                                            <div class="mb-3">
-                                                                <label for="kondisi_pinjam" class="form-label">Kondisi Pinjam<span style="color: red;">*</span></label>
-                                                                <select class="form-control" name="kondisi_pinjam" required>
-                                                                    <option value="">--Pilih--</option>
-                                                                    <option value="Baik">Baik</option>
-                                                                    <option value="Pecah">Pecah</option>
                                                                 </select>
                                                             </div>
 
@@ -312,8 +286,6 @@
                                             <thead>
                                                 <tr>
                                                     <th>Nama Barang</th>
-                                                    <th>Ukuran</th>
-                                                    <th>Kondisi Pinjam</th>
                                                     <th>Jumlah Pinjam</th>
                                                     <th>Kondisi Kembali</th>
                                                     <th>Jumlah Pecah</th>
@@ -326,14 +298,12 @@
                                                     <tr>
                                                         <td>
                                                             @if ($formPemakaianAlat->alat)
-                                                                <a style="color: black" href="{{ route('data-alat.show', $formPemakaianAlat->alat->id ) }}">{{ $formPemakaianAlat->alat->nama_barang ?? 'N/A' }}</a>
+                                                                <a style="color: black" href="{{ route('data-alat.show', $formPemakaianAlat->alat->id ) }}">{{ $formPemakaianAlat->alat->nama_barang ?? '-' }}</a>
                                                             @else
-                                                                {{ $formPemakaianAlat->alat->nama_barang ?? 'N/A' }} {{ $formPemakaianAlat->alat->ukuran ?? 'N/A' }}
+                                                                {{ $formPemakaianAlat->alat->nama_barang ?? '-' }} {{ $formPemakaianAlat->alat->ukuran ?? '-' }}
                                                             @endif
                                                         </td>
-                                                        <td>{{ $formPemakaianAlat->ukuran ?? 'N/A' }}</td>
-                                                        <td>{{ $formPemakaianAlat->kondisi_pinjam }}</td>
-                                                        <td>{{ $formPemakaianAlat->jumlah ?? 'N/A' }}</td>
+                                                        <td>{{ $formPemakaianAlat->jumlah ?? '-' }}</td>
                                                         <td>{{ $formPemakaianAlat->kondisi_kembali }}</td>
                                                         <td>{{ $formPemakaianAlat->jumlah_rusak }}</td>
                                                         <td>{{ $formPemakaianAlat->keterangan }}</td>

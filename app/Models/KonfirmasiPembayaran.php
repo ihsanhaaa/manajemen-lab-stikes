@@ -21,4 +21,9 @@ class KonfirmasiPembayaran extends Model
     {
         return $this->belongsTo(Semester::class);
     }
+
+    public function fotoBuktiBayars()
+    {
+        return $this->hasMany(FotoBuktiBayar::class, 'konfirmasi_pembayaran_id');
+    }
 }

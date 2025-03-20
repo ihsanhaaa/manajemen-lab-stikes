@@ -15,10 +15,12 @@ use App\Http\Controllers\BahanController;
 use App\Http\Controllers\BahanKeluarController;
 use App\Http\Controllers\BahanMasukController;
 use App\Http\Controllers\BentukSediaanController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InhalController;
 use App\Http\Controllers\KemasanController;
 use App\Http\Controllers\KonfirmasiPembayaranController;
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\PemakaianAlatController;
 use App\Http\Controllers\PengajuanBahanController;
@@ -115,7 +117,11 @@ Route::group(['middleware' => ['auth']], function () {
     
     Route::resource('/pengajuan-bahan', PengajuanBahanController::class);
 
+    Route::get('/pengajuan-bahan-selesai', [PengajuanBahanController::class, 'indexSelesai'])->name('pengajuan-selesai.index');
+
     Route::resource('/pengajuan-alat', PemakaianAlatController::class);
+
+    Route::get('/pengajuan-alat-selesai', [PemakaianAlatController::class, 'indexSelesai'])->name('pengajuan-alat-selesai.index');
 
     Route::resource('/pemakaian-alat', PemakaianAlatController::class);
 
@@ -252,7 +258,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/bahan-keluar/{id}/update-tanggal', [BahanKeluarController::class, 'updateTanggalKeluar'])->name('bahan-keluar.update-tanggal');
 
-    Route::post('/pemakaian-alat/{id}/update-detail', [PemakaianAlatController::class, 'AddUpdateDetail'])->name('pemakaian-alat.updateDetail');
+    Route::post('/pemakaian-alat/{id}/update-detail', [PemakaianAlatController::class, 'AddUpdateDetail'])->name('pemakaian-alat.AddUpdateDetail');
 
     Route::post('/data-bahan-manual/store', [BahanMasukController::class, 'storeBahanMasukManual'])->name('data-bahan-manual.store');
 
@@ -275,6 +281,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/export-stok-obat', function () {
         return Excel::download(new RekapObatExport, 'Laporan_Stok_Obat.xlsx');
     })->name('export.stok.obat');
+
+    Route::post('/validate-nim', [MahasiswaController::class, 'validateNIM'])->name('validate-nim');
+
+    Route::post('/submit-feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
 });
 

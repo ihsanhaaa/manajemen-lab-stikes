@@ -150,56 +150,56 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="kemasan_obat" class="form-label">Kemasan Obat</label>
-                                                <select class="form-control @error('kemasan_obat') is-invalid @enderror" id="kemasan_obat" name="kemasan_obat" required>
+                                                <label for="kemasan_id" class="form-label">Kemasan Obat</label>
+                                                <select class="form-control @error('kemasan_id') is-invalid @enderror" id="kemasan_id" name="kemasan_id" required>
                                                     <option value="">-- Pilih Kemasan Obat --</option>
                                                     @foreach($kemasans as $kemasan)
-                                                        <option value="{{ $kemasan->id }}" {{ old('kemasan_obat', $obat->kemasan_obat) == $kemasan->id ? 'selected' : '' }}>
+                                                        <option value="{{ $kemasan->id }}" {{ old('kemasan_id', $obat->kemasan_id) == $kemasan->id ? 'selected' : '' }}>
                                                             {{ $kemasan->nama_kemasan }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error('kemasan_obat')
+                                                @error('kemasan_id')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>
+                                            </div>                                            
 
                                             <div class="mb-3">
-                                                <label for="bentuk_sediaan" class="form-label">Bentuk Sediaan</label>
-                                                <select class="form-control @error('bentuk_sediaan') is-invalid @enderror" id="bentuk_sediaan" name="bentuk_sediaan" required>
+                                                <label for="bentuk_sediaan_id" class="form-label">Bentuk Sediaan</label>
+                                                <select class="form-control @error('bentuk_sediaan_id') is-invalid @enderror" id="bentuk_sediaan_id" name="bentuk_sediaan_id" required>
                                                     <option value="">-- Pilih Bentuk Sediaan --</option>
                                                     @foreach($bentukSediaans as $bentukSediaan)
-                                                        <option value="{{ $bentukSediaan->id }}" {{ old('bentuk_sediaan', $obat->bentuk_sediaan) == $bentukSediaan->id ? 'selected' : '' }}>
+                                                        <option value="{{ $bentukSediaan->id }}" {{ old('bentuk_sediaan_id', $obat->bentuk_sediaan_id) == $bentukSediaan->id ? 'selected' : '' }}>
                                                             {{ $bentukSediaan->nama_bentuk_sediaan }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error('bentuk_sediaan')
+                                                @error('bentuk_sediaan_id')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>
+                                            </div>                                            
 
                                             <div class="mb-3">
                                                 <label for="satuan" class="form-label">Satuan</label>
-                                                <select class="form-control @error('satuan') is-invalid @enderror" id="satuan" name="satuan">
+                                                <select class="form-control @error('satuan_id') is-invalid @enderror" id="satuan" name="satuan_id">
                                                     <option value="">-- Pilih Satuan --</option>
                                                     @foreach($satuans as $satuan)
-                                                        <option value="{{ $satuan->id }}" {{ $obat->id == $satuan->id ? 'selected' : '' }}>
+                                                        <option value="{{ $satuan->id }}" {{ $obat->satuan_id == $satuan->id ? 'selected' : '' }}>
                                                             {{ $satuan->nama_satuan }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             
-                                                @error('satuan')
+                                                @error('satuan_id')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>
+                                            </div>                                            
 
                                             <div class="mb-3">
                                                 <label for="exp_obat" class="form-label">Expired Obat</label>

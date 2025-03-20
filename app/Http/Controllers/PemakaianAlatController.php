@@ -29,6 +29,36 @@ class PemakaianAlatController extends Controller
         return view('pemakaian-alats.index', compact('alats', 'pemakaianAlats', 'semesterAktif', 'pemakaianAlatSelesais'));
     }
 
+    public function indexSelesai()
+    {
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        $alats = Alat::orderBy('nama_barang', 'asc')->get();
+
+        $pemakaianAlatSelesais = PemakaianAlat::where('status', true)
+            ->orderBy('tanggal_pelaksanaan', 'desc')
+            ->get();
+
+        return view('pemakaian-alats.indexSelesai', compact('alats', 'semesterAktif', 'pemakaianAlatSelesais'));
+    }
+
+    public function create()
+    {
+        $semesterAktif = Semester::where('is_active', true)->first();
+
+        $alats = Alat::orderBy('nama_barang', 'asc')->get();
+
+        $pemakaianAlats = PemakaianAlat::where('status', false)
+            ->orderBy('tanggal_pelaksanaan', 'desc')
+            ->get();
+
+        $pemakaianAlatSelesais = PemakaianAlat::where('status', true)
+            ->orderBy('tanggal_pelaksanaan', 'desc')
+            ->get();
+
+        return view('pemakaian-alats.create', compact('alats', 'pemakaianAlats', 'semesterAktif', 'pemakaianAlatSelesais'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,11 +67,9 @@ class PemakaianAlatController extends Controller
             'kelas' => 'required|string',
             'tanggal_praktikum' => 'required|date',
             'nama_praktikum' => 'required|string',
-            'alat.*' => 'required|exists:alats,id', // Validasi untuk alat harus ada di tabel 'alats'
-            'ukuran.*' => 'required|string', // Ukuran alat harus berupa string
-            'jumlah.*' => 'required|integer|min:1', // Jumlah minimal adalah 1
-            'kondisi_pinjam.*' => 'required|in:Baik,Pecah', // Validasi kondisi pinjam
-            'kondisi_kembali.*' => 'required|in:Baik,Pecah', // Validasi kondisi kembali
+            'alat.*' => 'required|exists:alats,id',
+            'jumlah.*' => 'required|integer|min:1',
+            'kondisi_kembali.*' => 'required|in:Baik,Pecah',
             'jumlah_rusak.*' => [
                 'required', 
                 'integer',
@@ -91,10 +119,8 @@ class PemakaianAlatController extends Controller
                     'pemakaian_alat_id' => $pemakaianAlat->id,
                     'user_id' => auth()->id(),
                     'alat_id' => $alatId,
-                    'ukuran' => $request->ukuran[$key],
                     'jumlah' => $request->jumlah[$key],
                     'jumlah_rusak' => $request->jumlah_rusak[$key],
-                    'kondisi_pinjam' => $request->kondisi_pinjam[$key],
                     'kondisi_kembali' => $request->kondisi_kembali[$key],
                     'keterangan' => $request->keterangan[$key] ?? null,
                 ]);
@@ -159,16 +185,15 @@ class PemakaianAlatController extends Controller
 
     public function updateDetail(Request $request, $id)
     {
+        // dd($request);
         $pemakaianAlat = PemakaianAlat::findOrFail($id);
         $pemakaianAlat->update($request->only(['nama_mahasiswa', 'nim_kelompok', 'kelas']));
 
         foreach ($request->alat as $index => $alatId) {
             $pemakaianAlat->formPemakaianAlats[$index]->update([
                 'alat_id' => $alatId,
-                'ukuran' => $request->ukuran[$index],
                 'jumlah' => $request->jumlah[$index],
                 'jumlah_rusak' => $request->jumlah_rusak[$index],
-                'kondisi_pinjam' => $request->kondisi_pinjam[$index],
                 'kondisi_kembali' => $request->kondisi_kembali[$index],
                 'keterangan' => $request->keterangan[$index] ?? null,
             ]);
@@ -217,8 +242,6 @@ class PemakaianAlatController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required|exists:alats,id',
-            'ukuran' => 'required|string|max:255',
-            'kondisi_pinjam' => 'required|in:Baik,Pecah',
             'jumlah' => 'required|integer|min:1',
             'kondisi_kembali' => 'required|in:Baik,Pecah',
             'jumlah_rusak' => 'required|integer|min:0',
@@ -230,10 +253,8 @@ class PemakaianAlatController extends Controller
                 'user_id' => auth()->id(),
                 'alat_id' => $request->nama_barang,
                 'pemakaian_alat_id' => $pemakaianAlatId,
-                'ukuran' => $request->ukuran,
                 'jumlah' => $request->jumlah,
                 'jumlah_rusak' => $request->jumlah_rusak,
-                'kondisi_pinjam' => $request->kondisi_pinjam,
                 'kondisi_kembali' => $request->kondisi_kembali,
                 'keterangan' => $request->keterangan,
             ]);
